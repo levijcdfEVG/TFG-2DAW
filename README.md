@@ -1,2 +1,9 @@
-# TFG-2DAW
-# TFG-2DAW
+# Proyecto de Final de DAW
+
+Este es el proyecto de final de curso para el ciclo de Desarrollo de Aplicaciones Web (DAW).
+
+## Integrantes
+
+- David Silva
+- Levi Figueiredo
+- Alvaro Gomez
