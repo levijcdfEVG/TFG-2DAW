@@ -6,4 +6,4 @@ Este es el proyecto de final de curso para el ciclo de Desarrollo de Aplicacione
 
 - David Silva
 - Levi Figueiredo
-- Alvaro Gomez
+- Álvaro Gomez
