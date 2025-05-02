@@ -1,0 +1,9 @@
+:host .navbar {
+    background-color: var(--color-primario) !important;
+    color: white;
+  }
+
+  .navbar-brand {
+    color: white !important; /* Asegúrate de usar !important si otros estilos están sobrescribiendo este */
+    text-decoration: none; /* Opcional: elimina el subrayado */
+  }

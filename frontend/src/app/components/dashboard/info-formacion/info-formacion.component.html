@@ -1,0 +1,34 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>Listado de formaciones</h4>
+    <button class="btn btn-primary">Añadir formación</button>
+  </div>
+
+  <table class="table table-bordered table-hover">
+    <thead class="table-light">
+    <tr>
+      <th>Id</th>
+      <th>Nombre</th>
+      <th>Duración</th>
+      <th>Modalidad</th>
+      <th>Justificación</th>
+      <th>Dirigido a</th>
+      <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let f of formaciones">
+      <td>{{ f.id }}</td>
+      <td>{{ f.nombre }}</td>
+      <td>{{ f.duracion }}</td>
+      <td>{{ f.modalidad }}</td>
+      <td>{{ f.justificacion }}</td>
+      <td>{{ f.dirigidoA }}</td>
+      <td>
+        <button class="btn btn-sm btn-outline-primary me-2"><i class="fa-solid fa-pencil"></i></button>
+        <button class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash-can"></i></button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

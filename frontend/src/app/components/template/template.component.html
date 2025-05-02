@@ -1,0 +1,36 @@
+<div class="container mt-5">
+    <div class="card text-center shadow-lg">
+      <div class="card-header bg-primary text-white">
+        <h2>Esto es una prueba para testear las dependencias</h2>
+      </div>
+      <div class="card-body">
+        <button class="btn btn-success me-2" (click)="showSweetAlert()">SweetAlert</button>
+        <button class="btn btn-warning" (click)="showToastr()">Toastr</button>
+      </div>
+    </div>
+  
+    <div class="mt-4">
+      <div class="card-header bg-primary text-white text-center p-5">
+        <h2>Data Table</h2>
+      </div>
+      <table id="example" class="table" width="100%">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Edad</th>
+            <th>País</th>
+            <th>Correo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of fakeUsers">
+            <td>{{ user.nombre }}</td>
+            <td>{{ user.edad }}</td>
+            <td>{{ user.pais }}</td>
+            <td>{{ user.correo }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
