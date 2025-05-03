@@ -9,7 +9,12 @@
         }
 
         public function listaCentros(){
-            return $this->objCentro->listaCentros();
+            $resultado = $this->objCentro->listaCentros();
+
+            // Devolver los datos en formato JSON
+            header('Content-Type: application/json');
+            echo json_encode($resultado);
+            exit;
         }
     }
 
