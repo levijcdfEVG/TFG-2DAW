@@ -2,7 +2,6 @@
 
 class mCentros {
 
-    private $tabla = 'centro_fundacion'; //Nombre de la tabla donde buscamos información
     private $conexion;
 
     public function conectar(){
@@ -13,7 +12,8 @@ class mCentros {
     public function listaCentros(){
         $this->conectar(); //Llamo al metodo conectar de arriba
         
-        $sql = 'SELECT * FROM '.$this->tabla; //Escribimos la consulta
+        $sql = 'SELECT cf.*, l.nombre_localidad FROM centro_fundacion cf
+	        INNER JOIN localidad l ON cf.id_local = l.id'; //Escribimos la consulta
         $stmt = $this->conexion->prepare($sql); // Preparamos la consulta
         $stmt->execute(); // Ejecutamos la consulta
         
@@ -23,8 +23,7 @@ class mCentros {
         if (empty($resultados)) {
             return ['success' => false, 'message' => 'No se encontraron registros en la tabla.'];
         }
-
-        return ['success' => true, 'data' => $resultados]; // Retornar los datos si hay registros
+        else return ['success' => true, 'data' => $resultados]; // Retornar los datos si hay registros
     }
 }
 ?>

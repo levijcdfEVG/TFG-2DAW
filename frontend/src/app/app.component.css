@@ -10,5 +10,19 @@
     --info-color: #17a2b8;
     --light-color: #f8f9fa;
     --dark-color: #343a40;
-    --font-family: 'Open Sans', sans-serif;
+    --font-family: 'Open Sans', sans-serif !important;
 }
+body{
+  font-family: var(--font-family) !important;
+}
+
+nav {
+    background-color: var(--color-primario) !important;
+    color: white !important;
+  }
+
+  table.table thead {
+    --bs-table-bg: transparent; /* Quita el fondo heredado */
+    --bs-table-color:white; /* Quita el color de fuente heredado */
+    background-color: var(--color-secundario);
+  }
