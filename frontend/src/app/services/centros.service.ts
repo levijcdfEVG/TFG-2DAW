@@ -14,4 +14,12 @@ export class CentrosService {
   getCentros(): Observable<any> {
     return this.http.get<any>(this.apiUrl);
   }
+
+  crearCentro(centro: any): Observable<any> {
+    return this.http.post<any>('http://localhost:8000/backend/src/index.php?controller=cCentros&accion=crearCentro', centro);
+  }
+
+  modificarCentro(centro: any): Observable<any> {
+    return this.http.put<any>('http://localhost:8000/backend/src/index.php?controller=cCentros&accion=modificarCentro', centro);
+  }
 }

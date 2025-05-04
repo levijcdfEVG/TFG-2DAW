@@ -12,6 +12,7 @@ import { InfoEducadorComponent } from './components/dashboard/info-educador/info
 import { FooterComponent } from './components/shared/footer/footer.component';
 import { HttpClientModule } from '@angular/common/http';
 import { MatTableModule } from '@angular/material/table';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { MatTableModule } from '@angular/material/table';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    MatTableModule
+    MatTableModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
