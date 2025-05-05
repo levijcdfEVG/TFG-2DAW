@@ -9,7 +9,7 @@ declare var $: any;
 })
 
 export class TemplateComponent implements OnInit, AfterViewInit, OnDestroy {
-  dtOptions: DataTables.Settings = {};
+ // dtOptions: DataTables.Settings = {};
   dataTable: any;
 
   showSweetAlert(): void {
@@ -34,18 +34,18 @@ export class TemplateComponent implements OnInit, AfterViewInit, OnDestroy {
   ];
 
   ngOnInit(): void {
-    this.dtOptions = {
+   /* this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 5,
       processing: true,
       responsive: true
-    };
+    };*/
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
+    /*setTimeout(() => {
       this.dataTable = $('#example').DataTable(this.dtOptions);
-    }, 0);
+    }, 0);*/
   }
 
   ngOnDestroy(): void {

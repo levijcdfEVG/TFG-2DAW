@@ -41,6 +41,16 @@ export class InfoCentroComponent implements OnInit {
       }
     });
   }
+
+  modificarRegistro(element: any): void {
+    this.centroSeleccionado = { ...element }; // Copiar los datos del registro seleccionado
+    const modal = document.getElementById('modificarCentroModal');
+    if (modal) {
+      // Ensure Bootstrap is imported and available
+      const bootstrapModal = new (window as any).bootstrap.Modal(modal);
+      bootstrapModal.show(); // Mostrar el modal
+    }
+  }
   
   borrarRegistro(element: any): void {
     const confirmacion = confirm(`¿Estás seguro de que deseas borrar el registro de ${element.nombre_centro}?`);
