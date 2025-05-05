@@ -27,4 +27,8 @@ export class AuthService {
     google.accounts.id.disableAutoSelect();
     // Remove tokens from storage if stored
   }
+
+  checkBackend() {
+    return true;
+  }
 }

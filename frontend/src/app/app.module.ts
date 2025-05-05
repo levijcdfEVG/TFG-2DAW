@@ -11,6 +11,8 @@ import { InfoCursoComponent } from './components/dashboard/info-curso/info-curso
 import { InfoEducadorComponent } from './components/dashboard/info-educador/info-educador.component';
 import { FooterComponent } from './components/shared/footer/footer.component';
 import { GoogleSignInComponent } from './components/google-sign-in/google-sign-in.component';
+import {ReactiveFormsModule} from "@angular/forms";
+import {HttpClientModule} from "@angular/common/http";
 
 @NgModule({
   declarations: [
@@ -26,7 +28,9 @@ import { GoogleSignInComponent } from './components/google-sign-in/google-sign-i
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ReactiveFormsModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
