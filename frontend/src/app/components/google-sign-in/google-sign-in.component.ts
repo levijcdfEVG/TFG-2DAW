@@ -16,10 +16,14 @@ export class GoogleSignInComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.initializeGoogleSignIn();
+    this.loadGoogleScript().then(() => {
+      this.initializeGoogleSignIn();
+    });
   }
 
+
   initializeGoogleSignIn() {
+    console.log('google.accounts:', google?.accounts);
     google.accounts.id.initialize({
       client_id: googleID,
       callback: (response: any) => this.handleCredentialResponse(response)
@@ -51,4 +55,22 @@ export class GoogleSignInComponent implements OnInit {
        this.router.navigate(['/info-centros']);
     });
   }
+
+  private loadGoogleScript(): Promise<void> {
+    return new Promise((resolve) => {
+      const existingScript = document.getElementById('google-client-script');
+      if (!existingScript) {
+        const script = document.createElement('script');
+        script.src = 'https://accounts.google.com/gsi/client';
+        script.id = 'google-client-script';
+        script.onload = () => {
+          resolve();
+        };
+        document.head.appendChild(script);
+      } else {
+        resolve();
+      }
+    });
+  }
+
 }

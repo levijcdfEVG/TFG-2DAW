@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject, Observable} from "rxjs";
 
+declare const google: any;
+
 @Injectable({
   providedIn: 'root'
 })

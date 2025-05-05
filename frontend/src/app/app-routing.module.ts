@@ -24,7 +24,7 @@ const routes: Routes = [
   },
   {
     path: "",
-    component: GoogleSignInComponent
+    component: InfoCentroComponent, canActivate: [AuthGuard]
   },
   {
     path: "login",
@@ -32,7 +32,8 @@ const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: '/info-centros', canActivate: [AuthGuard]
+    redirectTo: '/info-centros',
+    pathMatch: 'full'
   }
 ];
 
