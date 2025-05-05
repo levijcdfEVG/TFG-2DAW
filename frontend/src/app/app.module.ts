@@ -10,6 +10,7 @@ import { InfoFormacionComponent } from './components/dashboard/info-formacion/in
 import { InfoCursoComponent } from './components/dashboard/info-curso/info-curso.component';
 import { InfoEducadorComponent } from './components/dashboard/info-educador/info-educador.component';
 import { FooterComponent } from './components/shared/footer/footer.component';
+import { GoogleSignInComponent } from './components/google-sign-in/google-sign-in.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { FooterComponent } from './components/shared/footer/footer.component';
     InfoFormacionComponent,
     InfoCursoComponent,
     InfoEducadorComponent,
-    FooterComponent
+    FooterComponent,
+    GoogleSignInComponent
   ],
   imports: [
     BrowserModule,

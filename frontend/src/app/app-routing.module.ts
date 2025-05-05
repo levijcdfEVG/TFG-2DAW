@@ -2,31 +2,37 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import {InfoCentroComponent} from "./components/dashboard/info-centro/info-centro.component";
 import {InfoFormacionComponent} from "./components/dashboard/info-formacion/info-formacion.component";
+import {GoogleSignInComponent} from "./components/google-sign-in/google-sign-in.component";
+import {AuthGuard} from "./guards/auth.guard";
 
 const routes: Routes = [
   {
     path: "info-centros",
-    component: InfoCentroComponent
+    component: InfoCentroComponent, canActivate: [AuthGuard]
   },
   {
     path: "info-formaciones",
-    component: InfoFormacionComponent
+    component: InfoFormacionComponent, canActivate: [AuthGuard]
   },
   {
     path: "info-cursos",
-    component: InfoFormacionComponent
+    component: InfoFormacionComponent, canActivate: [AuthGuard]
   },
   {
     path: "info-educadores",
-    component: InfoFormacionComponent
+    component: InfoFormacionComponent, canActivate: [AuthGuard]
   },
   {
     path: "",
-    component: InfoCentroComponent
+    component: GoogleSignInComponent
+  },
+  {
+    path: "login",
+    component: GoogleSignInComponent
   },
   {
     path: '**',
-    redirectTo: '/info-centros'
+    redirectTo: '/info-centros', canActivate: [AuthGuard]
   }
 ];
 
