@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CentrosService } from 'src/app/services/centros.service';
 
 @Component({
@@ -8,7 +8,7 @@ import { CentrosService } from 'src/app/services/centros.service';
 })
 export class ModificarCentroComponent {
 
-  centroSeleccionado: any = {};
+  @Input() centroSeleccionado: any = {}; // Recibir el registro seleccionado como input
   dataSource: any[] = [];
   constructor(private centrosService: CentrosService) {}
 

@@ -16,7 +16,22 @@ export class CentrosService {
   }
 
   crearCentro(centro: any): Observable<any> {
-    return this.http.post<any>('http://localhost:8000/backend/src/index.php?controller=cCentros&accion=crearCentro', centro);
+    const headers = { 'Content-Type': 'application/x-www-form-urlencoded' }; // Asegúrate de usar el encabezado correcto
+    const body = new URLSearchParams(); // Formatear los datos como x-www-form-urlencoded
+  
+    // Agregar los datos al cuerpo de la solicitud
+    body.set('nombre_centro', centro.nombre_centro);
+    body.set('direccion_centro', centro.direccion_centro);
+    body.set('cp', centro.cp);
+    body.set('nombre_localidad', centro.nombre_localidad);
+    body.set('telefono_centro', centro.telefono_centro);
+    body.set('correo_centro', centro.correo_centro);
+  
+    return this.http.post<any>(
+      'http://localhost:8000/backend/src/index.php?controlador=cCentros&accion=insertIntoCentros',
+      body.toString(), // Convertir a string
+      { headers }
+    );
   }
 
   modificarCentro(centro: any): Observable<any> {
