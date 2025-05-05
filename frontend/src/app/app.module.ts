@@ -13,6 +13,7 @@ import { FooterComponent } from './components/shared/footer/footer.component';
 import { HttpClientModule } from '@angular/common/http';
 import { MatTableModule } from '@angular/material/table';
 import { FormsModule } from '@angular/forms';
+import { AltaCentroComponent } from './components/shared/modal/alta-centro/alta-centro.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { FormsModule } from '@angular/forms';
     InfoFormacionComponent,
     InfoCursoComponent,
     InfoEducadorComponent,
-    FooterComponent
+    FooterComponent,
+    AltaCentroComponent
   ],
   imports: [
     BrowserModule,

@@ -42,8 +42,6 @@ export class InfoCentroComponent implements OnInit {
     });
   }
 
-
-
   modificarRegistro(element: any): void {
     this.centroSeleccionado = { ...element }; // Copiar los datos del registro seleccionado
     const modal = document.getElementById('modificarCentroModal');
@@ -79,17 +77,5 @@ export class InfoCentroComponent implements OnInit {
     }
   }
 
-  crearCentro(): void {
-    console.log('Nuevo centro:', this.nuevoCentro);
-    // Aquí puedes llamar al servicio para guardar el nuevo centro en el backend
-    this.centrosService.crearCentro(this.nuevoCentro).subscribe(response => {
-      if (response.success) {
-        alert('Centro creado con éxito');
-        this.dataSource.push(response.data); // Agregar el nuevo centro a la tabla
-        this.nuevoCentro = {}; // Limpiar el formulario
-      } else {
-        alert('Error al crear el centro');
-      }
-    });
-  }
+  
 }

@@ -42,46 +42,7 @@
     </div>
   </div>
   
-  <!-- Modal de Bootstrap -->
-  <div class="modal fade" id="altaCentroModal" tabindex="-1" aria-labelledby="altaCentroModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="altaCentroModalLabel">Alta de Centro</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form (ngSubmit)="crearCentro()">
-            <div class="mb-3">
-              <label for="nombreCentro" class="form-label">Nombre Centro</label>
-              <input type="text" class="form-control" id="nombreCentro" [(ngModel)]="nuevoCentro.nombre_centro" name="nombre_centro" required>
-            </div>
-            <div class="mb-3">
-              <label for="direccionCentro" class="form-label">Dirección</label>
-              <input type="text" class="form-control" id="direccionCentro" [(ngModel)]="nuevoCentro.direccion_centro" name="direccion_centro" required>
-            </div>
-            <div class="mb-3">
-              <label for="cp" class="form-label">Código Postal</label>
-              <input type="text" class="form-control" id="cp" [(ngModel)]="nuevoCentro.cp" name="cp" required>
-            </div>
-            <div class="mb-3">
-              <label for="localidad" class="form-label">Localidad</label>
-              <input type="text" class="form-control" id="localidad" [(ngModel)]="nuevoCentro.nombre_localidad" name="nombre_localidad" required>
-            </div>
-            <div class="mb-3">
-              <label for="telefono" class="form-label">Teléfono</label>
-              <input type="text" class="form-control" id="telefono" [(ngModel)]="nuevoCentro.telefono_centro" name="telefono_centro" required>
-            </div>
-            <div class="mb-3">
-              <label for="correo" class="form-label">Correo</label>
-              <input type="email" class="form-control" id="correo" [(ngModel)]="nuevoCentro.correo_centro" name="correo_centro" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Guardar</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
+  
 
   <!-- Modal de Bootstrap para Modificar Centro -->
 <div class="modal fade" id="modificarCentroModal" tabindex="-1" aria-labelledby="modificarCentroModalLabel" aria-hidden="true">
