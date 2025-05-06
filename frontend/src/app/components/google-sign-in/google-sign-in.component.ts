@@ -4,6 +4,8 @@ import {AuthService} from "../../services/auth.service";
 import {Router} from "@angular/router";
 import {googleID} from "../../config/config";
 import {FormBuilder, FormGroup} from "@angular/forms";
+import Swal2 from "sweetalert2";
+import {CookieService} from "ngx-cookie-service";
 
 declare const google: any;
 
@@ -17,15 +19,22 @@ export class GoogleSignInComponent implements OnInit {
   constructor(private ngZone: NgZone,
               private authService: AuthService,
               private router: Router,
-              private formBuilder: FormBuilder) { }
+              private cookieService: CookieService ) { }
 
 
   ngOnInit(): void {
-    // this.loadFormCamps();
-    this.loadGoogleScript().then(() => {
-      this.initializeGoogleSignIn();
-    });
+    // Comprobar si el usuario ya está autenticado
+    if (this.authService.isLoggedIn()) {
+      // Si ya está logueado, redirige a la página protegida
+      this.router.navigate(['/info-centros']);
+    } else {
+      // Si no está logueado, carga el script de Google y muestra el botón de inicio de sesión
+      this.loadGoogleScript().then(() => {
+        this.initializeGoogleSignIn();
+      });
+    }
   }
+
 
   // private loadFormCamps() {
   //   this.form = this.formBuilder.group({
@@ -51,21 +60,20 @@ export class GoogleSignInComponent implements OnInit {
   }
 
   handleCredentialResponse(response: any) {
-    const token = response.credential;
-    const decoded: any = jwtDecode(token);
-    // Extract user information
-    const user = {
-      name: decoded.name,
-      email: decoded.email,
-      picture: decoded.picture
-    };
-
-    console.log('User:', user);
-
-    this.ngZone.run(() => {
-      this.authService.setAuthState(true);
-      // Navigate to a protected route, e.g.,
-       this.router.navigate(['/info-centros']);
+    this.authService.checkBackend(response.credential).subscribe(res => {
+      if (res.success) {
+        Swal2.fire({
+          icon: 'success',
+          title: 'Inicio de sesión exitoso',
+          showConfirmButton: false,
+          timer: 1500
+        })
+        this.cookieService.set('token', res.token, 1, '/');
+        this.ngZone.run(() => {
+          this.authService.setAuthState(true);
+          this.router.navigate(['/info-centros']);
+        });
+      }
     });
   }
 

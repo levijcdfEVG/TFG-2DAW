@@ -13,6 +13,7 @@ import { FooterComponent } from './components/shared/footer/footer.component';
 import { GoogleSignInComponent } from './components/google-sign-in/google-sign-in.component';
 import {ReactiveFormsModule} from "@angular/forms";
 import {HttpClientModule} from "@angular/common/http";
+import {CookieService} from "ngx-cookie-service";
 
 @NgModule({
   declarations: [
@@ -32,7 +33,9 @@ import {HttpClientModule} from "@angular/common/http";
     ReactiveFormsModule,
     HttpClientModule
   ],
-  providers: [],
+  providers: [
+    CookieService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
