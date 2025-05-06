@@ -47,6 +47,50 @@
                 exit;
             }
         }
+
+        public function modificarCentro() {
+            // Leer los datos enviados desde el frontend
+            $inputData = json_decode(file_get_contents('php://input'), true);
+        
+            // Validar que las claves necesarias existen
+            if (
+                isset($inputData['emailReferencia']) &&
+                isset($inputData['datosModificados']) &&
+                is_array($inputData['datosModificados'])
+            ) {
+                $emailReferencia = $inputData['emailReferencia'];
+                $datosModificados = $inputData['datosModificados'];
+        
+                // Extraer los datos modificados
+                $nombreCentro = $datosModificados['nombre_centro'] ?? null;
+                $direccionCentro = $datosModificados['direccion_centro'] ?? null;
+                $cpCentro = $datosModificados['cp'] ?? null;
+                $localidadCentro = $datosModificados['nombre_localidad'] ?? null;
+                $telefonoCentro = $datosModificados['telefono_centro'] ?? null;
+                $emailCentro = $datosModificados['correo_centro'] ?? null;
+        
+                // Llamar al modelo para realizar la modificación
+                $resultado = $this->objCentro->modificarCentro(
+                    $emailReferencia,
+                    $nombreCentro,
+                    $direccionCentro,
+                    $cpCentro,
+                    $localidadCentro,
+                    $telefonoCentro,
+                    $emailCentro
+                );
+        
+                // Responder con el resultado
+                header('Content-Type: application/json');
+                echo json_encode($resultado);
+                exit;
+            } else {
+                // Respuesta de error si faltan datos
+                header('Content-Type: application/json');
+                echo json_encode(['success' => false, 'message' => 'Faltan datos en la solicitud']);
+                exit;
+            }
+        }
     }
 
 ?>

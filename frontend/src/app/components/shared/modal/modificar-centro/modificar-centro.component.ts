@@ -23,15 +23,20 @@ export class ModificarCentroComponent {
   }
 
   guardarCambiosCentro(): void {
-    console.log('Centro modificado:', this.centroSeleccionado);
-    // Aquí puedes llamar al servicio para actualizar el registro en el backend
-    this.centrosService.modificarCentro(this.centroSeleccionado).subscribe(response => {
+    const emailReferencia = this.centroSeleccionado.correo_centro; // Guardar el email como referencia
+    const datosModificados = { ...this.centroSeleccionado }; // Crear un objeto con los datos modificados
+  
+    console.log('Email de referencia:', emailReferencia);
+    console.log('Datos modificados:', datosModificados);
+  
+    // Aquí llamaremos al servicio para realizar el delete y luego el insert
+    this.centrosService.modificarCentro(emailReferencia, datosModificados).subscribe(response => {
       if (response.success) {
         alert('Centro modificado con éxito');
         // Actualizar el registro en la tabla
-        const index = this.dataSource.findIndex(c => c.id === this.centroSeleccionado.id);
+        const index = this.dataSource.findIndex(c => c.correo_centro === emailReferencia);
         if (index !== -1) {
-          this.dataSource[index] = { ...this.centroSeleccionado };
+          this.dataSource[index] = { ...datosModificados };
         }
       } else {
         alert('Error al modificar el centro');
