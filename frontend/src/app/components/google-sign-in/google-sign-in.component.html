@@ -1,17 +1,48 @@
 <div class="login-wrapper">
     <div class="login-card">
-        <h2>Inicia sesión</h2>
-        <p>Accede con tu cuenta de Google o mediante correo y contraseña</p>
+        <!-- Encabezado con logo y título -->
+        <div class="login-header">
+            <h2>Gestión de Formaciones de la Fundación Loyola</h2>
+            <div class="separator"></div>
+            <img
+                    src="assets/carrouselLogin/logotipo-fundacion-loyola.jpg"
+                    alt="Logo Fundación Loyola"
+                    class="login-logo"
+            />
+        </div>
+
+        <p>
+            Acceso a la intranet de la Fundación Loyola, para la gestión de formaciones.<br />
+            Si buscas información sobre la Fundación Loyola, accede a la
+            <a href="https://www.fundacionloyola.es/institucional" target="_blank">Web Institucional</a>
+        </p>
+
+        <!-- Botón de Google -->
         <div id="google-signin-button"></div>
-<!--        <hr>-->
-<!--        <form>-->
-<!--            <div class="form-group">-->
-<!--                <input type="email" class="form-control" placeholder="Correo" [(ngModel)]="email" name="email">-->
+        <hr class="login-separator" />
+        <div class="login-footer">
+<!--            <div class="social-networks">-->
+<!--                <a href="https://www.facebook.com/fundacion.loyola" target="_blank">-->
+<!--                    <i class="flaticon-facebook"></i>-->
+<!--                </a>-->
+<!--                <a href="https://twitter.com/fundacionloyola" target="_blank">-->
+<!--                    <i class="flaticon-twitter"></i>-->
+<!--                </a>-->
+<!--                <a href="https://www.instagram.com/fundacionloyola/" target="_blank">-->
+<!--                    <i class="flaticon-instagram"></i>-->
+<!--                </a>-->
+<!--                <a href="https://www.youtube.com/c/Fundaci nLoyola" target="_blank">-->
+<!--                    <i class="flaticon-youtube"></i>-->
+<!--                </a>-->
 <!--            </div>-->
-<!--            <div class="form-group">-->
-<!--                <input type="password" class="form-control" placeholder="Contraseña" [(ngModel)]="password" name="password">-->
-<!--            </div>-->
-<!--            <button type="submit" class="btn btn-primary" (click)="login()">Iniciar sesión</button>-->
-<!--        </form>-->
+            <p class="text-center mt-4">
+                &copy; 2025 Fundación Loyola. Todos los derechos reservados.
+            </p>
+        </div>
     </div>
+</div>
+
+<!-- Carrusel de fondo -->
+<div class="carousel-background">
+    <img *ngFor="let image of images; let i = index" [src]="image" [class.active]="i === currentImageIndex" />
 </div>

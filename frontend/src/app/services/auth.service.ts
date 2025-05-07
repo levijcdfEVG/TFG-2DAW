@@ -31,10 +31,16 @@ export class AuthService {
   }
 
   isTokenExpired(token: string): boolean {
-    const decodedToken: any = jwtDecode(token);
-    const currentTime = Date.now() / 1000;
-    return decodedToken.exp < currentTime;
+    try {
+      const decodedToken: any = jwtDecode(token);
+      const currentTime = Date.now() / 1000;
+      return decodedToken.exp < currentTime;
+    } catch (e) {
+      console.warn("Token inválido o corrupto:", e);
+      return true;
+    }
   }
+
 
   isLoggedIn(): boolean {
     const token = this.getToken();

@@ -40,7 +40,7 @@ class cUsuario {
                 return $this->sendResponse(["success" => false, "error" => "Correo no autorizado"]);
             }
 
-            return $this->sendResponse(["success" => true, "usuario" => $usuario]);
+            return $this->sendResponse(["success" => true, "token" => $token]);
 
         } catch (Exception $e) {
             return $this->sendResponse(["success" => false, "error" => "Error en el servidor: " . $e->getMessage()]);
@@ -91,12 +91,6 @@ class cUsuario {
         $certs = file_get_contents($this->googleCertsUrl);
         return json_decode($certs, true);
     }
-
-
-
-
-
-
 
     
     public function getUserByid($param): array {

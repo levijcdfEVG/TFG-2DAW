@@ -15,7 +15,12 @@ declare const google: any;
   styleUrls: ['./google-sign-in.component.css']
 })
 export class GoogleSignInComponent implements OnInit {
-  // private form: FormGroup;
+  images: string[] = [
+   'assets/carrouselLogin/1.jpg',
+    'assets/carrouselLogin/2.jpg',
+    'assets/carrouselLogin/3.jpg'
+  ];
+  currentImageIndex = 0;
   constructor(private ngZone: NgZone,
               private authService: AuthService,
               private router: Router,
@@ -23,29 +28,21 @@ export class GoogleSignInComponent implements OnInit {
 
 
   ngOnInit(): void {
-    // Comprobar si el usuario ya está autenticado
-    if (this.authService.isLoggedIn()) {
-      // Si ya está logueado, redirige a la página protegida
+    this.loadCarousel();
+    const token = this.authService.getToken();
+    if (token && !this.authService.isTokenExpired(token)) {
+      this.authService.setAuthState(true);
       this.router.navigate(['/info-centros']);
-    } else {
-      // Si no está logueado, carga el script de Google y muestra el botón de inicio de sesión
-      this.loadGoogleScript().then(() => {
-        this.initializeGoogleSignIn();
-      });
+      return;
     }
+    // Mostrar botón de login si no hay token válido
+    this.loadGoogleScript().then(() => {
+      this.initializeGoogleSignIn();
+    });
   }
 
 
-  // private loadFormCamps() {
-  //   this.form = this.formBuilder.group({
-  //     email: [''],
-  //     password: ['']
-  //   })
-  // }
-
-
   initializeGoogleSignIn() {
-    console.log('google.accounts:', google?.accounts);
     google.accounts.id.initialize({
       client_id: googleID,
       callback: (response: any) => this.handleCredentialResponse(response)
@@ -73,6 +70,14 @@ export class GoogleSignInComponent implements OnInit {
           this.authService.setAuthState(true);
           this.router.navigate(['/info-centros']);
         });
+      }else{
+        Swal2.fire({
+          icon: 'error',
+          title: 'Inicio de sesión fallido',
+          html: res.error + '<br>Entre en contacto con el administrador',
+          showConfirmButton: false,
+          timer: 1500
+        })
       }
     });
   }
@@ -94,4 +99,9 @@ export class GoogleSignInComponent implements OnInit {
     });
   }
 
+  private loadCarousel() {
+    setInterval(() => {
+      this.currentImageIndex = (this.currentImageIndex + 1) % this.images.length;
+    }, 5000);
+  }
 }
