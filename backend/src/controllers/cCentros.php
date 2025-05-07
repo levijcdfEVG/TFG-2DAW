@@ -91,6 +91,29 @@
                 exit;
             }
         }
+
+        public function eliminarCentro() {
+            // Leer los datos enviados desde el frontend
+            $inputData = json_decode(file_get_contents('php://input'), true);
+        
+            // Validar que las claves necesarias existen
+            if (isset($inputData['emailReferencia'])) {
+                $emailReferencia = $inputData['emailReferencia'];
+        
+                // Llamar al modelo para realizar la eliminación
+                $resultado = $this->objCentro->eliminarCentro($emailReferencia);
+        
+                // Responder con el resultado
+                header('Content-Type: application/json');
+                echo json_encode($resultado);
+                exit;
+            } else {
+                // Respuesta de error si faltan datos
+                header('Content-Type: application/json');
+                echo json_encode(['success' => false, 'message' => 'Faltan datos en la solicitud']);
+                exit;
+            }
+        }
     }
 
 ?>

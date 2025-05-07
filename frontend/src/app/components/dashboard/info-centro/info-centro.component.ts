@@ -55,8 +55,14 @@ export class InfoCentroComponent implements OnInit {
   borrarRegistro(element: any): void {
     const confirmacion = confirm(`¿Estás seguro de que deseas borrar el registro de ${element.nombre_centro}?`);
     if (confirmacion) {
-      console.log('Borrar registro:', element);
-      // Aquí puedes llamar a un servicio para eliminar el registro del backend
+      this.centrosService.eliminarCentro(element.correo_centro).subscribe(response => {
+        if (response.success) {
+          this.dataSource = this.dataSource.filter(item => item.correo_centro !== element.correo_centro);
+          alert('Centro eliminado correctamente.');
+        } else {
+          alert('Error al eliminar el centro: ' + response.message);
+        }
+      });
     }
   }
 

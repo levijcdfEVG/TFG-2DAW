@@ -10,9 +10,11 @@ export class CentrosService {
 
   constructor(private http: HttpClient) {}
 
+  urlBase = 'http://localhost:8000/backend/src/index.php?controlador=cCentros&accion=';
+
   // Método para obtener la lista de centros
   getCentros(): Observable<any> {
-    return this.http.get<any>('http://localhost:8000/backend/src/index.php?controlador=cCentros&accion=listaCentros');
+    return this.http.get<any>(this.urlBase+'listaCentros');
   }
 
   crearCentro(centro: any): Observable<any> {
@@ -27,14 +29,17 @@ export class CentrosService {
     body.set('telefono_centro', centro.telefono_centro);
     body.set('correo_centro', centro.correo_centro);
   
-    return this.http.post<any>(
-      'http://localhost:8000/backend/src/index.php?controlador=cCentros&accion=insertIntoCentros',
+    return this.http.post<any>(this.urlBase+'insertIntoCentros',
       body.toString(), // Convertir a string
       { headers }
     );
   }
 
   modificarCentro(emailReferencia: string, datosModificados: CentroModificado): Observable<any> {
-    return this.http.put<any>('http://localhost:8000/backend/src/index.php?controlador=cCentros&accion=modificarCentro', { emailReferencia, datosModificados });
+    return this.http.put<any>(this.urlBase+'modificarCentro', { emailReferencia, datosModificados });
+  }
+
+  eliminarCentro(emailReferencia: string): Observable<any> {
+    return this.http.delete<any>(this.urlBase+'eliminarCentro', { body: { emailReferencia } });
   }
 }

@@ -124,6 +124,22 @@ class mCentros {
             return ['success' => false, 'message' => 'Error al modificar el centro: ' . $e->getMessage()];
         }
     }
+
+    public function eliminarCentro($emailReferencia) {
+        $this->conectar(); // Conectar a la base de datos
+        try {
+            // Paso 1: borrar el centro con el email de referencia
+            $sql = "DELETE FROM centro_fundacion WHERE correo_centro = :emailReferencia";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute([':emailReferencia' => $emailReferencia]);
+    
+            // Si todo fue exitoso, devolver un mensaje de éxito
+            return ['success' => true, 'message' => 'Centro eliminado correctamente'];
+        } catch (PDOException $e) {
+            // Manejar errores de la base de datos
+            return ['success' => false, 'message' => 'Error al eliminar el centro: ' . $e->getMessage()];
+        }
+    }
 }
 
 ?>
