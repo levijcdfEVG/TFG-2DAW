@@ -52,12 +52,10 @@ export class AuthService {
     google.accounts.id.disableAutoSelect();
   }
 
-  checkBackend(googleToken: string) {
+  checkExistingAccounts(googleToken: string) {
     const payload = { token: googleToken };
     const urlParams = '?controlador=cUsuario&accion=loginGoogle';
-    const decodedToken: any = jwtDecode(googleToken);
 
-    console.log('Token desencodificado:', decodedToken);
     return this.http.post<any>(this.backendUrl + urlParams, payload).pipe(
         catchError(error => {
           this.logout();

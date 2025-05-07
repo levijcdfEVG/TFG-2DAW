@@ -60,7 +60,7 @@ export class GoogleSignInComponent implements OnInit {
   }
 
   handleCredentialResponse(response: any) {
-    this.authService.checkBackend(response.credential).subscribe(res => {
+    this.authService.checkExistingAccounts(response.credential).subscribe(res => {
       if (res.success) {
         Swal2.fire({
           icon: 'success',

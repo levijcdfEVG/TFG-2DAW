@@ -11,7 +11,7 @@ class mUsuario {
     public function getUsuarioPorId($id) {
         $this->conectar(); //Llamo al metodo conectar de arriba
         
-        $sql = "SELECT * FROM usuario WHERE id_user = ?";
+        $sql = "SELECT * FROM usuario WHERE id = ?";
         $stmt = $this->conexion->prepare($sql);
         $stmt->bindValue(1, $id, PDO::PARAM_INT);
         $stmt->execute();
