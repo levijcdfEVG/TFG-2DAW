@@ -10,6 +10,11 @@ import { InfoFormacionComponent } from './components/dashboard/info-formacion/in
 import { InfoCursoComponent } from './components/dashboard/info-curso/info-curso.component';
 import { InfoEducadorComponent } from './components/dashboard/info-educador/info-educador.component';
 import { FooterComponent } from './components/shared/footer/footer.component';
+import { HttpClientModule } from '@angular/common/http';
+import { MatTableModule } from '@angular/material/table';
+import { FormsModule } from '@angular/forms';
+import { AltaCentroComponent } from './components/shared/modal/alta-centro/alta-centro.component';
+import { ModificarCentroComponent } from './components/shared/modal/modificar-centro/modificar-centro.component';
 
 @NgModule({
   declarations: [
@@ -20,11 +25,16 @@ import { FooterComponent } from './components/shared/footer/footer.component';
     InfoFormacionComponent,
     InfoCursoComponent,
     InfoEducadorComponent,
-    FooterComponent
+    FooterComponent,
+    AltaCentroComponent,
+    ModificarCentroComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule,
+    MatTableModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

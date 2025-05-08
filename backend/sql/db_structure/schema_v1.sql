@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS centro_fundacion (
   id_local TINYINT NOT NULL,
   CONSTRAINT pk_centro PRIMARY KEY (id),
   CONSTRAINT cck_cp CHECK (cp REGEXP '^[0-9]{5}$'),
-  CONSTRAINT cck_correo_centro CHECK (correo_centro LIKE '%@fundacionloyola.net'),
+  CONSTRAINT cck_correo_centro CHECK (correo_centro LIKE '%@fundacionloyola.es'),
   CONSTRAINT cck_telefono_centro CHECK (telefono_centro REGEXP '^[0-9]{9}$'),
   CONSTRAINT fk_centro_local FOREIGN KEY (id_local) REFERENCES localidad(id)
 );
