@@ -15,6 +15,9 @@ import { MatTableModule } from '@angular/material/table';
 import { FormsModule } from '@angular/forms';
 import { AltaCentroComponent } from './components/shared/modal/alta-centro/alta-centro.component';
 import { ModificarCentroComponent } from './components/shared/modal/modificar-centro/modificar-centro.component';
+import { GoogleSignInComponent } from './components/google-sign-in/google-sign-in.component';
+import {ReactiveFormsModule} from "@angular/forms";
+import {CookieService} from "ngx-cookie-service";
 
 @NgModule({
   declarations: [
@@ -27,16 +30,23 @@ import { ModificarCentroComponent } from './components/shared/modal/modificar-ce
     InfoEducadorComponent,
     FooterComponent,
     AltaCentroComponent,
-    ModificarCentroComponent
+    ModificarCentroComponent,
+    FooterComponent,
+    GoogleSignInComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     MatTableModule,
-    FormsModule
+    FormsModule,
+    AppRoutingModule,
+    ReactiveFormsModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [
+    CookieService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

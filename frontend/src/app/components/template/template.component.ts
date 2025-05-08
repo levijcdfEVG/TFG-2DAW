@@ -34,18 +34,18 @@ export class TemplateComponent implements OnInit, AfterViewInit, OnDestroy {
   ];
 
   ngOnInit(): void {
-   /* this.dtOptions = {
-      pagingType: 'full_numbers',
-      pageLength: 5,
-      processing: true,
-      responsive: true
-    };*/
+    // this.dtOptions = {
+    //   pagingType: 'full_numbers',
+    //   pageLength: 5,
+    //   processing: true,
+    //   responsive: true
+    // };
   }
 
   ngAfterViewInit(): void {
-    /*setTimeout(() => {
-      this.dataTable = $('#example').DataTable(this.dtOptions);
-    }, 0);*/
+    // setTimeout(() => {
+    //   this.dataTable = $('#example').DataTable(this.dtOptions);
+    // }, 0);
   }
 
   ngOnDestroy(): void {
