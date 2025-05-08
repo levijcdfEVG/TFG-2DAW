@@ -10,7 +10,7 @@ export class CentrosService {
 
   constructor(private http: HttpClient) {}
 
-  urlBase = 'http://localhost:8000/backend/src/index.php?controlador=cCentros&accion=';
+  urlBase = 'http://localhost:8000/index.php?controlador=cCentros&accion=';
 
   // Método para obtener la lista de centros
   getCentros(): Observable<any> {

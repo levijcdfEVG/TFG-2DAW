@@ -77,8 +77,8 @@ CREATE TABLE IF NOT EXISTS centro_fundacion (
   id_local TINYINT NOT NULL,
   CONSTRAINT pk_centro PRIMARY KEY (id),
   CONSTRAINT cck_cp CHECK (cp REGEXP '^[0-9]{5}$'),
-  CONSTRAINT cck_correo_user CHECK (
-    correo_user REGEXP '^[A-Za-z0-9._%+-]+@([A-Za-z0-9.-]+\\.)?fundacionloyola\\.(net|es)$'
+  CONSTRAINT cck_correo_centro CHECK (
+    correo_centro REGEXP '^[A-Za-z0-9._%+-]+@([A-Za-z0-9.-]+\\.)?fundacionloyola\\.(net|es)$'
   ),
   CONSTRAINT cck_telefono_centro CHECK (telefono_centro REGEXP '^[0-9]{9}$'),
   CONSTRAINT fk_centro_local FOREIGN KEY (id_local) REFERENCES localidad(id)
