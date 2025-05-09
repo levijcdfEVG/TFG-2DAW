@@ -1,40 +1,101 @@
 <!-- Modal de Bootstrap -->
 <div class="modal fade" id="altaCentroModal" tabindex="-1" aria-labelledby="altaCentroModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="altaCentroModalLabel">Alta de Centro</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form (ngSubmit)="crearCentro()">
-            <div class="mb-3">
-              <label for="nombreCentro" class="form-label">Nombre Centro</label>
-              <input type="text" class="form-control" id="nombreCentro" [(ngModel)]="nuevoCentro.nombre_centro" name="nombre_centro" required>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="altaCentroModalLabel">Alta de Centro</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="formCentro" (ngSubmit)="crearCentro()">
+          <!-- Nombre del Centro -->
+          <div class="mb-3">
+            <label for="nombreCentro" class="form-label">Nombre Centro</label>
+            <input
+              type="text"
+              class="form-control"
+              id="nombreCentro"
+              formControlName="nombre_centro"
+            />
+            <div *ngIf="formCentro.get('nombre_centro')?.invalid && formCentro.get('nombre_centro')?.touched">
+              <small class="text-danger">{{ getErrorMessage('nombre_centro') }}</small>
             </div>
-            <div class="mb-3">
-              <label for="direccionCentro" class="form-label">Dirección</label>
-              <input type="text" class="form-control" id="direccionCentro" [(ngModel)]="nuevoCentro.direccion_centro" name="direccion_centro" required>
+          </div>
+
+          <!-- Dirección del Centro -->
+          <div class="mb-3">
+            <label for="direccionCentro" class="form-label">Dirección</label>
+            <input
+              type="text"
+              class="form-control"
+              id="direccionCentro"
+              formControlName="direccion_centro"
+            />
+            <div *ngIf="formCentro.get('direccion_centro')?.invalid && formCentro.get('direccion_centro')?.touched">
+              <small class="text-danger">{{ getErrorMessage('direccion_centro') }}</small>
             </div>
-            <div class="mb-3">
-              <label for="cp" class="form-label">Código Postal</label>
-              <input type="text" class="form-control" id="cp" [(ngModel)]="nuevoCentro.cp" name="cp" required>
+          </div>
+
+          <!-- Código Postal -->
+          <div class="mb-3">
+            <label for="cp" class="form-label">Código Postal</label>
+            <input
+              type="text"
+              class="form-control"
+              id="cp"
+              formControlName="cp"
+            />
+            <div *ngIf="formCentro.get('cp')?.invalid && formCentro.get('cp')?.touched">
+              <small class="text-danger">{{ getErrorMessage('cp') }}</small>
             </div>
-            <div class="mb-3">
-              <label for="localidad" class="form-label">Localidad</label>
-              <input type="text" class="form-control" id="localidad" [(ngModel)]="nuevoCentro.nombre_localidad" name="nombre_localidad" required>
+          </div>
+
+          <!-- Localidad -->
+          <div class="mb-3">
+            <label for="localidad" class="form-label">Localidad</label>
+            <input
+              type="text"
+              class="form-control"
+              id="localidad"
+              formControlName="nombre_localidad"
+            />
+            <div *ngIf="formCentro.get('nombre_localidad')?.invalid && formCentro.get('nombre_localidad')?.touched">
+              <small class="text-danger">{{ getErrorMessage('nombre_localidad') }}</small>
             </div>
-            <div class="mb-3">
-              <label for="telefono" class="form-label">Teléfono</label>
-              <input type="text" class="form-control" id="telefono" [(ngModel)]="nuevoCentro.telefono_centro" name="telefono_centro" required>
+          </div>
+
+          <!-- Teléfono -->
+          <div class="mb-3">
+            <label for="telefono" class="form-label">Teléfono</label>
+            <input
+              type="text"
+              class="form-control"
+              id="telefono"
+              formControlName="telefono_centro"
+            />
+            <div *ngIf="formCentro.get('telefono_centro')?.invalid && formCentro.get('telefono_centro')?.touched">
+              <small class="text-danger">{{ getErrorMessage('telefono_centro') }}</small>
             </div>
-            <div class="mb-3">
-              <label for="correo" class="form-label">Correo</label>
-              <input type="email" class="form-control" id="correo" [(ngModel)]="nuevoCentro.correo_centro" name="correo_centro" required>
+          </div>
+
+          <!-- Correo -->
+          <div class="mb-3">
+            <label for="correo" class="form-label">Correo</label>
+            <input
+              type="email"
+              class="form-control"
+              id="correo"
+              formControlName="correo_centro"
+            />
+            <div *ngIf="formCentro.get('correo_centro')?.invalid && formCentro.get('correo_centro')?.touched">
+              <small class="text-danger">{{ getErrorMessage('correo_centro') }}</small>
             </div>
-            <button type="submit" class="btn btn-primary">Guardar</button>
-          </form>
-        </div>
+          </div>
+
+          <!-- Botón de Guardar -->
+          <button type="submit" class="btn btn-primary" [disabled]="formCentro.invalid">Guardar</button>
+        </form>
       </div>
     </div>
   </div>
+</div>

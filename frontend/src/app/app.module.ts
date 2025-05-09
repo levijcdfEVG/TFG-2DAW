@@ -17,6 +17,8 @@ import { AltaCentroComponent } from './components/shared/modal/alta-centro/alta-
 import { ModificarCentroComponent } from './components/shared/modal/modificar-centro/modificar-centro.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -38,7 +40,9 @@ import { ToastrModule } from 'ngx-toastr';
     MatTableModule,
     FormsModule,
     BrowserAnimationsModule, // Requerido para ngx-toastr
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
+    CommonModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

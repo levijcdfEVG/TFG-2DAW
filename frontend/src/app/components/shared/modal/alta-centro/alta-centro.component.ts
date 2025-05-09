@@ -32,6 +32,55 @@ export class AltaCentroComponent {
 
   dataSource: any[] = [];
 
+  getErrorMessage(controlName: string): string {
+    const control = this.formCentro.get(controlName);
+  
+    if (control?.hasError('required')) {
+      return 'Este campo es obligatorio.';
+    }
+    if (control?.hasError('maxLength')) {
+      if (controlName === 'nombre_centro') {
+        return 'El nombre del centro no puede exceder los 50 caracteres.';
+      }
+      if (controlName === 'direccion_centro') {
+        return 'La dirección no puede exceder los 50 caracteres.';
+      }
+      if (controlName === 'correo_centro') {
+        return 'El correo no puede exceder los 255 caracteres.';
+      }
+    }
+    if (control?.hasError('pattern')) {
+      if (controlName === 'cp') {
+        return 'El código postal debe contener 5 dígitos.';
+      }
+      if (controlName === 'telefono_centro') {
+        return 'El teléfono debe contener 9 dígitos.';
+      }
+    }
+    if (control?.hasError('contieneNumeros')) {
+      if (controlName === 'nombre_centro') {
+        return 'El nombre del centro no puede contener números.';
+      }
+      if (controlName === 'nombre_localidad') {
+        return 'El nombre de la localidad no puede contener números.';
+      }
+     
+    }
+    if (control?.hasError('contieneLetras')) {
+      if (controlName === 'telefono_centro') {
+        return 'El teléfono solo puede contener números.';
+      }
+      if (controlName === 'cp') {
+        return 'El código postal solo puede contener números.';
+      }
+    }
+    if (control?.hasError('dominioInvalido')) {
+      return 'El correo debe pertenecer al dominio @fundacionloyola.es.';
+    }
+  
+    return '';
+  }
+
   // Validador de campos sin números
   static sinNumerosValidator(control: AbstractControl): ValidationErrors | null {
     const regex = /^[a-zA-Z\sáéíóúÁÉÍÓÚüÜñÑ.,-]+$/;
@@ -88,17 +137,19 @@ export class AltaCentroComponent {
 
     this.formCentro.patchValue(this.nuevoCentro);
 
-    if (this.formCentro.invalid) {
-      this.toastr.warning('Por favor, completa todos los campos correctamente.', 'Advertencia');
-      return;
-    }
-
     // Validar que nombre_localidad coincida con el CP
     this.centrosService.validarLocalidad(this.nuevoCentro.nombre_localidad, this.nuevoCentro.cp).subscribe(response => {
       if (!response.success) {
         this.toastr.warning('El código postal no coincide con la localidad.', 'Advertencia');
         return;
       }
+      
+    if (this.formCentro.invalid) {
+      this.toastr.warning('Por favor, completa todos los campos correctamente.', 'Advertencia');
+      return;
+    }
+
+    
   
       // Aquí puedes llamar al servicio para guardar el nuevo centro en el backend
       this.centrosService.crearCentro(this.nuevoCentro).subscribe(response => {
@@ -109,6 +160,10 @@ export class AltaCentroComponent {
     setTimeout(() => {
       this.cerrarFormulario();
     }, 1000);
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
+    
         } else {
           this.toastr.error('Error al crear el centro: ' + response.message, 'Error');
         }

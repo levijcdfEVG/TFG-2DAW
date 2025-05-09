@@ -107,21 +107,37 @@ console.log('Nombre de localidad:', this.datosModificados.nombre_localidad);
     return;
   }
   
-    console.log('Email de referencia:', emailReferencia);
-    console.log('Datos modificados:', this.datosModificados);
+  console.log('Datos enviados al backend:', {
+    emailReferencia: this.centroSeleccionado.correo_centro,
+    datosModificados: this.datosModificados
+  });
   
     // Aquí llamaremos al servicio para realizar el delete y luego el insert
     this.centrosService.modificarCentro(emailReferencia, this.datosModificados).subscribe(response => {
       if (response.success) {
-        alert('Centro modificado con éxito');
+        this.toastr.success('Centro modificado con éxito', 'Éxito');
         // Actualizar el registro en la tabla
         const index = this.dataSource.findIndex(c => c.correo_centro === emailReferencia);
         if (index !== -1) {
           this.dataSource[index] = { ...this.datosModificados };
         }
+        setTimeout(() => {
+          this.cerrarFormulario();
+        }, 1000);
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
       } else {
-        alert('Error al modificar el centro');
+        this.toastr.error(response.message, 'Error');
       }
     });
   }
+  cerrarFormulario(): void {
+    const modalElement = document.getElementById('modificarCentroModal');
+  if (modalElement) {
+    // Ensure bootstrap is globally available or import it
+    const modalInstance = (window as any).bootstrap.Modal.getInstance(modalElement) || new (window as any).bootstrap.Modal(modalElement);
+    modalInstance.hide(); // Cierra el modal
+  }
+}
 }

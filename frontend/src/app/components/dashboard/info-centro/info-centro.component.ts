@@ -30,6 +30,7 @@ export class InfoCentroComponent implements OnInit {
   };
   mensaje: string = '';
   centroSeleccionado: any = {};
+  centroAEliminar: any = null;
 
   constructor(private centrosService: CentrosService, private toastr: ToastrService) {}
 
@@ -43,26 +44,9 @@ export class InfoCentroComponent implements OnInit {
       }
     });
 
-    this.centrosService.centrosActualizados$.subscribe(() => {
-      this.actualizarTabla();
-    });
-    this.actualizarTabla();
+   
   }
 
-  actualizarTabla(): void {
-    this.centrosService.getCentros().subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.dataSource = response.data; // Actualizar los datos de la tabla
-        } else {
-          this.toastr.error('Error al recargar los centros: ' + response.message, 'Error');
-        }
-      },
-      error: () => {
-        this.toastr.error('Error en la solicitud HTTP al recargar los centros.', 'Error');
-      }
-    });
-  }
 
   modificarRegistro(element: any): void {
     this.centroSeleccionado = { ...element }; // Copiar los datos del registro seleccionado
@@ -75,20 +59,36 @@ export class InfoCentroComponent implements OnInit {
   }
   
   borrarRegistro(element: any): void {
-    const confirmacion = confirm(`¿Estás seguro de que deseas borrar el registro de ${element.nombre_centro}?`);
-    if (confirmacion) {
-      this.centrosService.eliminarCentro(element.correo_centro).subscribe(response => {
+    this.centroAEliminar = element; // Guarda el centro que se desea eliminar
+    const modal = document.getElementById('confirmarBorradoModal');
+    if (modal) {
+      const bootstrapModal = new (window as any).bootstrap.Modal(modal);
+      bootstrapModal.show(); // Muestra el modal
+    }
+  }
+
+  confirmarBorrado(): void {
+    if (this.centroAEliminar) {
+      this.centrosService.eliminarCentro(this.centroAEliminar.correo_centro).subscribe(response => {
         if (response.success) {
-          this.dataSource = this.dataSource.filter(item => item.correo_centro !== element.correo_centro);
+          this.dataSource = this.dataSource.filter(item => item.correo_centro !== this.centroAEliminar.correo_centro);
           this.toastr.success('Centro eliminado correctamente.', 'Éxito');
         } else {
           this.toastr.error('Error al eliminar el centro: ' + response.message, 'Error');
         }
+        this.centroAEliminar = null; // Limpia la variable
       }, error => {
         this.toastr.error('Error al comunicarse con el servidor.', 'Error');
+        this.centroAEliminar = null; // Limpia la variable
       });
     }
+    
+      const modalElement = document.getElementById('confirmarBorradoModal');
+    if (modalElement) {
+      // Ensure bootstrap is globally available or import it
+      const modalInstance = (window as any).bootstrap.Modal.getInstance(modalElement) || new (window as any).bootstrap.Modal(modalElement);
+      modalInstance.hide(); // Cierra el modal
+    }
   }
-
   
 }
