@@ -270,7 +270,7 @@
                 if (!$resultadoValidacion['success']) {
                     // Si la validación falla, devolvemos un mensaje de error
                     header('Content-Type: application/json');
-                    echo json_encode(['success' => false, 'message' => 'La localidad no se enccuentra en la provincia correspondiente al código postal']);
+                    echo json_encode(['success' => false, 'message' => 'La localidad no se encuentra en la provincia correspondiente al código postal']);
                     exit;
                 }
             }

@@ -11,11 +11,13 @@ export class ModificarCentroComponent {
 
   @Input() centroSeleccionado: any = {}; // Recibir el registro seleccionado como input
   dataSource: any[] = [];
-  datosModificados: any;
+  datosModificados: any = {};
+
   constructor(private centrosService: CentrosService, private toastr: ToastrService) {}
 
   modificarRegistro(element: any): void {
     this.centroSeleccionado = { ...element }; // Copiar los datos del registro seleccionado
+    this.datosModificados = { ...element };
     const modal = document.getElementById('modificarCentroModal');
     if (modal) {
       // Ensure Bootstrap is imported and available
@@ -25,9 +27,9 @@ export class ModificarCentroComponent {
   }
 
   guardarCambiosCentro(): void {
-   
+    this.datosModificados = { ...this.centroSeleccionado };
+    console.log('Datos modificados antes de validar:', this.datosModificados);
     const emailReferencia = this.centroSeleccionado.correo_centro; // Guardar el email como referencia
-    const datosModificados = { ...this.centroSeleccionado }; // Crear un objeto con los datos modificados
 
    //Validar que todos los campos estén completos  
    if (!this.datosModificados.nombre_centro || 
@@ -40,6 +42,8 @@ export class ModificarCentroComponent {
       return;
 }
 
+console.log('Código postal:', this.datosModificados.cp);
+console.log('Nombre de localidad:', this.datosModificados.nombre_localidad);
   // Validar que nombre_localidad coincida con el CP
   this.centrosService.validarLocalidad(this.datosModificados.nombre_localidad, this.datosModificados.cp).subscribe(response => {
     if (!response.success) {
@@ -104,16 +108,16 @@ export class ModificarCentroComponent {
   }
   
     console.log('Email de referencia:', emailReferencia);
-    console.log('Datos modificados:', datosModificados);
+    console.log('Datos modificados:', this.datosModificados);
   
     // Aquí llamaremos al servicio para realizar el delete y luego el insert
-    this.centrosService.modificarCentro(emailReferencia, datosModificados).subscribe(response => {
+    this.centrosService.modificarCentro(emailReferencia, this.datosModificados).subscribe(response => {
       if (response.success) {
         alert('Centro modificado con éxito');
         // Actualizar el registro en la tabla
         const index = this.dataSource.findIndex(c => c.correo_centro === emailReferencia);
         if (index !== -1) {
-          this.dataSource[index] = { ...datosModificados };
+          this.dataSource[index] = { ...this.datosModificados };
         }
       } else {
         alert('Error al modificar el centro');

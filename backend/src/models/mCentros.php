@@ -142,7 +142,8 @@ class mCentros {
     }
 
     public function validarLocalidad($nombreLocalidad, $idProvincia) {
-        $sql = "SELECT * FROM localidad WHERE nombre_localidad = :nombre_localidad AND id_provincia = :id_provincia";
+        $this->conectar();
+        $sql = "SELECT * FROM localidad WHERE nombre_localidad = :nombre_localidad AND provincia_id = :id_provincia";
         $stmt = $this->conexion->prepare($sql);
         $stmt->execute([':nombre_localidad' => $nombreLocalidad, ':id_provincia' => $idProvincia]);
     
