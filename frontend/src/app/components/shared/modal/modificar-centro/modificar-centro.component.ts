@@ -152,7 +152,7 @@ export class ModificarCentroComponent implements OnInit, OnChanges {
             window.location.reload();
           }, 1000);
         } else {
-          this.toastr.error(response.message, 'Error');
+          this.toastr.warning(response.message, 'Advertencia');
         }
       }, error => {
         this.toastr.error('Error al comunicarse con el servidor.', 'Error');

@@ -130,12 +130,25 @@ export class AltaCentroComponent {
         AltaCentroComponent.emailFundacionLoyolaValidator
       ]]
   });
+
+  this.formCentro.valueChanges.subscribe(values => {
+    this.nuevoCentro = values;
+  });
 }
 
 
   crearCentro(): void {
 
     this.formCentro.patchValue(this.nuevoCentro);
+    console.log(this.formCentro.value);
+    console.log(this.nuevoCentro);
+
+    
+
+    if (this.formCentro.invalid) {
+      this.toastr.warning('Por favor, completa todos los campos correctamente.', 'Advertencia');
+      return;
+    }
 
     // Validar que nombre_localidad coincida con el CP
     this.centrosService.validarLocalidad(this.nuevoCentro.nombre_localidad, this.nuevoCentro.cp).subscribe(response => {
@@ -143,11 +156,6 @@ export class AltaCentroComponent {
         this.toastr.warning('El código postal no coincide con la localidad.', 'Advertencia');
         return;
       }
-      
-    if (this.formCentro.invalid) {
-      this.toastr.warning('Por favor, completa todos los campos correctamente.', 'Advertencia');
-      return;
-    }
 
     
   
