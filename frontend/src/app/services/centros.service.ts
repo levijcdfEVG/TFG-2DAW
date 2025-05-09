@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { CentroModificado } from '../interfaces/centroModificado.model';
 
 @Injectable({
@@ -15,6 +15,16 @@ export class CentrosService {
   // Método para obtener la lista de centros
   getCentros(): Observable<any> {
     return this.http.get<any>(this.urlBase+'listaCentros');
+  }
+
+  private centrosActualizados = new Subject<void>();
+
+  get centrosActualizados$() {
+    return this.centrosActualizados.asObservable();
+  }
+
+  notificarCambio(): void {
+    this.centrosActualizados.next();
   }
 
   crearCentro(centro: any): Observable<any> {

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CentrosService } from 'src/app/services/centros.service';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -27,17 +28,38 @@ export class InfoCentroComponent implements OnInit {
     telefono_centro: '',
     correo_centro: ''
   };
-
+  mensaje: string = '';
   centroSeleccionado: any = {};
 
-  constructor(private centrosService: CentrosService) {}
+  constructor(private centrosService: CentrosService, private toastr: ToastrService) {}
 
   ngOnInit(): void {
     this.centrosService.getCentros().subscribe(response => {
       if (response.success) {
         this.dataSource = response.data;
       } else {
-        console.error(response.message);
+        //console.error(response.message);
+        this.mensaje = 'No existen centros registrados. Dar de alta uno nuevo.';
+      }
+    });
+
+    this.centrosService.centrosActualizados$.subscribe(() => {
+      this.actualizarTabla();
+    });
+    this.actualizarTabla();
+  }
+
+  actualizarTabla(): void {
+    this.centrosService.getCentros().subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.dataSource = response.data; // Actualizar los datos de la tabla
+        } else {
+          this.toastr.error('Error al recargar los centros: ' + response.message, 'Error');
+        }
+      },
+      error: () => {
+        this.toastr.error('Error en la solicitud HTTP al recargar los centros.', 'Error');
       }
     });
   }
@@ -58,10 +80,12 @@ export class InfoCentroComponent implements OnInit {
       this.centrosService.eliminarCentro(element.correo_centro).subscribe(response => {
         if (response.success) {
           this.dataSource = this.dataSource.filter(item => item.correo_centro !== element.correo_centro);
-          alert('Centro eliminado correctamente.');
+          this.toastr.success('Centro eliminado correctamente.', 'Éxito');
         } else {
-          alert('Error al eliminar el centro: ' + response.message);
+          this.toastr.error('Error al eliminar el centro: ' + response.message, 'Error');
         }
+      }, error => {
+        this.toastr.error('Error al comunicarse con el servidor.', 'Error');
       });
     }
   }

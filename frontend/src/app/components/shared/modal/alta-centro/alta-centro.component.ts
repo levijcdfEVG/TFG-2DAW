@@ -83,26 +83,16 @@ export class AltaCentroComponent {
   });
 }
 
-  recargarCentros(): void {
-    this.centrosService.getCentros().subscribe(response => {
-      if (response.success) {
-        this.dataSource = response.data; // Actualizar la tabla con los nuevos datos
-      } else {
-        this.toastr.error('Error al recargar los centros: ' + response.message, 'Error');
-      }
-    }, error => {
-      this.toastr.error('Error en la solicitud HTTP al recargar los centros.', 'Error');
-    });
-  }
-
-  
 
   crearCentro(): void {
+
+    this.formCentro.patchValue(this.nuevoCentro);
+
     if (this.formCentro.invalid) {
       this.toastr.warning('Por favor, completa todos los campos correctamente.', 'Advertencia');
       return;
     }
-  
+
     // Validar que nombre_localidad coincida con el CP
     this.centrosService.validarLocalidad(this.nuevoCentro.nombre_localidad, this.nuevoCentro.cp).subscribe(response => {
       if (!response.success) {
@@ -110,24 +100,35 @@ export class AltaCentroComponent {
         return;
       }
   
-      console.log('Nuevo centro:', this.nuevoCentro);
-  
       // Aquí puedes llamar al servicio para guardar el nuevo centro en el backend
       this.centrosService.crearCentro(this.nuevoCentro).subscribe(response => {
         if (response.success) {
           this.toastr.success('Centro creado con éxito', 'Éxito');
-          this.dataSource.push(response.data); // Agregar el nuevo centro a la tabla
-          this.formCentro.reset(); // Limpiar el formulario
-          this.recargarCentros();
+          this.centrosService.notificarCambio(); // Notificar cambio
+    this.formCentro.reset();
+    setTimeout(() => {
+      this.cerrarFormulario();
+    }, 1000);
         } else {
           this.toastr.error('Error al crear el centro: ' + response.message, 'Error');
         }
       }, error => {
-        this.toastr.error('Error al comunicarse con el servidor.', 'Error');
+        this.toastr.error('Error al comunicarse con el servidor.', error);
       });
     }, error => {
       this.toastr.error('Error al validar la localidad.', 'Error');
     });
   }
+
+  cerrarFormulario(): void {
+    const modalElement = document.getElementById('altaCentroModal');
+  if (modalElement) {
+    // Ensure bootstrap is globally available or import it
+    const modalInstance = (window as any).bootstrap.Modal.getInstance(modalElement) || new (window as any).bootstrap.Modal(modalElement);
+    modalInstance.hide(); // Cierra el modal
+  }
+
+
+}
 }
 

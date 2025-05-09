@@ -155,13 +155,24 @@ class mCentros {
     }
 
     public function validarDatosCentro($nombreCentro, $direccionCentro, $cpCentro, $localidadCentro, $telefonoCentro, $emailCentro){
-        $sql = "SELECT * FROM centro_fundacion WHERE nombre_centro = :nombreCentro OR direccion_centro = :direccionCentro OR cp = :cpCentro OR nombre_localidad = :localidadCentro OR telefono_centro = :telefonoCentro OR correo_centro = :emailCentro";
+        $this->conectar(); // Conectar a la base de datos
+        $sql = "SELECT id FROM localidad WHERE nombre_localidad = :nombre_localidad";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->execute([':nombre_localidad' => $localidadCentro]);
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC); // Obtenemos el resultado como un array asociativo
+        if ($resultado) {
+            // Si existe la localidad, obtenemos su ID
+            $localidadId = $resultado['id'];    
+        } else {
+            return ['success' => false, 'message' => 'La localidad no existe'];
+        }
+        $sql = "SELECT * FROM centro_fundacion WHERE nombre_centro = :nombreCentro AND direccion_centro = :direccionCentro AND cp = :cpCentro AND id_local = :localidadId AND telefono_centro = :telefonoCentro AND correo_centro = :emailCentro";
         $stmt = $this->conexion->prepare($sql);
         $stmt->execute([
             ':nombreCentro' => $nombreCentro,
             ':direccionCentro' => $direccionCentro,
             ':cpCentro' => $cpCentro,
-            ':localidadCentro' => $localidadCentro,
+            ':localidadId' => $localidadId,
             ':telefonoCentro' => $telefonoCentro,
             ':emailCentro' => $emailCentro
         ]);
@@ -174,6 +185,7 @@ class mCentros {
     }
 
     public function localidadExiste($nombreLocalidad) {
+        $this->conectar(); // Conectar a la base de datos
         $sql = 'SELECT id FROM localidad WHERE nombre_localidad = :nombreLocalidad';
         $stmt = $this->conexion->prepare($sql); // Preparamos la consulta
         $stmt->execute([':nombreLocalidad' => $nombreLocalidad]); // Ejecutamos la consulta con el parámetro
