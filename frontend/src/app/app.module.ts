@@ -15,6 +15,8 @@ import { MatTableModule } from '@angular/material/table';
 import { FormsModule } from '@angular/forms';
 import { AltaCentroComponent } from './components/shared/modal/alta-centro/alta-centro.component';
 import { ModificarCentroComponent } from './components/shared/modal/modificar-centro/modificar-centro.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -34,7 +36,9 @@ import { ModificarCentroComponent } from './components/shared/modal/modificar-ce
     AppRoutingModule,
     HttpClientModule,
     MatTableModule,
-    FormsModule
+    FormsModule,
+    BrowserAnimationsModule, // Requerido para ngx-toastr
+    ToastrModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]

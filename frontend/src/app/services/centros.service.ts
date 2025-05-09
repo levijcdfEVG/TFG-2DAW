@@ -21,6 +21,15 @@ export class CentrosService {
     const headers = { 'Content-Type': 'application/x-www-form-urlencoded' }; // Asegúrate de usar el encabezado correcto
     const body = new URLSearchParams(); // Formatear los datos como x-www-form-urlencoded
   
+    // Validar que todos los campos estén llenos
+  if (!centro.nombre_centro || 
+    !centro.direccion_centro || 
+    !centro.cp || 
+    !centro.nombre_localidad || 
+    !centro.telefono_centro || 
+    !centro.correo_centro) {
+  return throwError(() => new Error('Todos los campos son obligatorios.'));
+}
     // Agregar los datos al cuerpo de la solicitud
     body.set('nombre_centro', centro.nombre_centro);
     body.set('direccion_centro', centro.direccion_centro);
@@ -42,4 +51,13 @@ export class CentrosService {
   eliminarCentro(emailReferencia: string): Observable<any> {
     return this.http.delete<any>(this.urlBase+'eliminarCentro', { body: { emailReferencia } });
   }
+
+  validarLocalidad(nombreLocalidad: string, cp: string): Observable<any> {
+    const body = { nombre_localidad: nombreLocalidad, cp: cp };
+    return this.http.post<any>(this.urlBase + 'validarLocalidad', body);
+  }
 }
+function throwError(arg0: () => Error): Observable<any> {
+  throw new Error('Function not implemented.');
+}
+
