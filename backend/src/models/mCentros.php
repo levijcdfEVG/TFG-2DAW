@@ -140,6 +140,64 @@ class mCentros {
             return ['success' => false, 'message' => 'Error al eliminar el centro: ' . $e->getMessage()];
         }
     }
+
+    public function validarLocalidad($nombreLocalidad, $idProvincia) {
+        $this->conectar();
+        $sql = "SELECT * FROM localidad WHERE nombre_localidad = :nombre_localidad AND provincia_id = :id_provincia";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->execute([':nombre_localidad' => $nombreLocalidad, ':id_provincia' => $idProvincia]);
+    
+        if ($stmt->rowCount() > 0) {
+            return ['success' => true, 'message' => 'Localidad válida'];
+        } else {
+            return ['success' => false, 'message' => 'La localidad no se enccuentra en la provincia correspondiente al código postal'];
+        }
+    }
+
+    public function validarDatosCentro($nombreCentro, $direccionCentro, $cpCentro, $localidadCentro, $telefonoCentro, $emailCentro){
+        $this->conectar(); // Conectar a la base de datos
+        $sql = "SELECT id FROM localidad WHERE nombre_localidad = :nombre_localidad";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->execute([':nombre_localidad' => $localidadCentro]);
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC); // Obtenemos el resultado como un array asociativo
+        if ($resultado) {
+            // Si existe la localidad, obtenemos su ID
+            $localidadId = $resultado['id'];    
+        } else {
+            return ['success' => false, 'message' => 'La localidad no existe'];
+        }
+        $sql = "SELECT * FROM centro_fundacion WHERE nombre_centro = :nombreCentro AND direccion_centro = :direccionCentro AND cp = :cpCentro AND id_local = :localidadId AND telefono_centro = :telefonoCentro AND correo_centro = :emailCentro";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->execute([
+            ':nombreCentro' => $nombreCentro,
+            ':direccionCentro' => $direccionCentro,
+            ':cpCentro' => $cpCentro,
+            ':localidadId' => $localidadId,
+            ':telefonoCentro' => $telefonoCentro,
+            ':emailCentro' => $emailCentro
+        ]);
+    
+        if ($stmt->rowCount() > 0) {
+            return ['success' => false, 'message' => 'Los datos del centro no han cambiado'];
+        } else {
+            return ['success' => true, 'message' => 'Datos válidos'];
+        }
+    }
+
+    public function localidadExiste($nombreLocalidad) {
+        $this->conectar(); // Conectar a la base de datos
+        $sql = 'SELECT id FROM localidad WHERE nombre_localidad = :nombreLocalidad';
+        $stmt = $this->conexion->prepare($sql); // Preparamos la consulta
+        $stmt->execute([':nombreLocalidad' => $nombreLocalidad]); // Ejecutamos la consulta con el parámetro
+    
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC); // Obtenemos el resultado como un array asociativo
+    
+        if ($resultado) {
+            return ['success' => true, 'id' => $resultado['id']]; // Retornamos el ID de la localidad si existe
+        } else {
+            return ['success' => false, 'message' => 'La localidad no existe'];
+        }
+}
 }
 
 ?>

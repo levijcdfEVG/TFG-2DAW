@@ -15,8 +15,11 @@ import { MatTableModule } from '@angular/material/table';
 import { FormsModule } from '@angular/forms';
 import { AltaCentroComponent } from './components/shared/modal/alta-centro/alta-centro.component';
 import { ModificarCentroComponent } from './components/shared/modal/modificar-centro/modificar-centro.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
 import { GoogleSignInComponent } from './components/google-sign-in/google-sign-in.component';
-import {ReactiveFormsModule} from "@angular/forms";
 import {CookieService} from "ngx-cookie-service";
 
 @NgModule({
@@ -39,6 +42,11 @@ import {CookieService} from "ngx-cookie-service";
     AppRoutingModule,
     HttpClientModule,
     MatTableModule,
+    FormsModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot(),
+    CommonModule,
+    ReactiveFormsModule,
     FormsModule,
     AppRoutingModule,
     ReactiveFormsModule,

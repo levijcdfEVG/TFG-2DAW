@@ -13,6 +13,9 @@
         </tr>
       </thead>
       <tbody>
+        <tr *ngIf="mensaje">
+          <td colspan="7" class="text-center">{{ mensaje }}</td>
+        </tr>
         <tr *ngFor="let element of dataSource">
           <td>{{ element.nombre_centro }}</td>
           <td>{{ element.direccion_centro }}</td>
@@ -41,7 +44,7 @@
       </button>
     </div>
   </div>
-  
+
 <app-alta-centro></app-alta-centro>
 <app-modificar-centro
   [centroSeleccionado]="centroSeleccionado">

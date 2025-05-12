@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CentrosService } from 'src/app/services/centros.service';
+import { ToastrService } from 'ngx-toastr';
+import Swal2 from 'sweetalert2';
 
 
 @Component({
@@ -27,17 +29,18 @@ export class InfoCentroComponent implements OnInit {
     telefono_centro: '',
     correo_centro: ''
   };
-
+  mensaje: string = '';
   centroSeleccionado: any = {};
+  centroAEliminar: any = null;
 
-  constructor(private centrosService: CentrosService) {}
+  constructor(private centrosService: CentrosService, private toastr: ToastrService) {}
 
   ngOnInit(): void {
     this.centrosService.getCentros().subscribe(response => {
       if (response.success) {
         this.dataSource = response.data;
       } else {
-        console.error(response.message);
+        this.mensaje = 'No existen centros registrados. Dar de alta uno nuevo.';
       }
     });
   }
@@ -46,25 +49,38 @@ export class InfoCentroComponent implements OnInit {
     this.centroSeleccionado = { ...element }; // Copiar los datos del registro seleccionado
     const modal = document.getElementById('modificarCentroModal');
     if (modal) {
-      // Ensure Bootstrap is imported and available
       const bootstrapModal = new (window as any).bootstrap.Modal(modal);
       bootstrapModal.show(); // Mostrar el modal
     }
   }
   
   borrarRegistro(element: any): void {
-    const confirmacion = confirm(`¿Estás seguro de que deseas borrar el registro de ${element.nombre_centro}?`);
-    if (confirmacion) {
-      this.centrosService.eliminarCentro(element.correo_centro).subscribe(response => {
-        if (response.success) {
-          this.dataSource = this.dataSource.filter(item => item.correo_centro !== element.correo_centro);
-          alert('Centro eliminado correctamente.');
-        } else {
-          alert('Error al eliminar el centro: ' + response.message);
-        }
-      });
-    }
+    this.centroAEliminar = element; // Guarda el centro que se desea eliminar
+    Swal2.fire({
+      title: '¿Estás seguro?',
+      text: 'No podrás revertir esta acción.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result: any) => {
+      if (result.isConfirmed) {
+        this.centrosService.eliminarCentro(this.centroAEliminar.correo_centro).subscribe(response => {
+          if (response.success) {
+            this.dataSource = this.dataSource.filter(item => item.correo_centro !== this.centroAEliminar.correo_centro);
+            this.toastr.success('Centro eliminado correctamente.', 'Éxito');
+          } else {
+            this.toastr.error('Error al eliminar el centro: ' + response.message, 'Error');
+          }
+          this.centroAEliminar = null; // Limpia la variable
+        }, error => {
+          this.toastr.error('Error al comunicarse con el servidor.', 'Error');
+          this.centroAEliminar = null; // Limpia la variable
+        });
+      }
+    });
   }
-
-  
 }
+
