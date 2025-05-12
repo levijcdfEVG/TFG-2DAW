@@ -3,3 +3,12 @@
 
 html, body { height: 100%; }
 body { margin: 0; padding: 0; font-family: 'Open Sans', sans-serif; }
+
+
+.bg-theme {
+  background-color: #005e89;
+}
+
+.text-theme {
+  color: #005e89;
+}

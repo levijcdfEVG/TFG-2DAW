@@ -1,11 +1,17 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import {InfoCentroComponent} from "./components/dashboard/info-centro/info-centro.component";
-import {InfoFormacionComponent} from "./components/dashboard/info-formacion/info-formacion.component";
-import {UsuariosComponent} from "./components/usuarios/usuarios.component";
+import { UsuariosComponent} from "./components/usuarios/usuarios.component";
+import { UserFileComponent} from "./components/usuarios/user-file/user-file.component";
+
 
 const routes: Routes = [
-  { path: '**', component: UsuariosComponent}
+  { path: '', redirectTo: 'usuarios', pathMatch: 'full'},
+  { path: 'usuarios', component: UsuariosComponent},
+  { path: 'usuarios/:id', component: UserFileComponent},
+  // { path: 'formaciones', component: InfoFormacionComponent},
+  // { path: 'curso', component: InfoCursoComponent},
+  // { path: 'centros', component: InfoCentroComponent}
+
 ];
 
 @NgModule({

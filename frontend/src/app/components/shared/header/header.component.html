@@ -1,47 +1,42 @@
-<nav class="navbar bg-body-tertiary py-1">
-    <div class="container-fluid d-flex justify-content-between align-items-center">
-      <!-- Logo o título -->
-      <a class="navbar-brand" routerLink="/">INTRANET</a>
-      <!-- Enlaces de texto e íconos -->
-      <div class="d-flex align-items-center">
-        <!-- Enlaces de texto -->
-        <a class="nav-link me-3" href="#">
-            <img src="../../../../assets/iconos/telefono.png" alt="Teléfono" >
-            +34 924 25 17 61
-        </a>
-        <a class="nav-link me-3" href="#">
-            <img src="../../../../assets/iconos/correo.png" alt="Correo" >
-            guadalupe&#64;fundacionloyola.es
-        </a>
-        <!-- Íconos -->
-        <a class="nav-link me-2" href="#">
-            <img src="../../../../assets/iconos/facebook.png" alt="Facebook" >
-          </a>
-        <a class="nav-link me-2" href="#">
-            <img src="../../../../assets/iconos/twitter.png" alt="X" >
-        </a>
-        <a class="nav-link me-2" href="#">
-            <img src="../../../../assets/iconos/youtube.png" alt="YouTube" >
-        </a>
-        <a class="nav-link me-2" href="#">
-            <img src="../../../../assets/iconos/instagram.png" alt="Instagram" >
-        </a>
-      </div>
-    </div>
-  <div class="container-fluid d-flex justify-content-between align-items-center">
-    <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-flex flex-row justify-content-between">
-      <li class="nav-item mx-2">
-        <a class="nav-link text-white fs-6" routerLink="/info-centros" routerLinkActive="fs-5 fw-bold">Centros</a>
+<!-- Primera sección: barra azul superior -->
+<div class="header-top d-flex justify-content-between align-items-center px-4 py-3 bg-theme text-white">
+  <div class="header-top-left">
+    <span class="ms-2">INTRANET</span>
+  </div>
+  <div class="header-top-right d-flex align-items-center gap-4">
+    <span class="d-flex align-items-center">
+      <i class="fas fa-phone-alt me-1"></i>+34 924 25 17 61
+    </span>
+    <a href="mailto:guadalupe@fundacionloyola.es" class="text-white d-flex align-items-center text-decoration-none">
+      <i class="fas fa-envelope me-1"></i>guadalupe@fundacionloyola.es
+    </a>
+    <a [href]="facebook" target="_blank" rel="noopener" class="text-white ms-2"><i class="fab fa-facebook-f"></i></a>
+    <a [href]="twitter_X" target="_blank" rel="noopener" class="text-white ms-2"><i class="fab fa-x-twitter"></i></a>
+    <a [href]="youtube" target="_blank" rel="noopener" class="text-white ms-2"><i class="fab fa-youtube"></i></a>
+    <a [href]="instagram" target="_blank" rel="noopener" class="text-white ms-2"><i class="fab fa-instagram"></i></a>
+  </div>
+</div>
+
+<!-- Segunda sección: barra blanca con logo y menú -->
+<div class="header-bottom d-flex justify-content-between align-items-center px-4 py-2 bg-white border-bottom">
+  <div class="logo-area d-flex align-items-center gap-2">
+    <img [src]="logoPath" alt="Logo Jesuitas" class="logo" />
+  </div>
+  <nav>
+    <ul class="d-flex gap-4 text-theme list-unstyled mb-0 me-3">
+      <li>
+        <a routerLink="/formaciones" routerLinkActive="active" class="nav-link fw-semibold me-3">Formaciones</a>
       </li>
-      <li class="nav-item mx-2">
-        <a class="nav-link text-white fs-6" routerLink="/info-formaciones" routerLinkActive="fs-5 fw-bold">Formaciones</a>
+      <li>
+        <a routerLink="/curso" routerLinkActive="active" class="nav-link fw-semibold me-3">Curso</a>
       </li>
-      <li class="nav-item mx-2">
-        <a class="nav-link text-white fs-6" routerLink="/info-cursos" routerLinkActive="fs-5 fw-bold">Cursos</a>
+      <li>
+        <a routerLink="/usuarios" routerLinkActive="active" class="nav-link fw-semibold me-3">Usuarios</a>
       </li>
-      <li class="nav-item mx-2">
-        <a class="nav-link text-white fs-6" routerLink="/info-educadores" routerLinkActive="fs-5 fw-bold">Educadores</a>
+      <li>
+        <a routerLink="/centros" routerLinkActive="active" class="nav-link fw-semibold me-3">Centros</a>
       </li>
     </ul>
-  </div>
   </nav>
+</div>
+
