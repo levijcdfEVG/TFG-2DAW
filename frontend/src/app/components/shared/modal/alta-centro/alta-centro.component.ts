@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { CentrosService } from 'src/app/services/centros.service';
 import { ToastrService } from 'ngx-toastr';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
@@ -164,13 +164,13 @@ export class AltaCentroComponent {
         if (response.success) {
           this.toastr.success('Centro creado con éxito', 'Éxito');
           this.centrosService.notificarCambio(); // Notificar cambio
-    this.formCentro.reset();
-    setTimeout(() => {
-      this.cerrarFormulario();
-    }, 1000);
-    setTimeout(() => {
-      window.location.reload();
-    }, 1000);
+          this.formCentro.reset();
+          setTimeout(() => {
+            this.cerrarFormulario();
+          }, 1000);
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
     
         } else {
           this.toastr.error('Error al crear el centro: ' + response.message, 'Error');

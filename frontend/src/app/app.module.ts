@@ -38,7 +38,6 @@ import { ReactiveFormsModule } from '@angular/forms';
     AppRoutingModule,
     HttpClientModule,
     MatTableModule,
-    FormsModule,
     BrowserAnimationsModule, // Requerido para ngx-toastr
     ToastrModule.forRoot(),
     CommonModule,

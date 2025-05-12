@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CentrosService } from 'src/app/services/centros.service';
 import { ToastrService } from 'ngx-toastr';
+import Swal2 from 'sweetalert2';
 
 
 @Component({
@@ -39,20 +40,15 @@ export class InfoCentroComponent implements OnInit {
       if (response.success) {
         this.dataSource = response.data;
       } else {
-        //console.error(response.message);
         this.mensaje = 'No existen centros registrados. Dar de alta uno nuevo.';
       }
     });
-
-   
   }
-
 
   modificarRegistro(element: any): void {
     this.centroSeleccionado = { ...element }; // Copiar los datos del registro seleccionado
     const modal = document.getElementById('modificarCentroModal');
     if (modal) {
-      // Ensure Bootstrap is imported and available
       const bootstrapModal = new (window as any).bootstrap.Modal(modal);
       bootstrapModal.show(); // Mostrar el modal
     }
@@ -60,35 +56,31 @@ export class InfoCentroComponent implements OnInit {
   
   borrarRegistro(element: any): void {
     this.centroAEliminar = element; // Guarda el centro que se desea eliminar
-    const modal = document.getElementById('confirmarBorradoModal');
-    if (modal) {
-      const bootstrapModal = new (window as any).bootstrap.Modal(modal);
-      bootstrapModal.show(); // Muestra el modal
-    }
+    Swal2.fire({
+      title: '¿Estás seguro?',
+      text: 'No podrás revertir esta acción.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result: any) => {
+      if (result.isConfirmed) {
+        this.centrosService.eliminarCentro(this.centroAEliminar.correo_centro).subscribe(response => {
+          if (response.success) {
+            this.dataSource = this.dataSource.filter(item => item.correo_centro !== this.centroAEliminar.correo_centro);
+            this.toastr.success('Centro eliminado correctamente.', 'Éxito');
+          } else {
+            this.toastr.error('Error al eliminar el centro: ' + response.message, 'Error');
+          }
+          this.centroAEliminar = null; // Limpia la variable
+        }, error => {
+          this.toastr.error('Error al comunicarse con el servidor.', 'Error');
+          this.centroAEliminar = null; // Limpia la variable
+        });
+      }
+    });
   }
-
-  confirmarBorrado(): void {
-    if (this.centroAEliminar) {
-      this.centrosService.eliminarCentro(this.centroAEliminar.correo_centro).subscribe(response => {
-        if (response.success) {
-          this.dataSource = this.dataSource.filter(item => item.correo_centro !== this.centroAEliminar.correo_centro);
-          this.toastr.success('Centro eliminado correctamente.', 'Éxito');
-        } else {
-          this.toastr.error('Error al eliminar el centro: ' + response.message, 'Error');
-        }
-        this.centroAEliminar = null; // Limpia la variable
-      }, error => {
-        this.toastr.error('Error al comunicarse con el servidor.', 'Error');
-        this.centroAEliminar = null; // Limpia la variable
-      });
-    }
-    
-      const modalElement = document.getElementById('confirmarBorradoModal');
-    if (modalElement) {
-      // Ensure bootstrap is globally available or import it
-      const modalInstance = (window as any).bootstrap.Modal.getInstance(modalElement) || new (window as any).bootstrap.Modal(modalElement);
-      modalInstance.hide(); // Cierra el modal
-    }
-  }
-  
 }
+
