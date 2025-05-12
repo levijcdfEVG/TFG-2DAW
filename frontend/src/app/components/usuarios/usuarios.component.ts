@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { User } from '../../interfaces/user.interface';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { UsuarioService } from '../../services/usuario.service';
 
 @Component({
   selector: 'app-usuarios',
@@ -19,8 +20,11 @@ export class UsuariosComponent implements OnInit {
   loading: boolean = false;
   hasSearched: boolean = false;
 
-  constructor(private fb: FormBuilder,
-              private router: Router) {
+  constructor(private fb: FormBuilder, 
+              private router: Router,
+              private usuarioService: UsuarioService
+            ) {
+    
     this.filterForm = this.fb.group({
       nombre: ['', [Validators.maxLength(40)]],
       apellidos: ['', [Validators.maxLength(50)]],
@@ -59,26 +63,29 @@ export class UsuariosComponent implements OnInit {
         delete filterParams[key];
       }
     });
+
+    // Add pagination parameters
+    filterParams['page'] = this.currentPage;
+    filterParams['limit'] = this.itemsPerPage;
     
-    // Here you would make the HTTP request to your PHP backend
-    // For now, we'll simulate the API call
-    fetch(`/api/usuarios?page=${this.currentPage}&limit=${this.itemsPerPage}&${new URLSearchParams(filterParams)}`)
-      .then(response => response.json())
-      .then(data => {
+    console.log(filterParams);
+    this.usuarioService.buscarUsuarios(filterParams).subscribe({
+      next: (data) => {
         this.users = data.users;
         this.totalUsers = data.total;
         this.totalPages = Math.ceil(this.totalUsers / this.itemsPerPage);
         this.loading = false;
         this.hasSearched = true;
-      })
-      .catch(error => {
+      },
+      error: (error) => {
         console.error('Error loading users:', error);
         this.loading = false;
         this.hasSearched = true;
         this.users = [];
         this.totalUsers = 0;
         this.totalPages = 0;
-      });
+      }
+    });
   }
 
   applyFilter(): void {

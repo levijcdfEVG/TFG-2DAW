@@ -9,6 +9,161 @@ class mUsuarios {
         $this->conexion = $objetoBD->conexion; //Llamamos al metodo que realiza la conexion a la BBDD
     }
 
+    public function listaUsuarios($page = 1, $limit = 10, $filtros = []) {
+        $this->conectar();
+        $offset = ($page - 1) * $limit;
+        $where = [];
+        $params = [];
+        // Filtros dinámicos
+        if (!empty($filtros['nombre'])) {
+            $where[] = 'nombre_user LIKE :nombre';
+            $params[':nombre'] = '%' . $filtros['nombre'] . '%';
+        }
+        if (!empty($filtros['apellidos'])) {
+            $where[] = 'apellido_user LIKE :apellidos';
+            $params[':apellidos'] = '%' . $filtros['apellidos'] . '%';
+        }
+        if (!empty($filtros['email'])) {
+            $where[] = 'correo_user LIKE :email';
+            $params[':email'] = '%' . $filtros['email'] . '%';
+        }
+        if (!empty($filtros['telefono'])) {
+            $where[] = 'telefono_user LIKE :telefono';
+            $params[':telefono'] = '%' . $filtros['telefono'] . '%';
+        }
+        if (isset($filtros['rol']) && $filtros['rol'] !== '') {
+            $where[] = 'id_rol = :rol';
+            $params[':rol'] = $filtros['rol'];
+        }
+        if (isset($filtros['estado']) && $filtros['estado'] !== '' && $filtros['estado'] !== null) {
+            $where[] = 'activo = :estado';
+            $params[':estado'] = $filtros['estado'] ? 1 : 0;
+        }
+        if (isset($filtros['nuevo_educador']) && $filtros['nuevo_educador'] !== '' && $filtros['nuevo_educador'] !== null) {
+            $where[] = 'nuevo_educador = :nuevo_educador';
+            $params[':nuevo_educador'] = $filtros['nuevo_educador'] ? 1 : 0;
+        }
+        $whereSql = $where ? ('WHERE ' . implode(' AND ', $where)) : '';
+        $sql = "SELECT * FROM usuario $whereSql LIMIT :limit OFFSET :offset";
+        $stmt = $this->conexion->prepare($sql);
+        foreach ($params as $k => $v) {
+            $stmt->bindValue($k, $v);
+        }
+        $stmt->bindValue(':limit', (int)$limit, \PDO::PARAM_INT);
+        $stmt->bindValue(':offset', (int)$offset, \PDO::PARAM_INT);
+        $stmt->execute();
+        $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // Total para paginación
+        $sqlTotal = "SELECT COUNT(*) as total FROM usuario $whereSql";
+        $stmtTotal = $this->conexion->prepare($sqlTotal);
+        foreach ($params as $k => $v) {
+            $stmtTotal->bindValue($k, $v);
+        }
+        $stmtTotal->execute();
+        $total = $stmtTotal->fetch(PDO::FETCH_ASSOC)['total'];
+        return [
+            'success' => true,
+            'users' => $usuarios,
+            'total' => (int)$total
+        ];
+    }
+
+    public function insertIntoUsuarios($nombre, $apellidos, $email, $telefono, $dni) {
+        $this->conectar();
+        try {
+            $sql = 'INSERT INTO usuario (nombre_user, apellido_user, correo_user, telefono_user, id_rol) VALUES (:nombre, :apellidos, :email, :telefono, 2)';
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute([
+                ':nombre' => $nombre,
+                ':apellidos' => $apellidos,
+                ':email' => $email,
+                ':telefono' => $telefono
+            ]);
+            return ['success' => true, 'message' => 'Usuario insertado correctamente'];
+        } catch (PDOException $e) {
+            return ['success' => false, 'message' => 'Error al insertar el usuario: ' . $e->getMessage()];
+        }
+    }
+
+    public function modificarUsuario($emailReferencia, $nombre, $apellidos, $email, $telefono, $dni) {
+        $this->conectar();
+        try {
+            $sql = 'UPDATE usuario SET nombre_user = :nombre, apellido_user = :apellidos, correo_user = :email, telefono_user = :telefono WHERE correo_user = :emailReferencia';
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute([
+                ':nombre' => $nombre,
+                ':apellidos' => $apellidos,
+                ':email' => $email,
+                ':telefono' => $telefono,
+                ':emailReferencia' => $emailReferencia
+            ]);
+            if ($stmt->rowCount() > 0) {
+                return ['success' => true, 'message' => 'Usuario modificado con éxito'];
+            } else {
+                return ['success' => false, 'message' => 'No se modificó ningún usuario (puede que el correo de referencia no exista o los datos sean iguales)'];
+            }
+        } catch (PDOException $e) {
+            return ['success' => false, 'message' => 'Error al modificar el usuario: ' . $e->getMessage()];
+        }
+    }
+
+    public function eliminarUsuario($emailReferencia) {
+        $this->conectar();
+        try {
+            $sql = 'DELETE FROM usuario WHERE correo_user = :emailReferencia';
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute([':emailReferencia' => $emailReferencia]);
+            if ($stmt->rowCount() > 0) {
+                return ['success' => true, 'message' => 'Usuario eliminado correctamente'];
+            } else {
+                return ['success' => false, 'message' => 'No se eliminó ningún usuario (puede que el correo no exista)'];
+            }
+        } catch (PDOException $e) {
+            return ['success' => false, 'message' => 'Error al eliminar el usuario: ' . $e->getMessage()];
+        }
+    }
+
+    public function buscarUsuarios($filtros) {
+        // Reutiliza listaUsuarios pero sin paginación
+        return $this->listaUsuarios(1, 1000, $filtros); // Devuelve hasta 1000 resultados
+    }
+
+    public function validarUsuario($dni, $email) {
+        $this->conectar();
+        $sql = 'SELECT id FROM usuario WHERE correo_user = :email';
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->execute([':email' => $email]);
+        if ($stmt->fetch(PDO::FETCH_ASSOC)) {
+            return ['success' => false, 'message' => 'El usuario ya existe con ese email'];
+        }
+        // TODO: Validar DNI si es necesario
+        return ['success' => true, 'message' => 'Usuario válido'];
+    }
+
+    public function rolExiste($idRol) {
+        $this->conectar();
+        $sql = 'SELECT id FROM roles WHERE id = :idRol AND activo = 1';
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->execute([':idRol' => $idRol]);
+        if ($stmt->fetch(PDO::FETCH_ASSOC)) {
+            return ['success' => true];
+        } else {
+            return ['success' => false, 'message' => 'El rol no existe'];
+        }
+    }
+
+    public function usuarioUnico($correo) {
+        $this->conectar();
+        $sql = 'SELECT id FROM usuario WHERE correo_user = :correo';
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->execute([':correo' => $correo]);
+        if ($stmt->fetch(PDO::FETCH_ASSOC)) {
+            return ['success' => false, 'message' => 'El usuario ya existe'];
+        } else {
+            return ['success' => true];
+        }
+    }
+
     public function listaCentros(){
         $this->conectar(); //Llamo al metodo conectar de arriba
 
@@ -197,7 +352,7 @@ class mUsuarios {
         } else {
             return ['success' => false, 'message' => 'La localidad no existe'];
         }
-}
+    }
 }
 
 ?>
