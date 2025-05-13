@@ -1,143 +1,154 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { User } from '../../interfaces/user.interface';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { UsuarioService } from '../../services/usuario.service';
+import { Subject } from 'rxjs';
+declare var $: any;
 
 @Component({
   selector: 'app-usuarios',
   templateUrl: './usuarios.component.html',
   styleUrls: ['./usuarios.component.css']
 })
-export class UsuariosComponent implements OnInit {
-  users: User[] = [];
-  filterForm: FormGroup;
-  currentPage: number = 1;
-  itemsPerPage: number = 10;
-  totalUsers: number = 0;
-  totalPages: number = 0;
-  loading: boolean = false;
-  hasSearched: boolean = false;
+export class UsuariosComponent implements OnInit, OnDestroy {
+  dataUsers: User[] = [];
+  filterForm!: FormGroup;
+  private unsubscribe$ = new Subject<void>();
+  private dataTable: any;
+  hasSearched = false;
 
-  constructor(private fb: FormBuilder, 
-              private router: Router,
-              private usuarioService: UsuarioService
-            ) {
-    
-    this.filterForm = this.fb.group({
-      nombre: ['', [Validators.maxLength(40)]],
-      apellidos: ['', [Validators.maxLength(50)]],
-      email: ['', [Validators.email, Validators.maxLength(70)]],
-      telefono: ['', [Validators.pattern('^[0-9]{9}$')]],
-      rol: [''],
-      estado: [null],
-      nuevo_educador: [null]
-    });
-  }
+  constructor(
+    private userService: UsuarioService,
+    private fb: FormBuilder,
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
-    // Subscribe to form changes for real-time filtering
+    this.crearFormulario();
+    this.cargarDatosFormulario();
+    this.cargarDataTable();
+    
+    // Suscribirse a cambios en el formulario
     this.filterForm.valueChanges
       .pipe(
         debounceTime(300),
-        distinctUntilChanged()
+        distinctUntilChanged(),
+        takeUntil(this.unsubscribe$)
       )
       .subscribe(() => {
-        // Reset search state when form changes
-        this.hasSearched = false;
+        this.searchByFilter();
       });
   }
 
-  loadUsers(): void {
-    if (!this.filterForm.valid) {
-      return;
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+    if (this.dataTable) {
+      this.dataTable.destroy();
     }
-
-    this.loading = true;
-    const filterParams = this.filterForm.value;
-    
-    // Remove empty values from filter params
-    Object.keys(filterParams).forEach(key => {
-      if (filterParams[key] === '' || filterParams[key] === null || filterParams[key] === undefined) {
-        delete filterParams[key];
-      }
-    });
-
-    // Add pagination parameters
-    filterParams['page'] = this.currentPage;
-    filterParams['limit'] = this.itemsPerPage;
-    
-    console.log(filterParams);
-    this.usuarioService.buscarUsuarios(filterParams).subscribe({
-      next: (data) => {
-        this.users = data.users;
-        this.totalUsers = data.total;
-        this.totalPages = Math.ceil(this.totalUsers / this.itemsPerPage);
-        this.loading = false;
-        this.hasSearched = true;
-      },
-      error: (error) => {
-        console.error('Error loading users:', error);
-        this.loading = false;
-        this.hasSearched = true;
-        this.users = [];
-        this.totalUsers = 0;
-        this.totalPages = 0;
-      }
-    });
   }
 
-  applyFilter(): void {
+  searchByFilter() {
     if (this.filterForm.valid) {
-      this.currentPage = 1;
-      this.loadUsers();
+      const filter = this.filterForm.value;
+      this.hasSearched = true;
+      
+      this.userService.getUsersByFilter(filter)
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe({
+          next: (users: User[]) => {
+            this.dataUsers = users;
+            this.actualizarDataTable();
+            this.cdr.detectChanges();
+          },
+          error: (error) => {
+            console.error('Error al buscar usuarios:', error);
+            this.dataUsers = [];
+            this.actualizarDataTable();
+          }
+        });
     }
   }
 
-  resetFilter(): void {
-    this.filterForm.reset({
-      nombre: '',
-      apellidos: '',
-      email: '',
-      telefono: '',
-      rol: '',
-      estado: null,
-      nuevo_educador: null
+  crearFormulario() {
+    this.filterForm = this.fb.group({
+      nombre: [''],
+      apellidos: [''],
+      email: [''],
+      telefono: [''],
+      rol: ['0', Validators.required],
+      nuevo_educador: [null, Validators.required],
+      estado: [null, Validators.required],
     });
-    this.currentPage = 1;
-    this.hasSearched = false;
-    this.users = [];
-    this.totalUsers = 0;
-    this.totalPages = 0;
   }
 
-  changePage(page: number): void {
-    if (page >= 1 && page <= this.totalPages) {
-      this.currentPage = page;
-      this.loadUsers();
+  cargarDatosFormulario() {
+    // Establecer valores por defecto
+    this.filterForm.patchValue({
+      rol: '0',
+      nuevo_educador: null,
+      estado: null
+    });
+    this.searchByFilter(); // Cargar datos iniciales
+  }
+
+  cargarDataTable() {
+    if (this.dataTable) {
+      this.dataTable.destroy();
+    }
+
+    this.dataTable = $('#usersTable').DataTable({
+      data: this.dataUsers,
+      autoWidth: false,
+      pageLength: 5,
+      searching: false,
+      ordering: false,
+      lengthChange: false,
+      language: {
+        url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json'
+      },
+      columns: [{
+        data: 'nombre',
+      },{
+        data: 'apellidos',
+      },{
+        data: 'email',
+      },{
+        data: 'telefono',
+      },{
+        data: 'id',
+        render: (data: any, type: any, row: any) => {
+          return `<a href="/usuarios/${data}" class="btn btn-sm btn-info">
+                    <i class="fas fa-eye"></i> Ver ficha
+                  </a>`;
+        }
+      }]
+    });
+  }
+
+  actualizarDataTable() {
+    if (this.dataTable) {
+      this.dataTable.clear();
+      this.dataTable.rows.add(this.dataUsers);
+      this.dataTable.draw();
+    } else {
+      this.cargarDataTable();
     }
   }
 
-  viewUserDetails(userId: number): void {
-    this.router.navigate(['/usuarios', userId]);
+  resetFilter() {
+    this.filterForm.reset({
+      rol: '0',
+      nuevo_educador: null,
+      estado: null
+    });
+    this.searchByFilter();
   }
 
-  // Helper methods for form validation
-  getErrorMessage(controlName: string): string {
-    const control = this.filterForm.get(controlName);
-    if (control?.hasError('required')) {
-      return 'Este campo es requerido';
-    }
-    if (control?.hasError('email')) {
-      return 'Email inválido';
-    }
-    if (control?.hasError('maxlength')) {
-      return `Máximo ${control.errors?.['maxlength'].requiredLength} caracteres`;
-    }
-    if (control?.hasError('pattern')) {
-      return 'Formato inválido';
-    }
-    return '';
+  verFichaUsuario(id: number) {
+    this.router.navigate(['/usuarios', id]);
   }
 }
