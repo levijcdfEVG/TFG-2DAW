@@ -12,12 +12,12 @@ declare var $: any;
   templateUrl: './usuarios.component.html',
   styleUrls: ['./usuarios.component.css']
 })
-export class UsuariosComponent implements OnInit, OnDestroy {
+export class UsuariosComponent implements OnInit {
+
   dataUsers: User[] = [];
   filterForm!: FormGroup;
   private unsubscribe$ = new Subject<void>();
   private dataTable: any;
-  hasSearched = false;
 
   constructor(
     private userService: UsuarioService,
@@ -52,25 +52,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   }
 
   searchByFilter() {
-    if (this.filterForm.valid) {
-      const filter = this.filterForm.value;
-      this.hasSearched = true;
-      
-      this.userService.getUsersByFilter(filter)
-        .pipe(takeUntil(this.unsubscribe$))
-        .subscribe({
-          next: (users: User[]) => {
-            this.dataUsers = users;
-            this.actualizarDataTable();
-            this.cdr.detectChanges();
-          },
-          error: (error) => {
-            console.error('Error al buscar usuarios:', error);
-            this.dataUsers = [];
-            this.actualizarDataTable();
-          }
-        });
-    }
+
   }
 
   crearFormulario() {
@@ -79,9 +61,9 @@ export class UsuariosComponent implements OnInit, OnDestroy {
       apellidos: [''],
       email: [''],
       telefono: [''],
-      rol: ['0', Validators.required],
-      nuevo_educador: [null, Validators.required],
-      estado: [null, Validators.required],
+      rol: ['', Validators.required],
+      nuevo_educador: ['', Validators.required],
+      estado: ['', Validators.required],
     });
   }
 

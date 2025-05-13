@@ -7,5 +7,5 @@ export interface User {
     rol: string;
     estado: boolean;
     nuevo_educador: boolean;
-    // fecha_creacion: string;
+    // fch_creacion: string;
 } 

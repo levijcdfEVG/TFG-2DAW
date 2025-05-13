@@ -1,57 +1,26 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
-header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+    header("Access-Control-Allow-Origin: http://localhost:4200");
+    header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+    header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
 
-require_once __DIR__ . '/controllers/UsuarioController.php';
+        require_once 'config/config.php'; //Constantes config php
+        require_once MODELS.'conexion.php'; //Clase BBDD
 
-$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$uri = explode('/', $uri);
+    //if(!isset($_GET["controller"])){$_GET["controller"] = DEFAULT_CONTROLLER;}
+    //if(!isset($_GET["accion"])){$_GET["accion"] = DEFAULT_ACCION;}
 
-// Obtener el endpoint y el ID si existe
-$endpoint = $uri[count($uri) - 2] ?? '';
-$id = $uri[count($uri) - 1] ?? null;
+    $rutaControlador = CONTROLLERS.$_GET["controlador"].'.php'; // 'controller/cControlador.php'
 
-// Crear instancia del controlador
-$controller = new UsuarioController();
+    //if(!file_exists($rutaControlador)){$rutaControlador = CONTROLLERS.'c'.DEFAULT_CONTROLADOR.'.php';} // 'controller/cPais.php'
 
-// Manejar las rutas
-switch ($_SERVER['REQUEST_METHOD']) {
-    case 'GET':
-        if ($id && is_numeric($id)) {
-            $controller->getUserById($id);
-        } else {
-            $controller->getUsersByFilter();
-        }
-        break;
-    
-    case 'POST':
-        $controller->createUser();
-        break;
-    
-    case 'PUT':
-        if ($id && is_numeric($id)) {
-            $controller->updateUser($id);
-        } else {
-            http_response_code(400);
-            echo json_encode(['error' => 'ID no válido']);
-        }
-        break;
-    
-    case 'DELETE':
-        if ($id && is_numeric($id)) {
-            $controller->deleteUser($id);
-        } else {
-            http_response_code(400);
-            echo json_encode(['error' => 'ID no válido']);
-        }
-        break;
-    
-    default:
-        http_response_code(405);
-        echo json_encode(['error' => 'Método no permitido']);
-        break;
-}
+    require_once $rutaControlador;
+
+    $nombreControlador = $_GET["controlador"]; //nombre de la clase controlador (Ejemplo: cPais)
+    $controlador = new $nombreControlador(); //Instanciamos objeto de la clase controlador
+
+    $dataToView["data"] = array();
+    if(method_exists($controlador,$_GET["accion"])){
+        $dataToView["data"] = $controlador->{$_GET["accion"]}();
+    }
 ?>
 
