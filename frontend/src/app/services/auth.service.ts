@@ -22,14 +22,27 @@ export class AuthService {
       private router: Router
   ) {}
 
+  /**
+   * Actualiza el estado de autenticación del usuario.
+   * @param state - Estado booleano que indica si el usuario está autenticado (true) o no (false).
+   */
   setAuthState(state: boolean) {
     this.authState.next(state);
   }
 
+  /**
+   * Obtiene el token JWT almacenado en las cookies.
+   * @returns El token JWT como string.
+   */
   getToken(): string {
     return this.cookieService.get('token');
   }
 
+  /**
+   * Verifica si el token JWT ha expirado.
+   * @param token - Token JWT a verificar.
+   * @returns `true` si el token ha expirado o es inválido, `false` si aún es válido.
+   */
   isTokenExpired(token: string): boolean {
     try {
       const decodedToken: any = jwtDecode(token);
@@ -41,16 +54,30 @@ export class AuthService {
     }
   }
 
-
+  /**
+   * Verifica si el usuario ha iniciado sesión basándose en el token JWT.
+   * @returns `true` si el token existe y no ha expirado, `false` en caso contrario.
+   */
   isLoggedIn(): boolean {
     const token = this.getToken();
     return !!token && !this.isTokenExpired(token);
   }
 
+  /**
+   * Retorna el estado actual de autenticación del usuario.
+   * @returns `true` si el usuario está autenticado, `false` si no lo está.
+   */
   isAuthenticated(): boolean {
     return this.authState.value;
   }
 
+  /**
+   * Cierra la sesión del usuario.
+   * - Cambia el estado de autenticación a falso.
+   * - Elimina el token de las cookies.
+   * - Redirige al usuario a la página de login.
+   * - Desactiva la selección automática de cuentas de Google.
+   */
   logout(): void {
     this.authState.next(false);
     this.cookieService.delete('token', '/');
@@ -58,6 +85,13 @@ export class AuthService {
     google.accounts.id.disableAutoSelect();
   }
 
+  /**
+   * Verifica si ya existe una cuenta asociada al token de Google.
+   * Envía una solicitud al backend para intentar iniciar sesión con el token.
+   * Si ocurre un error, cierra la sesión del usuario.
+   * @param googleToken - Token proporcionado por la autenticación con Google.
+   * @returns Observable con la respuesta del backend o error capturado.
+   */
   checkExistingAccounts(googleToken: string) {
     const payload = { token: googleToken };
     const urlParams = '?controlador=cUsuario&accion=loginGoogle';

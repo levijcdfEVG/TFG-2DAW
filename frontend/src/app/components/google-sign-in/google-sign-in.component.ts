@@ -27,6 +27,11 @@ export class GoogleSignInComponent implements OnInit {
               private cookieService: CookieService ) { }
 
 
+  /**
+   * Carga el carusel y verifica si hay un token de autenticación
+   * válido en las cookies. Si lo hay, redirige a /info-centros.
+   * Si no lo hay, muestra el botón de inicio de sesión con Google.
+   */
   ngOnInit(): void {
     this.loadCarousel();
     const token = this.authService.getToken();
@@ -42,6 +47,19 @@ export class GoogleSignInComponent implements OnInit {
   }
 
 
+  /**
+   * Inicializa el botón de inicio de sesión con Google (GSI).
+   *
+   * Este método inicializa el botón de GSI con el identificador de cliente y una
+   * función de callback. La función de callback se llama cuando el usuario hace clic
+   * en el botón de GSI y se autentica con Google.
+   *
+   * El método también renderiza el botón de GSI con un tema y tamaño personalizados.
+   * El tema se establece en 'outline' y el tamaño se establece en 'large'.
+   *
+   * Además, el método muestra el diálogo de inicio de sesión de un solo toque, que
+   * permite al usuario iniciar sesión con un solo clic.
+   */
   initializeGoogleSignIn() {
     google.accounts.id.initialize({
       client_id: googleID,
@@ -56,6 +74,17 @@ export class GoogleSignInComponent implements OnInit {
     google.accounts.id.prompt(); // also display the One Tap dialog
   }
 
+  /**
+   * Maneja la respuesta recibida de Google Sign-In.
+   *
+   * Este método toma la respuesta del proceso de inicio de sesión de Google y verifica
+   * si hay cuentas existentes utilizando el `authService`. Si la verificación de la cuenta
+   * tiene éxito, muestra un mensaje de éxito, establece el estado de autenticación,
+   * guarda el token en cookies y navega a la ruta '/info-centros'. Si la verificación de la
+   * cuenta falla, muestra un mensaje de error con el motivo del fallo.
+   *
+   * @param response - El objeto de respuesta recibido de Google Sign-In que contiene la credencial.
+   */
   handleCredentialResponse(response: any) {
     this.authService.checkExistingAccounts(response.credential).subscribe(res => {
       if (res.success) {
@@ -82,6 +111,17 @@ export class GoogleSignInComponent implements OnInit {
     });
   }
 
+  /**
+   * Carga dinámicamente el script del cliente de Google para inicio de sesión con Google.
+   *
+   * Si el script no está cargado, crea una nueva etiqueta de script y la agrega al head del
+   * documento. Establece el evento onload del script para resolver la promesa cuando el
+   * script termine de cargar. Si el script ya está cargado, la promesa se resuelve
+   * inmediatamente.
+   *
+   * @returns {Promise<void>} Una promesa que se cumple cuando el script se carga.
+   */
+
   private loadGoogleScript(): Promise<void> {
     return new Promise((resolve) => {
       const existingScript = document.getElementById('google-client-script');
@@ -99,6 +139,12 @@ export class GoogleSignInComponent implements OnInit {
     });
   }
 
+  /**
+   * Realiza un ciclo automático a través de las imágenes en el carrusel.
+   *
+   * Este método actualiza el índice `currentImageIndex` a intervalos regulares,
+   * lo que hace que la imagen mostrada en el carrusel cambie cada 5 segundos.
+   */
   private loadCarousel() {
     setInterval(() => {
       this.currentImageIndex = (this.currentImageIndex + 1) % this.images.length;
