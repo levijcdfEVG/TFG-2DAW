@@ -1,4 +1,4 @@
-interface Formacion {
+export interface Formacion {
     id: number;
     lugar_imparticion: string;
     duracion: string;
@@ -9,7 +9,7 @@ interface Formacion {
     dirigido_a: string;
 }
 
-interface FormacionResponse {
+export interface FormacionResponse {
     success: boolean;
     data: Formacion[];
 }

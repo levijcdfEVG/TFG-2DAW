@@ -1,0 +1,16 @@
+{
+  "tags": {
+    "allowUnknownTags": true
+  },
+  "source": {
+    "include": ["src/app/services/auth.service.ts"],
+    "includePattern": ".ts$",
+    "excludePattern": "(node_modules|dist)"
+  },
+  "plugins": [],
+  "opts": {
+    "destination": "./docs",
+    "recurse": true,
+    "template": "default"
+  }
+}

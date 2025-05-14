@@ -13,11 +13,11 @@ class MFormacion {
         try {
             $this->conectar();
     
-            $sql = '
+            $sql = "
                 SELECT id, lugar_imparticion, duracion, modalidad, justificacion, metodologia, docentes, dirigido_a
                 FROM formacion
-                WHERE activo IS FALSE;
-            ';
+                WHERE activo = 1;
+            ";
     
             $stmt = $this->conexion->prepare($sql);
             $stmt->execute();

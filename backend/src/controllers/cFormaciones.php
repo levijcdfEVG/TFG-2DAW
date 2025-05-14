@@ -4,7 +4,7 @@ require_once MODELS.'mFormacion.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once 'config/config.php';
 
-Class CFormacion {
+Class cFormaciones {
 
 
     public function __construct(){

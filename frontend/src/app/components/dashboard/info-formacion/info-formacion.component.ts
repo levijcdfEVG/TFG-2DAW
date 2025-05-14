@@ -1,14 +1,34 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import { FormacionService } from '../../../services/formacion.service'; // Ajusta la ruta si es distinta
+import { ChangeDetectorRef } from '@angular/core';
+import {Formacion} from "../../../services/interfaces/formacionesResponse";
+declare const $datatable: any;
+
 
 @Component({
   selector: 'app-info-formacion',
   templateUrl: './info-formacion.component.html',
   styleUrls: ['./info-formacion.component.css']
 })
-export class InfoFormacionComponent {
-  public formaciones : any = [
-    { id: 1, nombre: 'Formación A', duracion: '1 año', modalidad: 'Presencial', justificacion: 'Lorem Ipsum...', dirigidoA: 'Lorem Ipsum...' },
-    { id: 2, nombre: 'Formación B', duracion: '1 año', modalidad: 'Telemática', justificacion: 'Lorem Ipsum...', dirigidoA: 'Lorem Ipsum...' },
-    { id: 3, nombre: 'Formación C', duracion: '1 año', modalidad: 'Presencial', justificacion: 'Lorem Ipsum...', dirigidoA: 'Lorem Ipsum...' },
-  ];
+export class InfoFormacionComponent implements OnInit {
+
+  public formaciones: Formacion[] = [];
+
+  constructor(
+      private formacionService: FormacionService,
+      private cdr: ChangeDetectorRef
+  ) { }
+
+  ngOnInit() {
+    this.fetchFormaciones();
+  }
+
+  private fetchFormaciones() {
+    this.formacionService.getAllFormaciones().subscribe(response => {
+      if (response.success) {
+        this.formaciones = response.data;
+        this.cdr.detectChanges();
+      }
+    });
+  }
 }
