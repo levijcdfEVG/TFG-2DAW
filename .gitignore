@@ -3,3 +3,11 @@
 /frontend/src/app/config/
 /nbproject/private/
 /frontend/.angular/
+.idea/git_toolbox_prj.xml
+.idea/modules.xml
+.idea/sqldialects.xml
+.idea/TFG-2DAW.iml
+.idea/vcs.xml
+backend/.idea/git_toolbox_prj.xml
+nbproject/project.properties
+nbproject/project.xml
