@@ -23,38 +23,31 @@ export class UsuariosComponent implements OnInit {
     private userService: UsuarioService,
     private fb: FormBuilder,
     private router: Router,
-    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.crearFormulario();
     this.cargarDatosFormulario();
     this.cargarDataTable();
-    
-    // Suscribirse a cambios en el formulario
-    this.filterForm.valueChanges
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-        takeUntil(this.unsubscribe$)
-      )
-      .subscribe(() => {
-        this.searchByFilter();
-      });
-  }
-
-  ngOnDestroy(): void {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
-    if (this.dataTable) {
-      this.dataTable.destroy();
-    }
   }
 
   searchByFilter() {
+    // Recoge los datos del formulario
+    const params = this.filterForm.value;
+    console.log(params); // Debbuging params
 
+    this.userService.getUsersByParams(params).subscribe({
+      next: (users) => {
+        this.dataUsers = users;
+        this.cargarDataTable();
+      },
+      error: (error) => {
+        console.error('Error loading users:', error);
+      }
+    });
   }
 
+// METODOS DEL BUSCADOR ---------------------------------------
   crearFormulario() {
     this.filterForm = this.fb.group({
       nombre: [''],
@@ -67,16 +60,31 @@ export class UsuariosComponent implements OnInit {
     });
   }
 
-  cargarDatosFormulario() {
-    // Establecer valores por defecto
+  cargarDatosFormulario() { // Establece valores por defecto
     this.filterForm.patchValue({
-      rol: '0',
-      nuevo_educador: null,
-      estado: null
+      nombre: '',
+      apellidos: '',
+      email: '',
+      telefono: '',
+      rol: 'all',
+      nuevo_educador: 0,
+      estado: 0
     });
-    this.searchByFilter(); // Cargar datos iniciales
   }
 
+  resetFilter() {
+    this.filterForm.reset({
+      nombre: '',
+      apellidos: '',
+      email: '',
+      telefono: '',
+      rol: 'all',
+      nuevo_educador: 0,
+      estado: 0
+    });
+  }
+
+// METODOS DE LA TABLA ---------------------------------------
   cargarDataTable() {
     if (this.dataTable) {
       this.dataTable.destroy();
@@ -89,9 +97,7 @@ export class UsuariosComponent implements OnInit {
       searching: false,
       ordering: false,
       lengthChange: false,
-      language: {
-        url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json'
-      },
+      language: { url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json' },
       columns: [{
         data: 'nombre',
       },{
@@ -103,34 +109,21 @@ export class UsuariosComponent implements OnInit {
       },{
         data: 'id',
         render: (data: any, type: any, row: any) => {
-          return `<a href="/usuarios/${data}" class="btn btn-sm btn-info">
-                    <i class="fas fa-eye"></i> Ver ficha
-                  </a>`;
+          return `<div class="dropdown">
+                    <button class="btn btn-sm btn-info dropdown-toggle" type="button" id="dropdownMenuButton${data}" data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="fas fa-cog"></i> Acciones
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${data}">
+                      <li><a class="dropdown-item" href="/usuarios/${data}">
+                        <i class="fas fa-eye"></i> Ver ficha
+                      </a></li>
+                      <li><a class="dropdown-item" href="/usuarios/editar/${data}">
+                        <i class="fas fa-edit"></i> Editar
+                      </a></li>
+                    </ul>
+                  </div>`;
         }
       }]
     });
-  }
-
-  actualizarDataTable() {
-    if (this.dataTable) {
-      this.dataTable.clear();
-      this.dataTable.rows.add(this.dataUsers);
-      this.dataTable.draw();
-    } else {
-      this.cargarDataTable();
-    }
-  }
-
-  resetFilter() {
-    this.filterForm.reset({
-      rol: '0',
-      nuevo_educador: null,
-      estado: null
-    });
-    this.searchByFilter();
-  }
-
-  verFichaUsuario(id: number) {
-    this.router.navigate(['/usuarios', id]);
   }
 }

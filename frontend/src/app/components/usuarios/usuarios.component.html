@@ -19,17 +19,17 @@
                 <div class="row mb-3">
                     <div class="col-md-4 d-flex align-items-center mb-2 mb-md-0">
                         <label for="nombre" class="form-label fw-bold mb-0 me-3" style="min-width: 110px;">Nombre:</label>
-                        <input type="text" class="form-control" id="nombre" formControlName="nombre">
+                        <input type="text" class="form-control" id="nombre" formControlName="nombre" placeholder="Nombre del usuario">
                     </div>
                     <div class="col-md-4 d-flex align-items-center mb-2 mb-md-0">
                         <label for="apellidos" class="form-label fw-bold mb-0 me-3" style="min-width: 110px;">Apellidos:</label>
-                        <input type="text" class="form-control" id="apellidos" formControlName="apellidos">
+                        <input type="text" class="form-control" id="apellidos" formControlName="apellidos" placeholder="Apellidos del usuario">
                     </div>
                     <div class="col-md-4 d-flex align-items-center">
                         <label class="form-label fw-bold mb-0 me-3" style="min-width: 110px;">Nuevo Educador:</label>
                         <div class="d-flex gap-2">
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="nuevoEducadorTodos" formControlName="nuevo_educador" [value]="null">
+                                <input class="form-check-input" type="radio" id="nuevoEducadorTodos" formControlName="nuevo_educador" [value]="0">
                                 <label class="form-check-label" for="nuevoEducadorTodos">Todos</label>
                             </div>
                             <div class="form-check form-check-inline">
@@ -46,7 +46,7 @@
                 <div class="row mb-3">
                     <div class="col-md-4 d-flex align-items-center mb-2 mb-md-0">
                         <label for="email" class="form-label fw-bold mb-0 me-3" style="min-width: 110px;">Email:</label>
-                        <input type="email" class="form-control" id="email" formControlName="email">
+                        <input type="email" class="form-control" id="email" formControlName="email" placeholder="Correo electrónico">
                     </div>
                     <div class="col-md-4 d-flex align-items-center mb-2 mb-md-0">
                         <label for="telefono" class="form-label fw-bold mb-0 me-3" style="min-width: 110px;">Teléfono:</label>
@@ -56,7 +56,7 @@
                         <label class="form-label fw-bold mb-0 me-3" style="min-width: 110px;">Estado:</label>
                         <div class="d-flex gap-2">
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" id="estadoTodos" formControlName="estado" [value]="null">
+                                <input class="form-check-input" type="radio" id="estadoTodos" formControlName="estado" [value]="0">
                                 <label class="form-check-label" for="estadoTodos">Todos</label>
                             </div>
                             <div class="form-check form-check-inline">
@@ -74,7 +74,7 @@
                     <div class="col-md-4 d-flex align-items-center">
                         <label for="rol" class="form-label fw-bold mb-0 me-3" style="min-width: 110px;">Rol:</label>
                         <select class="form-select" id="rol" formControlName="rol">
-                            <option value="0">Todos</option>
+                            <option value="all">Todos</option>
                             <option value="admin">Administrador</option>
                             <option value="user">Usuario</option>
                         </select>

@@ -20,7 +20,11 @@
 
     $dataToView["data"] = array();
     if(method_exists($controlador,$_GET["accion"])){
-        $dataToView["data"] = $controlador->{$_GET["accion"]}();
+        if(isset($_GET["params"])) {
+            $dataToView["data"] = $controlador->{$_GET["accion"]}($_GET["params"]);
+        } else {
+            $dataToView["data"] = $controlador->{$_GET["accion"]}();
+        }
     }
 ?>
 

@@ -13,8 +13,8 @@ export class UsuarioService {
   constructor(private http: HttpClient) {}
 
   // Get a user list with or without params
-  getUsersByParams(): Observable<User[]> {
-    return this.http.get<User[]>(this.BDpath + 'getUsersByParams');
+  getUsersByParams(params: any): Observable<User[]> {
+    return this.http.get<User[]>(this.BDpath + 'getUsersByParams', {params: params});
   }
 
 }
