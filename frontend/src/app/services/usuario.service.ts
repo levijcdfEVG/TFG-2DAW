@@ -8,13 +8,13 @@ import { User } from '../interfaces/user.interface';
 })
 export class UsuarioService {
 
-  BDpath = 'http://localhost:8000/backend/src/index.php?controlador=cCentros&accion=';
+  BDpath = 'http://localhost:8000/index.php?controlador=cUsuario&accion=';
 
   constructor(private http: HttpClient) {}
 
   // Get a user list with or without params
   getUsersByParams(params: any): Observable<User[]> {
-    return this.http.get<User[]>(this.BDpath + 'getUsersByParams', {params: params});
+    return this.http.get<any>(this.BDpath + 'getUsersByParams', {params: params});
   }
 
 }
