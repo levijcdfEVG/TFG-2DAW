@@ -1,10 +1,10 @@
 export interface User {
     id: number;
-    nombre: string;
-    apellidos: string;
-    email: string;
-    telefono: string;
-    rol: string;
+    nombre_user: string;
+    apellido_user: string;
+    correo_user: string;
+    telefono_user: string;
+    id_rol: string;
     estado: boolean;
     nuevo_educador: boolean;
     // fch_creacion: string;

@@ -9,7 +9,7 @@
     //if(!isset($_GET["controller"])){$_GET["controller"] = DEFAULT_CONTROLLER;}
     //if(!isset($_GET["accion"])){$_GET["accion"] = DEFAULT_ACCION;}
 
-    $rutaControlador = CONTROLLERS.$_GET["controlador"].'.php'; // 'controller/cControlador.php'
+    $rutaControlador = CONTROLLERS.$_GET["controlador"].'.php'; // 'controllers/cControlador.php'
 
     //if(!file_exists($rutaControlador)){$rutaControlador = CONTROLLERS.'c'.DEFAULT_CONTROLADOR.'.php';} // 'controller/cPais.php'
 
@@ -20,11 +20,8 @@
 
     $dataToView["data"] = array();
     if(method_exists($controlador,$_GET["accion"])){
-        if(isset($_GET["params"])) {
-            $dataToView["data"] = $controlador->{$_GET["accion"]}($_GET["params"]);
-        } else {
-            $dataToView["data"] = $controlador->{$_GET["accion"]}();
-        }
+
+        $dataToView["data"] = $controlador->{$_GET["accion"]}();
     }
 ?>
 
