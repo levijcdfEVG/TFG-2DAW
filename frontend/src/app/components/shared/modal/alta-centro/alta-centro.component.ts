@@ -103,12 +103,12 @@ export class AltaCentroComponent {
     this.formCentro = this.fb.group({
       nombre_centro: ['', [
         Validators.required,
-        Validators.maxLength(50),
+        Validators.maxlength(50),
         AltaCentroComponent.sinNumerosValidator
       ]],
       direccion_centro: ['', [
         Validators.required,
-        Validators.maxLength(50)
+        Validators.maxlength(50)
       ]],
       cp: ['', [
         Validators.required,
@@ -126,7 +126,7 @@ export class AltaCentroComponent {
       ]],
       correo_centro: ['', [
         Validators.required,
-        Validators.maxLength(255),
+        Validators.maxlength(255),
         AltaCentroComponent.emailFundacionLoyolaValidator
       ]]
   });
