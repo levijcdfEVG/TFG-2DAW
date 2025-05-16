@@ -4,7 +4,8 @@
     "type": "project",
     "require": {
         "firebase/php-jwt": "^6.11",
-        "phpseclib/phpseclib": "^3.0"
+        "phpseclib/phpseclib": "^3.0",
+        "phpdocumentor/shim": "^3.7"
     },
     "license": "MIT",
     "autoload": {
@@ -18,5 +19,14 @@
             "email": "levijosuecandeiasdefigueiredo.guadalupe@alumnado.fundacionloyola.net"
         }
     ],
-    "minimum-stability": "stable"
+    "minimum-stability": "stable",
+    "require-dev": {
+        "phpdocumentor/phpdocumentor": "3.4"
+    },
+    "config": {
+        "allow-plugins": {
+            "symfony/flex": true,
+            "phpdocumentor/shim": true
+        }
+    }
 }
