@@ -1,0 +1,22 @@
+{
+  "formacion": {
+    "lugar_imparticion": "Aula 101",
+    "duracion": "20 horas",
+    "modalidad": "Presencial",
+    "justificacion": "Capacitación anual",
+    "metodologia": "Teórico-práctica",
+    "docentes": "Juan Pérez",
+    "dirigido_a": "Docentes",
+    "activo": 1
+  },
+  "modulos": [
+    {"nombre_modulo": "Introducción"},
+    {"nombre_modulo": "Avanzado"}
+  ],
+  "objetivos": [
+    {"descripcion": "Mejorar competencias"},
+    {"descripcion": "Actualizar conocimientos"}
+  ],
+  "centros": [1, 2],
+  "cursos": ["23/24"]
+}
