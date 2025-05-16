@@ -45,7 +45,8 @@
     </div>
   </div>
 
-<app-alta-centro></app-alta-centro>
+
+<app-alta-centro (refreshLista)="refreshLista($event)"></app-alta-centro>
 <app-modificar-centro
   [centroSeleccionado]="centroSeleccionado">
 </app-modificar-centro>

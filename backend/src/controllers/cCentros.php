@@ -1,12 +1,11 @@
 <?php
-    require_once MODELS.'mCentros.php';
+require_once MODELS.'mCentros.php';
 
-    class cCentros {
+class cCentros {
 
-        public function __construct() {
-
-            $this->objCentro = new mCentros();
-        }
+    public function __construct() {
+        $this->objCentro = new mCentros();
+    }
 
         public function listaCentros(){
             $resultado = $this->objCentro->listaCentros();

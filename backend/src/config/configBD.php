@@ -1,6 +1,6 @@
 <?php
-    define("SERVIDOR", "localhost"); // DATOS SERVIDOR
+    define("SERVIDOR", "localhost:3306"); // DATOS SERVIDOR
     define("USUARIO", "root");  // DATOS USUARIO BBDD
-    define("PASSWORD", ""); // DATOS CONTRASEÃ‘A BBDD
-    define("BBDD", "tfg_2daw"); // NOMBRE BBDD
+    define("PASSWORD", "20055002"); // DATOS CONTRASEÃ‘A BBDD
+    define("BBDD", "TFG_DEMO_V2"); // NOMBRE BBDD
 ?>

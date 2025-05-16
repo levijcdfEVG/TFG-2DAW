@@ -1,0 +1,22 @@
+{
+    "name": "levijcdf/tfgbackend",
+    "description": "Backend para manejo de usuarios y autenticación con Google.",
+    "type": "project",
+    "require": {
+        "firebase/php-jwt": "^6.11",
+        "phpseclib/phpseclib": "^3.0"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Levijcdf\\Tfgbackend\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "levijcdf",
+            "email": "levijosuecandeiasdefigueiredo.guadalupe@alumnado.fundacionloyola.net"
+        }
+    ],
+    "minimum-stability": "stable"
+}

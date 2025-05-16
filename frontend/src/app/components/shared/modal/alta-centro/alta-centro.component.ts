@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, Output} from '@angular/core';
 import { CentrosService } from 'src/app/services/centros.service';
 import { ToastrService } from 'ngx-toastr';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
@@ -11,8 +11,13 @@ import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors }
 export class AltaCentroComponent {
 
   formCentro!: FormGroup;
+  @Output() refreshLista = new EventEmitter<any>();
 
-  constructor(private fb: FormBuilder, private centrosService: CentrosService, private toastr: ToastrService) {}
+  constructor(private fb: FormBuilder,
+              private centrosService: CentrosService,
+              private toastr: ToastrService,
+              private cdr: ChangeDetectorRef
+  ) {}
 
   nuevoCentro: {
     nombre_centro: string;
@@ -38,7 +43,7 @@ export class AltaCentroComponent {
     if (control?.hasError('required')) {
       return 'Este campo es obligatorio.';
     }
-    if (control?.hasError('maxLength')) {
+    if (control?.hasError('maxlength')) {
       if (controlName === 'nombre_centro') {
         return 'El nombre del centro no puede exceder los 50 caracteres.';
       }
@@ -169,7 +174,7 @@ export class AltaCentroComponent {
             this.cerrarFormulario();
           }, 1000);
           setTimeout(() => {
-            window.location.reload();
+            this.refreshLista.emit(true);
           }, 1000);
     
         } else {

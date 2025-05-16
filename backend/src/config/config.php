@@ -7,6 +7,7 @@
     define('CONFIG','config/');
     define('MODELS','models/');
     define('CONTROLLERS','controllers/');
+    define('GOOGLEID','759419410954-niiprm9ddsbrn2pv833vbdista3mi6nr.apps.googleusercontent.com')
 
 
     /*-- Parámetros por defecto--

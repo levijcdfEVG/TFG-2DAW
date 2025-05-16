@@ -31,16 +31,19 @@ CREATE TABLE IF NOT EXISTS curso_academico (
 
 CREATE TABLE IF NOT EXISTS usuario (
   id SMALLINT NOT NULL AUTO_INCREMENT,
-  nombre_user VARCHAR(40) NOT NULL,
-  apellido_user VARCHAR(50) NOT NULL,
-  correo_user VARCHAR(70) NOT NULL,
-  telefono_user VARCHAR(9) NOT NULL,
-  nuevo_educador BOOLEAN NOT NULL DEFAULT 1,
-  id_rol TINYINT NOT NULL,
-  CONSTRAINT pk_usuario PRIMARY KEY (id),
-  CONSTRAINT fk_usuario_rol FOREIGN KEY (id_rol) REFERENCES roles(id),
-  CONSTRAINT cck_telefono_user CHECK (telefono_user REGEXP '^[0-9]{9}$'),
-  CONSTRAINT cck_correo_user CHECK (correo_user REGEXP '^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@fundacionloyola\\.net$')
+    nombre_user VARCHAR(40) NOT NULL,
+    apellido_user VARCHAR(50) NOT NULL,
+    correo_user VARCHAR(70) NOT NULL,
+    telefono_user VARCHAR(9) NOT NULL,
+    nuevo_educador BOOLEAN NOT NULL DEFAULT 1,
+    id_rol TINYINT NOT NULL,
+    CONSTRAINT pk_usuario PRIMARY KEY (id),
+    CONSTRAINT fk_usuario_rol FOREIGN KEY (id_rol) REFERENCES roles(id),
+    CONSTRAINT cck_telefono_user CHECK (telefono_user REGEXP '^[0-9]{9}$'),
+    CONSTRAINT cck_correo_user CHECK (
+      correo_user REGEXP '^[A-Za-z0-9._%+-]+@([A-Za-z0-9.-]+\\.)?fundacionloyola\\.(net|es)$'
+    ),
+    CONSTRAINT unk_correo_user UNIQUE (correo_user)
 );
 
 CREATE TABLE IF NOT EXISTS formacion (
@@ -75,9 +78,12 @@ CREATE TABLE IF NOT EXISTS centro_fundacion (
   id_local TINYINT NOT NULL,
   CONSTRAINT pk_centro PRIMARY KEY (id),
   CONSTRAINT cck_cp CHECK (cp REGEXP '^[0-9]{5}$'),
-  CONSTRAINT cck_correo_centro CHECK (correo_centro LIKE '%@fundacionloyola.es'),
+  CONSTRAINT cck_correo_centro CHECK (
+    correo_centro REGEXP '^[A-Za-z0-9._%+-]+@([A-Za-z0-9.-]+\\.)?fundacionloyola\\.(net|es)$'
+  ),
   CONSTRAINT cck_telefono_centro CHECK (telefono_centro REGEXP '^[0-9]{9}$'),
-  CONSTRAINT fk_centro_local FOREIGN KEY (id_local) REFERENCES localidad(id)
+  CONSTRAINT fk_centro_local FOREIGN KEY (id_local) REFERENCES localidad(id),
+  CONSTRAINT unk_correo_centro UNIQUE (correo_centro)
 );
 
 CREATE TABLE IF NOT EXISTS centro_formacion (
