@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import { CentrosService } from 'src/app/services/centros.service';
 import { ToastrService } from 'ngx-toastr';
 import Swal2 from 'sweetalert2';
@@ -33,16 +33,10 @@ export class InfoCentroComponent implements OnInit {
   centroSeleccionado: any = {};
   centroAEliminar: any = null;
 
-  constructor(private centrosService: CentrosService, private toastr: ToastrService) {}
+  constructor(private centrosService: CentrosService, private toastr: ToastrService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
-    this.centrosService.getCentros().subscribe(response => {
-      if (response.success) {
-        this.dataSource = response.data;
-      } else {
-        this.mensaje = 'No existen centros registrados. Dar de alta uno nuevo.';
-      }
-    });
+    this.getCentros();
   }
 
   modificarRegistro(element: any): void {
@@ -82,5 +76,21 @@ export class InfoCentroComponent implements OnInit {
       }
     });
   }
+
+  refreshLista(event: any): void {
+    this.getCentros();
+    this.cdr.detectChanges();
+  }
+
+  private getCentros(): void {
+    this.centrosService.getCentros().subscribe(response => {
+      if (response.success) {
+        this.dataSource = response.data;
+      } else {
+        this.mensaje = 'No existen centros registrados. Dar de alta uno nuevo.';
+      }
+    });
+  }
+
 }
 

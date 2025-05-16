@@ -19,6 +19,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { GoogleSignInComponent } from './components/google-sign-in/google-sign-in.component';
+import {CookieService} from "ngx-cookie-service";
 
 @NgModule({
   declarations: [
@@ -31,19 +33,28 @@ import { ReactiveFormsModule } from '@angular/forms';
     InfoEducadorComponent,
     FooterComponent,
     AltaCentroComponent,
-    ModificarCentroComponent
+    ModificarCentroComponent,
+    FooterComponent,
+    GoogleSignInComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     MatTableModule,
-    BrowserAnimationsModule, // Requerido para ngx-toastr
+    FormsModule,
+    BrowserAnimationsModule,
     ToastrModule.forRoot(),
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FormsModule,
+    AppRoutingModule,
+    ReactiveFormsModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [
+    CookieService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
