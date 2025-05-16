@@ -158,7 +158,7 @@ Class cFormaciones {
      private function methodNotAllowed(array $allowed) {
         header('Allow: ' . implode(', ', $allowed));
         http_response_code(405);
-        echo json_encode(['error' => 'Método no permitido. Usa: ' . implode(', ', $allowed)]);
+        echo json_encode(['error' => 'Metodo no permitido. Usa: ' . implode(', ', $allowed)]);
         exit;
     }
     

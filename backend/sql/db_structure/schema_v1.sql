@@ -26,7 +26,9 @@ CREATE TABLE IF NOT EXISTS curso_academico (
   nombre_curso VARCHAR(30) NOT NULL,
   fecha_inicio DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
   fecha_fin DATETIME NULL,
-  CONSTRAINT pk_curso_academico PRIMARY KEY (id)
+  CONSTRAINT pk_curso_academico PRIMARY KEY (id),
+  CONSTRAINT cck_nombre_curso
+    CHECK (nombre_curso REGEXP '^[0-9]{4}/[0-9]{2}$')
 );
 
 CREATE TABLE IF NOT EXISTS usuario (
