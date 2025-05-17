@@ -1,1 +1,109 @@
-<p>formacion-form works!</p>
+<form [formGroup]="form" (ngSubmit)="submit()" class="p-3 rounded">
+
+    <!-- Primera fila: inputs pequeños lado a lado -->
+    <div class="row g-3 mb-3">
+        <div class="col-md-4">
+            <label for="lugar" class="form-label">Lugar</label>
+            <input id="lugar" formControlName="lugar_imparticion" placeholder="Lugar" class="form-control" />
+            <div *ngIf="form.get('lugar_imparticion')?.invalid && form.get('lugar_imparticion')?.touched">
+                <small class="text-danger">{{ getErrorMessage('lugar_imparticion') }}</small>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <label for="modalidad" class="form-label">Modalidad</label>
+            <input id="modalidad" formControlName="modalidad" placeholder="Modalidad" class="form-control" />
+            <div *ngIf="form.get('modalidad')?.invalid && form.get('modalidad')?.touched">
+                <small class="text-danger">{{ getErrorMessage('modalidad') }}</small>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <label for="duracion" class="form-label">Duración (horas)</label>
+            <input id="duracion" formControlName="duracion" type="number" placeholder="Horas" class="form-control" />
+            <div *ngIf="form.get('duracion')?.invalid && form.get('duracion')?.touched">
+                <small class="text-danger">{{ getErrorMessage('duracion') }}</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Segunda fila: textareas alineadas con tamaño máximo -->
+    <div class="row g-3 mb-3">
+        <div class="col-md-4">
+            <label for="justificacion" class="form-label">Justificación</label>
+            <textarea id="justificacion" formControlName="justificacion" rows="3" class="form-control textarea-limit"></textarea>
+            <div *ngIf="form.get('justificacion')?.invalid && form.get('justificacion')?.touched">
+                <small class="text-danger">{{ getErrorMessage('justificacion') }}</small>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <label for="metodologia" class="form-label">Metodología</label>
+            <textarea id="metodologia" formControlName="metodologia" rows="3" class="form-control textarea-limit"></textarea>
+            <div *ngIf="form.get('metodologia')?.invalid && form.get('metodologia')?.touched">
+                <small class="text-danger">{{ getErrorMessage('metodologia') }}</small>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <label for="docentes" class="form-label">Docentes</label>
+            <textarea id="docentes" formControlName="docentes" rows="2" class="form-control textarea-limit"></textarea>
+            <div *ngIf="form.get('docentes')?.invalid && form.get('docentes')?.touched">
+                <small class="text-danger">{{ getErrorMessage('docentes') }}</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tercera fila: inputs pequeños lado a lado -->
+    <div class="row g-3 mb-3">
+        <div class="col-md-4">
+            <label for="dirigido_a" class="form-label">Dirigido a</label>
+            <textarea id="dirigido_a" formControlName="dirigido_a" rows="2" class="form-control textarea-limit"></textarea>
+            <div *ngIf="form.get('dirigido_a')?.invalid && form.get('dirigido_a')?.touched">
+                <small class="text-danger">{{ getErrorMessage('dirigido_a') }}</small>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <label for="curso_academico" class="form-label">Curso académico</label>
+            <input id="curso_academico" formControlName="curso_academico" placeholder="2024/25" class="form-control" />
+            <div *ngIf="form.get('curso_academico')?.invalid && form.get('curso_academico')?.touched">
+                <small class="text-danger">{{ getErrorMessage('curso_academico') }}</small>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <label for="centro_id" class="form-label">ID del centro</label>
+            <input id="centro_id" formControlName="centro_id" type="number" placeholder="ID" class="form-control" />
+            <div *ngIf="form.get('centro_id')?.invalid && form.get('centro_id')?.touched">
+                <small class="text-danger">{{ getErrorMessage('centro_id') }}</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Módulos dinámicos: inputs y botones compactos -->
+    <div formArrayName="modulos" class="mb-3">
+        <label class="form-label">Módulos</label>
+        <div *ngFor="let control of modulos.controls; let i = index" class="input-group mb-2">
+            <input [formControlName]="i" placeholder="Módulo" class="form-control" />
+            <button type="button" class="btn btn-danger" (click)="removeModulo(i)" aria-label="Eliminar módulo">
+                <i class="fa-solid fa-trash-can"></i>
+            </button>
+        </div>
+        <div *ngIf="modulos.invalid && (modulos.dirty || modulos.touched)">
+            <small class="text-danger">Cada módulo es obligatorio.</small>
+        </div>
+        <button type="button" class="btn btn-outline-primary" (click)="addModulo()">+ Añadir módulo</button>
+    </div>
+
+    <!-- Objetivos dinámicos: igual que módulos -->
+    <div formArrayName="objetivos" class="mb-3">
+        <label class="form-label">Objetivos</label>
+        <div *ngFor="let control of objetivos.controls; let i = index" class="input-group mb-2">
+            <input [formControlName]="i" placeholder="Objetivo" class="form-control" />
+            <button type="button" class="btn btn-danger" (click)="removeObjetivo(i)" aria-label="Eliminar objetivo">
+                <i class="fa-solid fa-trash-can"></i>
+            </button>
+        </div>
+        <div *ngIf="objetivos.invalid && (objetivos.dirty || objetivos.touched)">
+            <small class="text-danger">Cada objetivo es obligatorio.</small>
+        </div>
+        <button type="button" class="btn btn-outline-primary" (click)="addObjetivo()">+ Añadir objetivo</button>
+    </div>
+
+    <button type="submit" class="btn btn-success">Guardar formación</button>
+</form>

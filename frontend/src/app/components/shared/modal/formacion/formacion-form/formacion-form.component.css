@@ -1,0 +1,5 @@
+.textarea-limit {
+    max-height: 100px;
+    overflow-y: auto;
+    resize: vertical;
+}

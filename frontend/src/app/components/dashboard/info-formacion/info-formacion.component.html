@@ -1,7 +1,7 @@
 <div class="container mt-4">
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h4>Listado de formaciones</h4>
-    <button class="btn btn-primary">Añadir formación</button>
+    <button class="btn btn-primary" data-bs-target="#crearFormacionModal" data-bs-toggle="modal">Añadir formación</button>
   </div>
 
   <table class="table table-bordered table-hover">
@@ -32,3 +32,6 @@
     </tbody>
   </table>
 </div>
+
+<app-crear-formacion-modal #crearModal></app-crear-formacion-modal>
+<app-editar-formacion-modal [formacion]="formacionSeleccionada"></app-editar-formacion-modal>

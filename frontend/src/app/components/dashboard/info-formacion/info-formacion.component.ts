@@ -13,6 +13,7 @@ declare const $datatable: any;
 export class InfoFormacionComponent implements OnInit {
 
   public formaciones: Formacion[] = [];
+  formacionSeleccionada: any = null;
 
   constructor(
       private formacionService: FormacionService,
@@ -30,5 +31,9 @@ export class InfoFormacionComponent implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  editarFormacion(formacion: any) {
+    this.formacionSeleccionada = formacion;
   }
 }
