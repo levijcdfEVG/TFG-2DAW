@@ -10,9 +10,6 @@ use phpseclib3\Math\BigInteger;
 
 class cUsuario {
 
-    // URL para obtener las claves públicas de Google
-    private $googleCertsUrl = 'https://www.googleapis.com/oauth2/v3/certs';
-
     //Metodos de verificacion de login
     public function loginGoogle(): array {
         try {
@@ -48,8 +45,20 @@ class cUsuario {
     }
 
     private function validateGoogleJWT($token) {
-        $certs = $this->getGoogleCerts();
-        $publicKey = $this->getGooglePublicKey($certs);
+        $header = json_decode(base64_decode(explode('.', $token)[0]), true);
+        $kid = $header['kid'] ?? null;
+
+        if (!$kid) {
+            throw new Exception("El token no contiene 'kid'");
+        }
+
+        $certs = $this->getGoogleX509Certs();
+
+        if (!isset($certs[$kid])) {
+            throw new Exception("No se encontró certificado para el kid: $kid");
+        }
+
+        $publicKey = $certs[$kid];
 
         $decoded = JWT::decode($token, new Key($publicKey, 'RS256'));
 
@@ -63,23 +72,30 @@ class cUsuario {
         return (array) $decoded;
     }
 
+    private function getGoogleX509Certs() {
+        $certs = file_get_contents('https://www.googleapis.com/oauth2/v1/certs');
+        return json_decode($certs, true);
+    }
+
     private function getGooglePublicKey($googleCerts) {
         foreach ($googleCerts['keys'] as $key) {
-            if (isset($key['n']) && isset($key['e'])) {
-                $modulus = $this->base64UrlDecode($key['n']);
-                $exponent = $this->base64UrlDecode($key['e']);
-
-                $publicKey = PublicKeyLoader::load([
-                    'n' => new BigInteger($modulus, 256),
-                    'e' => new BigInteger($exponent, 256)
-                ]);
-                
-                return $publicKey->toString('PKCS8');
-                
+            if ($key['kid'] === $kid) {
+                return $this->convertJwkToPem($key);
             }
         }
+        throw new Exception("No se encontró la clave con kid: $kid");
+    }
 
-        throw new Exception("No se encontró una clave válida de Google.");
+    private function convertJwkToPem($jwk) {
+        $modulus = $this->base64UrlDecode($jwk['n']);
+        $exponent = $this->base64UrlDecode($jwk['e']);
+
+        $rsa = PublicKeyLoader::load([
+            'n' => new BigInteger($modulus, 256),
+            'e' => new BigInteger($exponent, 256)
+        ]);
+
+        return $rsa->toString('PKCS8');
     }
 
     private function base64UrlDecode($data) {
