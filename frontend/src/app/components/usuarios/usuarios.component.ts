@@ -35,9 +35,15 @@ export class UsuariosComponent implements OnInit {
     // Recoge los datos del formulario
     const params = this.filterForm.value;
 
-    this.userService.getUsersByParams(params).subscribe(response => {
-      if (response) {
+    this.userService.getUsersByParams(params).subscribe({
+      next: (response) => {
         this.dataUsers = response;
+        console.log(this.dataUsers);
+        this.cdr.detectChanges();
+        this.cargarDataTable();
+      },
+      error: (error) => {
+        console.error('Error al obtener usuarios:', error);
       }
     });
   }
@@ -80,40 +86,44 @@ export class UsuariosComponent implements OnInit {
   }
 
 // METODOS DE LA TABLA ---------------------------------------
-//   cargarDataTable() {
-//     const table = $('#usersTable').DataTable({
-//       data: this.dataUsers,
-//       autoWidth: false,
-//       pageLength: 5,
-//       searching: false,
-//       ordering: false,
-//       lengthChange: false,
-//       columns: [{
-//         data: 'nombre',
-//       }, {
-//         data: 'apellidos',
-//       }, {
-//         data: 'correo_user',
-//       }, {
-//         data: 'telefono_user',
-//       }, {
-//         data: 'null',
-//         render: (data: any, type: any, row: any) => {
-//           return `<div class="dropdown">
-//                     <button class="btn btn-sm btn-info dropdown-toggle" type="button" id="dropdownMenuButton${data}" data-bs-toggle="dropdown" aria-expanded="false">
-//                       <i class="fas fa-cog"></i> Acciones
-//                     </button>
-//                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${data}">
-//                       <li><a class="dropdown-item" href="/usuarios/${data}">
-//                         <i class="fas fa-eye"></i> Ver ficha
-//                       </a></li>
-//                       <li><a class="dropdown-item" href="/usuarios/editar/${data}">
-//                         <i class="fas fa-edit"></i> Editar
-//                       </a></li>
-//                     </ul>
-//                   </div>`;
-//         }
-//       }]
-//     });
-//   }
+  cargarDataTable() {
+    if ($.fn.DataTable.isDataTable('#usersTable')) {
+      $('#usersTable').DataTable().destroy();
+    }
+
+    const table = $('#usersTable').DataTable({
+      data: this.dataUsers,
+      autoWidth: false,
+      pageLength: 5,
+      searching: false,
+      ordering: false,
+      lengthChange: false,
+      columns: [{
+        data: 'nombre_user',
+      }, {
+        data: 'apellido_user',
+      }, {
+        data: 'correo_user',
+      }, {
+        data: 'telefono_user',
+      }, {
+        data: 'id',
+        render: (data: any, type: any, row: any) => {
+          return `<div class="dropdown">
+                    <button class="btn btn-sm btn-info dropdown-toggle" type="button" id="dropdownMenuButton${data}" data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="fas fa-cog"></i> Acciones
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${data}">
+                      <li><a class="dropdown-item" href="/usuarios/${data}">
+                        <i class="fas fa-eye"></i> Ver ficha
+                      </a></li>
+                      <li><a class="dropdown-item" href="/usuarios/editar/${data}">
+                        <i class="fas fa-edit"></i> Editar
+                      </a></li>
+                    </ul>
+                  </div>`;
+        }
+      }]
+    });
+  }
 }

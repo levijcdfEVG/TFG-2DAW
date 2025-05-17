@@ -105,31 +105,7 @@
                             <th scope="col">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr *ngFor="let user of dataUsers">
-                            <td>{{ user.nombre_user }}</td>
-                            <td>{{ user.apellido_user }}</td>
-                            <td>{{ user.correo_user }}</td>
-                            <td>{{ user.telefono_user }}</td>
-                            <td>
-                                <div class="dropdown">
-                                    <button class="btn btn-sm btn-info dropdown-toggle" type="button"
-                                            [id]="'dropdownMenuButton' + user.id" data-bs-toggle="dropdown"
-                                            aria-expanded="false">
-                                        <i class="fas fa-cog"></i> Acciones
-                                    </button>
-                                    <ul class="dropdown-menu" [attr.aria-labelledby]="'dropdownMenuButton' + user.id">
-                                        <li><a class="dropdown-item" [routerLink]="['/usuarios', user.id]">
-                                            <i class="fas fa-eye"></i> Ver ficha
-                                        </a></li>
-                                        <li><a class="dropdown-item" [routerLink]="['/usuarios/editar', user.id]">
-                                            <i class="fas fa-edit"></i> Editar
-                                        </a></li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
+                    <tbody></tbody>
                 </table>
             </div>
         </div>

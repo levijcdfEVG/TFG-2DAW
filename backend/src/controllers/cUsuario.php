@@ -8,15 +8,14 @@ class cUsuario {
     }
 
     public function getUsersByParams() {
-
-        $params = array( // Recoge los parametros y los mapea con una clave
-            'nombre' => isset($_GET['params']['nombre']) ? $_GET['params']['nombre'] : '',
-            'apellidos' => isset($_GET['params']['apellidos']) ? $_GET['params']['apellidos'] : '',
-            'email' => isset($_GET['params']['email']) ? $_GET['params']['email'] : '',
-            'telefono' => isset($_GET['params']['telefono']) ? $_GET['params']['telefono'] : '',
-            'rol' => isset($_GET['params']['rol']) ? $_GET['params']['rol'] : 'all',
-            'nuevo_educador' => isset($_GET['params']['nuevo_educador']) ? $_GET['params']['nuevo_educador'] : 0,
-            'estado' => isset($_GET['params']['estado']) ? $_GET['params']['estado'] : 0
+        $params = array( // Recoge los parametros directamente de $_GET
+            'nombre' => isset($_GET['nombre']) ? $_GET['nombre'] : '',
+            'apellidos' => isset($_GET['apellidos']) ? $_GET['apellidos'] : '',
+            'email' => isset($_GET['email']) ? $_GET['email'] : '',
+            'telefono' => isset($_GET['telefono']) ? $_GET['telefono'] : '',
+            'rol' => isset($_GET['rol']) ? $_GET['rol'] : 'all',
+            'nuevo_educador' => isset($_GET['nuevo_educador']) ? $_GET['nuevo_educador'] : 0,
+            'estado' => isset($_GET['estado']) ? $_GET['estado'] : 0
         );
 
         $resultado = $this->objUsuario->getUsersByParams($params);
