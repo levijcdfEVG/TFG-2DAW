@@ -6,7 +6,7 @@ declare const $datatable: any;
 
 
 @Component({
-  selector: 'app-info-formacion',
+  selector: 'app-info-sdsda',
   templateUrl: './info-formacion.component.html',
   styleUrls: ['./info-formacion.component.css']
 })
