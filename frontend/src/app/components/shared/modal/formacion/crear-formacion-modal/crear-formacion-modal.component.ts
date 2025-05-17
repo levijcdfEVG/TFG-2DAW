@@ -21,5 +21,14 @@ export class CrearFormacionModalComponent {
   //     },
   //     error: (err) => alert('Error al crear formación: ' + err.message)
   //   });
+    console.log(data);
+    this.formacionService.insertarFormacion(data).subscribe(
+      (response) => {
+        console.log(response);
+      },
+      (error) => {
+        console.error(error);
+      }
+    )
   }
 }

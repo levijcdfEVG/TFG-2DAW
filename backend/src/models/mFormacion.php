@@ -14,7 +14,7 @@ class MFormacion {
             $this->conectar();
     
             $sql = "
-                SELECT id, lugar_imparticion, duracion, modalidad, justificacion, metodologia, docentes, dirigido_a
+                SELECT *
                 FROM formacion
                 WHERE activo = 1;
             ";

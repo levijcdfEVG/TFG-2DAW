@@ -19,7 +19,7 @@ export class FormacionFormComponent implements OnInit {
       this.form = this.fb.group({
         lugar_imparticion: [this.formacionData?.lugar_imparticion || '', [Validators.required, Validators.maxLength(60)]],
         modalidad: [this.formacionData?.modalidad || '', [Validators.required, Validators.maxLength(20)]],
-        duracion: [this.formacionData?.duracion || '', [Validators.required, Validators.min(1)], Validators.maxLength(255)],
+        duracion: [this.formacionData?.duracion || '', [Validators.required, Validators.min(1), Validators.maxLength(255)]],
         justificacion: [this.formacionData?.justificacion || '', [Validators.required, Validators.maxLength(255)]],
         metodologia: [this.formacionData?.metodologia || '', [Validators.required, Validators.maxLength(255)]],
         docentes: [this.formacionData?.docentes || '', [Validators.required, Validators.maxLength(255)]],
@@ -31,14 +31,14 @@ export class FormacionFormComponent implements OnInit {
       });
     }else {
       this.form = this.fb.group({
-        lugar_imparticion: [this.formacionData?.lugar_imparticion || '', [Validators.required, Validators.maxLength(60)]],
-        modalidad: [this.formacionData?.modalidad || '', [Validators.required, Validators.maxLength(20)]],
-        duracion: [this.formacionData?.duracion || '', [Validators.required, Validators.min(1)], Validators.maxLength(255)],
-        justificacion: [this.formacionData?.justificacion || '', [Validators.required, Validators.maxLength(255)]],
-        metodologia: [this.formacionData?.metodologia || '', [Validators.required, Validators.maxLength(255)]],
-        docentes: [this.formacionData?.docentes || '', [Validators.required, Validators.maxLength(255)]],
-        dirigido_a: [this.formacionData?.dirigido_a || '', [Validators.required, Validators.maxLength(255)]],
-        curso_academico: [this.formacionData?.curso_academico || '', [Validators.required, Validators.pattern(/^\d{4}\/\d{2}$/)]],
+        lugar_imparticion: ['', [Validators.required, Validators.maxLength(60)]],
+        modalidad: ['', [Validators.required, Validators.maxLength(20)]],
+        duracion: ['', [Validators.required, Validators.min(1), Validators.maxLength(255)]],
+        justificacion: ['', [Validators.required, Validators.maxLength(255)]],
+        metodologia: ['', [Validators.required, Validators.maxLength(255)]],
+        docentes: ['', [Validators.required, Validators.maxLength(255)]],
+        dirigido_a: ['', [Validators.required, Validators.maxLength(255)]],
+        curso_academico: ['', [Validators.required, Validators.pattern(/^\d{4}\/\d{2}$/)]],
         modulos: this.fb.array([]),
         objetivos: this.fb.array([])
       });
@@ -85,11 +85,28 @@ export class FormacionFormComponent implements OnInit {
 
   submit() {
     if (this.form.valid) {
-      this.formSubmit.emit(this.form.value);
+      const payload = {
+        formacion: {
+          lugar_imparticion: this.form.value.lugar_imparticion,
+          modalidad: this.form.value.modalidad,
+          duracion: this.form.value.duracion,
+          justificacion: this.form.value.justificacion,
+          metodologia: this.form.value.metodologia,
+          docentes: this.form.value.docentes,
+          dirigido_a: this.form.value.dirigido_a,
+          activo: 1
+        },
+        modulos: (this.form.value.modulos as string[]).map((nombre: string) => ({ nombre_modulo: nombre })),
+        objetivos: (this.form.value.objetivos as string[]).map((desc: string) => ({ descripcion: desc })),
+        centros: this.form.value.centros,
+        cursos: [this.form.value.curso_academico]
+      };
+      this.formSubmit.emit(payload);
     } else {
-      this.form.markAllAsTouched(); // para mostrar errores
+      this.form.markAllAsTouched();
     }
   }
+
 
   getErrorMessage(controlName: string): string {
     const control = this.form.get(controlName);
