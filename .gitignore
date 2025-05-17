@@ -3,3 +3,5 @@
 /frontend/src/app/config/
 /nbproject/private/
 /frontend/.angular/
+/backend/.phpdoc/
+/backend/vendor/
