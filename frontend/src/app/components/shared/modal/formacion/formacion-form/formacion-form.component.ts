@@ -8,25 +8,43 @@ import { FormBuilder, FormGroup, Validators, FormArray, AbstractControl, Validat
 export class FormacionFormComponent implements OnInit {
 
   @Input() formacionData?: any;
+  @Input() esEditar?: boolean;
   @Output() formSubmit = new EventEmitter<any>();
   form!: FormGroup;
 
   constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
-    this.form = this.fb.group({
-      lugar_imparticion: [this.formacionData?.lugar_imparticion || '', [Validators.required, Validators.maxLength(60)]],
-      modalidad: [this.formacionData?.modalidad || '', [Validators.required, Validators.maxLength(20)]],
-      duracion: [this.formacionData?.duracion || '', [Validators.required, Validators.min(1)], Validators.maxLength(255)],
-      justificacion: [this.formacionData?.justificacion || '', [Validators.required, Validators.maxLength(255)]],
-      metodologia: [this.formacionData?.metodologia || '', [Validators.required, Validators.maxLength(255)]],
-      docentes: [this.formacionData?.docentes || '', [Validators.required, Validators.maxLength(255)]],
-      dirigido_a: [this.formacionData?.dirigido_a || '', [Validators.required, Validators.maxLength(255)]],
-      curso_academico: [this.formacionData?.curso_academico || '', [Validators.required, Validators.pattern(/^\d{4}\/\d{2}$/)]],
-      modulos: this.fb.array([]),
-      objetivos: this.fb.array([]),
-      centro_id: [this.formacionData?.centro_id || '', [Validators.min(1)]],
-    });
+    if (this.esEditar) {
+      this.form = this.fb.group({
+        lugar_imparticion: [this.formacionData?.lugar_imparticion || '', [Validators.required, Validators.maxLength(60)]],
+        modalidad: [this.formacionData?.modalidad || '', [Validators.required, Validators.maxLength(20)]],
+        duracion: [this.formacionData?.duracion || '', [Validators.required, Validators.min(1)], Validators.maxLength(255)],
+        justificacion: [this.formacionData?.justificacion || '', [Validators.required, Validators.maxLength(255)]],
+        metodologia: [this.formacionData?.metodologia || '', [Validators.required, Validators.maxLength(255)]],
+        docentes: [this.formacionData?.docentes || '', [Validators.required, Validators.maxLength(255)]],
+        dirigido_a: [this.formacionData?.dirigido_a || '', [Validators.required, Validators.maxLength(255)]],
+        curso_academico: [this.formacionData?.curso_academico || '', [Validators.required, Validators.pattern(/^\d{4}\/\d{2}$/)]],
+        modulos: this.fb.array([]),
+        objetivos: this.fb.array([]),
+        centro_id: [this.formacionData?.centro_id, [Validators.min(1)]],
+      });
+    }else {
+      this.form = this.fb.group({
+        lugar_imparticion: [this.formacionData?.lugar_imparticion || '', [Validators.required, Validators.maxLength(60)]],
+        modalidad: [this.formacionData?.modalidad || '', [Validators.required, Validators.maxLength(20)]],
+        duracion: [this.formacionData?.duracion || '', [Validators.required, Validators.min(1)], Validators.maxLength(255)],
+        justificacion: [this.formacionData?.justificacion || '', [Validators.required, Validators.maxLength(255)]],
+        metodologia: [this.formacionData?.metodologia || '', [Validators.required, Validators.maxLength(255)]],
+        docentes: [this.formacionData?.docentes || '', [Validators.required, Validators.maxLength(255)]],
+        dirigido_a: [this.formacionData?.dirigido_a || '', [Validators.required, Validators.maxLength(255)]],
+        curso_academico: [this.formacionData?.curso_academico || '', [Validators.required, Validators.pattern(/^\d{4}\/\d{2}$/)]],
+        modulos: this.fb.array([]),
+        objetivos: this.fb.array([])
+      });
+    }
+
+
 
     if (this.formacionData?.modulos?.length) {
       this.formacionData.modulos.forEach((m: string) => this.modulos.push(this.fb.control(m, [Validators.required, Validators.maxLength(50)])));
@@ -94,5 +112,15 @@ export class FormacionFormComponent implements OnInit {
       return 'Formato inválido.';
     }
     return '';
+  }
+
+  evaluarCantidadModulos() {
+    const modulos = this.form.get('modulos') as FormArray;
+    return modulos.length > 1;
+  }
+
+  evaluarCantidadObjetivos() {
+    const objetivos = this.form.get('objetivos') as FormArray;
+    return objetivos.length > 1;
   }
 }

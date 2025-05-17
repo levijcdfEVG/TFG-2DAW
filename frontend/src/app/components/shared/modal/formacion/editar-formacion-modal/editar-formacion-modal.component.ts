@@ -5,17 +5,12 @@ import {FormacionService} from "../../../../../services/formacion.service";
   selector: 'app-editar-formacion-modal',
   templateUrl: './editar-formacion-modal.component.html',
 })
-export class EditarFormacionModalComponent implements OnChanges {
+export class EditarFormacionModalComponent {
   @Input() formacion!: any;
-  mostrarModal = false;
 
   constructor(private formacionService: FormacionService) {}
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['formacion'] && this.formacion) {
-      this.mostrarModal = true;
-    }
-  }
+
   onFormSubmit(data: any) {
     // const payload = { ...data, id: this.formacion.id };
     // this.formacionService.actualizar(payload).subscribe({

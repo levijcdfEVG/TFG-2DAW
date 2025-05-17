@@ -25,7 +25,7 @@
       <td>{{ f.justificacion }}</td>
       <td>{{ f.dirigido_a }}</td>
       <td>
-        <button class="btn btn-sm btn-outline-primary me-2"><i class="fa-solid fa-pencil"></i></button>
+        <button (click)="editarFormacion(f)" class="btn btn-sm btn-outline-primary me-2" data-bs-target="#editarFormacionModal" data-bs-toggle="modal"><i class="fa-solid fa-pencil"></i></button>
         <button class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash-can"></i></button>
       </td>
     </tr>
@@ -33,5 +33,5 @@
   </table>
 </div>
 
-<app-crear-formacion-modal #crearModal></app-crear-formacion-modal>
+<app-crear-formacion-modal></app-crear-formacion-modal>
 <app-editar-formacion-modal [formacion]="formacionSeleccionada"></app-editar-formacion-modal>

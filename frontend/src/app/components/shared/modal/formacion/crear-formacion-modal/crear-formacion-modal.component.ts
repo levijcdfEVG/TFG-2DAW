@@ -9,7 +9,6 @@ import {FormacionService} from "../../../../../services/formacion.service";
 })
 export class CrearFormacionModalComponent {
   @ViewChild(FormacionFormComponent) formComponent!: FormacionFormComponent;
-  mostrarModal = false;
 
   constructor(private formacionService: FormacionService) {}
 
