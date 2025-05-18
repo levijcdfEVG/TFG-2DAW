@@ -2,8 +2,8 @@ import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UsuarioService } from '../../services/usuario.service';
-import { Subject} from "rxjs";
-import 'datatables.net';
+import { Subject, takeUntil} from "rxjs";
+import { User } from 'src/app/interfaces/user.interface';
 
 declare var $: any;
 
@@ -36,10 +36,13 @@ export class UsuariosComponent implements OnInit {
     const params = this.filterForm.value;
 
     this.userService.getUsersByParams(params).subscribe({
-      next: (response) => {
+      next: (response: User[]) => {
         this.dataUsers = response;
-        console.log(this.dataUsers);
         this.cdr.detectChanges();
+        //console.log($.fn.dataTable); // Comprueba si DataTable está cargado
+        if ($.fn.DataTable.isDataTable('#usersTable')) {
+          $('#usersTable').DataTable().destroy();
+        }
         this.cargarDataTable();
       },
       error: (error) => {
@@ -87,10 +90,6 @@ export class UsuariosComponent implements OnInit {
 
 // METODOS DE LA TABLA ---------------------------------------
   cargarDataTable() {
-    if ($.fn.DataTable.isDataTable('#usersTable')) {
-      $('#usersTable').DataTable().destroy();
-    }
-
     $('#usersTable').DataTable({
       data: this.dataUsers,
       autoWidth: true,
