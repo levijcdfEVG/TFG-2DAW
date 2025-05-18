@@ -14,29 +14,29 @@ class mUsuario {
         $conditions = [];
         $values = [];
 
-        if (!empty($params['nombre'])) {
-            $conditions[] = "nombre LIKE ?";
-            $values[] = "%{$params['nombre']}%";
+        if (!empty($params['nombre_user'])) {
+            $conditions[] = "nombre_user LIKE ?";
+            $values[] = "%{$params['nombre_user']}%";
         }
 
-        if (!empty($params['apellidos'])) {
-            $conditions[] = "apellidos LIKE ?";
-            $values[] = "%{$params['apellidos']}%";
+        if (!empty($params['apellidos_user'])) {
+            $conditions[] = "apellidos_user LIKE ?";
+            $values[] = "%{$params['apellidos_user']}%";
         }
 
-        if (!empty($params['email'])) {
-            $conditions[] = "email LIKE ?";
-            $values[] = "%{$params['email']}%";
+        if (!empty($params['email_user'])) {
+            $conditions[] = "email_user LIKE ?";
+            $values[] = "%{$params['email_user']}%";
         }
 
-        if (!empty($params['telefono'])) {
-            $conditions[] = "telefono LIKE ?";
-            $values[] = "%{$params['telefono']}%";
+        if (!empty($params['telefono_user'])) {
+            $conditions[] = "telefono_user LIKE ?";
+            $values[] = "%{$params['telefono_user']}%";
         }
 
-        if ($params['rol'] !== 'all') {
-            $conditions[] = "rol = ?";
-            $values[] = $params['rol'];
+        if ($params['id_rol'] !== 'all') {
+            $conditions[] = "id_rol = ?";
+            $values[] = $params['id_rol'];
         }
 
         if ($params['nuevo_educador'] != 0) {

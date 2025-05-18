@@ -14,6 +14,8 @@ import { InfoEducadorComponent } from './components/dashboard/info-educador/info
 import { FooterComponent } from './components/shared/footer/footer.component';
 import { UsuariosComponent } from './components/usuarios/usuarios.component';
 import { UserFileComponent } from './components/usuarios/user-file/user-file.component';
+import { NewUserComponent } from './components/usuarios/modal/new-user/new-user.component';
+import { ModUserComponent } from './components/usuarios/modal/mod-user/mod-user.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +28,9 @@ import { UserFileComponent } from './components/usuarios/user-file/user-file.com
     InfoEducadorComponent,
     FooterComponent,
     UsuariosComponent,
-    UserFileComponent
+    UserFileComponent,
+    NewUserComponent,
+    ModUserComponent
   ],
   imports: [
     BrowserModule,

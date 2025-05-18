@@ -9,11 +9,11 @@ class cUsuario {
 
     public function getUsersByParams() {
         $params = array( // Recoge los parametros directamente de $_GET
-            'nombre' => isset($_GET['nombre']) ? $_GET['nombre'] : '',
-            'apellidos' => isset($_GET['apellidos']) ? $_GET['apellidos'] : '',
-            'email' => isset($_GET['email']) ? $_GET['email'] : '',
-            'telefono' => isset($_GET['telefono']) ? $_GET['telefono'] : '',
-            'rol' => isset($_GET['rol']) ? $_GET['rol'] : 'all',
+            'nombre_user' => isset($_GET['nombre_user']) ? $_GET['nombre_user'] : '',
+            'apellido_user' => isset($_GET['apellido_user']) ? $_GET['apellido_user'] : '',
+            'email_user' => isset($_GET['email_user']) ? $_GET['email_user'] : '',
+            'telefono_user' => isset($_GET['telefono_user']) ? $_GET['telefono_user'] : '',
+            'id_rol' => isset($_GET['id_rol']) ? $_GET['id_rol'] : 'all',
             'nuevo_educador' => isset($_GET['nuevo_educador']) ? $_GET['nuevo_educador'] : 0,
             'estado' => isset($_GET['estado']) ? $_GET['estado'] : 0
         );
