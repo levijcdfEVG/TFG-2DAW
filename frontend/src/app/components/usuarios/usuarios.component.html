@@ -1,4 +1,3 @@
-<app-user-file></app-user-file>
 <div class="container-fluid">
     <!-- User Filter -->
     <div class="card rounded-0 my-3 mx-4">
@@ -92,20 +91,21 @@
     </div>
 
     <!-- Users Table -->
-    <div class="card mx-4">
+    <div class="mx-4">
         <div class="card-body">
             <div class="table-responsive">
-                <table id="usersTable" class="display table table-striped table-sm table-hover">
-                    <thead>
+                <table id="usersTable" class="w-100 table table-striped table-hover row-border mb-0">
+                    <thead class="table-primary">
                         <tr>
-                            <th scope="col">Nombre</th>
-                            <th scope="col">Apellidos</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Teléfono</th>
-                            <th scope="col">Acciones</th>
+                            <th scope="col" class="py-3 ps-4">Nombre</th>
+                            <th scope="col" class="py-3">Apellidos</th>
+                            <th scope="col" class="py-3">Email</th>
+                            <th scope="col" class="py-3 text-end">Teléfono</th>
+                            <th scope="col" class="py-3 text-end pe-4">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody></tbody>
+                    <tbody>
+                    </tbody>
                 </table>
             </div>
         </div>

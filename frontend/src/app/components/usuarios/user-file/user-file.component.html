@@ -1,1 +1,35 @@
-<p>user-file works!</p>
+<div class="user-file-horizontal">
+  <div class="user-photo-box">
+    <img *ngIf="userPhotoUrl; else initials" [src]="userPhotoUrl" alt="Foto de usuario" class="user-photo-large" />
+    <ng-template #initials>
+      <div class="user-initials">{{ getInitials(user.nombre_user, user.apellido_user) }}</div>
+    </ng-template>
+    <input type="file" (change)="onPhotoSelected($event)" accept="image/*" />
+  </div>
+  <div class="user-data-box">
+    <div class="user-data-card">
+      <div class="user-data-header">Datos generales</div>
+      <div class="user-data-grid">
+        <div><strong>Nombre:</strong> {{ user.nombre_user }}</div>
+        <div><strong>Provincia:</strong> {{ user.provincia }}</div>
+        <div><strong>Apellidos:</strong> {{ user.apellido_user }}</div>
+        <div><strong>Localidad:</strong> {{ user.localidad }}</div>
+        <div style="grid-column: 1 / span 2;"><strong>Correo:</strong> {{ user.correo_user }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="tabs">
+  <button [class.active]="activeTab === 'formaciones'" (click)="activeTab = 'formaciones'">Formaciones</button>
+  <button [class.active]="activeTab === 'extra'" (click)="activeTab = 'extra'">Otra sección</button>
+</div>
+<div class="tab-content">
+  <div *ngIf="activeTab === 'formaciones'">
+    <div class="formaciones-box">
+      <p>Contenido de formaciones...</p>
+    </div>
+  </div>
+  <div *ngIf="activeTab === 'extra'">
+    <p>Contenido de la otra sección...</p>
+  </div>
+</div>

@@ -91,13 +91,23 @@ export class UsuariosComponent implements OnInit {
       $('#usersTable').DataTable().destroy();
     }
 
-    const table = $('#usersTable').DataTable({
+    $('#usersTable').DataTable({
       data: this.dataUsers,
-      autoWidth: false,
+      autoWidth: true,
       pageLength: 5,
       searching: false,
       ordering: false,
       lengthChange: false,
+      language: {
+
+        lengthMenu: "Mostrar _MENU_ entradas",
+        info: "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+        infoEmpty: "Mostrando 0 a 0 de 0 entradas",
+        paginate: {
+          previous: " <i class='fas fa-chevron-left'></i> Anterior",
+          next: "Siguiente <i class='fas fa-chevron-right'></i>"
+        }
+      },
       columns: [{
         data: 'nombre_user',
       }, {
@@ -106,19 +116,20 @@ export class UsuariosComponent implements OnInit {
         data: 'correo_user',
       }, {
         data: 'telefono_user',
+        className: 'text-end',
       }, {
         data: 'id',
-        render: (data: any, type: any, row: any) => {
-          return `<div class="dropdown">
-                    <button class="btn btn-sm btn-info dropdown-toggle" type="button" id="dropdownMenuButton${data}" data-bs-toggle="dropdown" aria-expanded="false">
-                      <i class="fas fa-cog"></i> Acciones
+        render: (data: any, row: any) => {
+          return `<div class="dropdown text-end pe-3">
+                    <button class="btn btn-sm" type="button" id="dropdownMenuButton${data}" data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="fas fa-cog"></i>
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${data}">
                       <li><a class="dropdown-item" href="/usuarios/${data}">
-                        <i class="fas fa-eye"></i> Ver ficha
+                        <i class="fas fa-eye text-theme"></i> Ver ficha
                       </a></li>
                       <li><a class="dropdown-item" href="/usuarios/editar/${data}">
-                        <i class="fas fa-edit"></i> Editar
+                        <i class="fas fa-${row.activo ? 'check' : 'ban'} text-theme"></i> ${row.activo ? 'Habilitar' : 'Deshabilitar'}
                       </a></li>
                     </ul>
                   </div>`;
