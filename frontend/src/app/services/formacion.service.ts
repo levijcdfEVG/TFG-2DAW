@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { Observable, tap } from 'rxjs';
-import { FormacionResponse } from '../services/interfaces/formacionesResponse';
+import {AddCentroPayload, FormacionResponse} from '../services/interfaces/formacionesResponse';
 import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
@@ -39,7 +39,17 @@ export class FormacionService {
 
   insertarFormacion(data: any): Observable<any> {
     const url = `${this.backendUrl}?controlador=cFormaciones&accion=insertarFormacion`;
-    return this.http.post<any>(url, data).pipe(
+    console.log("Datos del form: ", data);
+    const payloadData: AddCentroPayload = {
+      formacion: data.formacion,
+      modulos: data.modulos, // ya tienen { nombre_modulo: string }
+      objetivos: data.objetivos, // ya tienen { descripcion: string }
+      centros: data.centros ?? [], // asegúrate que esté definido
+      cursos: data.cursos
+    };
+
+
+    return this.http.post<any>(url, payloadData).pipe(
       tap({
         next: (response) => {
           if (response.success) {

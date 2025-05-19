@@ -110,5 +110,24 @@
         <button type="button" class="btn btn-outline-primary" (click)="addObjetivo()">+ Añadir objetivo</button>
     </div>
 
+    <!-- Fila de MultiSelect para Centro de formacion -->
+    <div class="mb-3">
+        <label for="centro_formacion" class="form-label">Centro de formación</label>
+        <ng-select
+                [items]="centros"
+                bindLabel="nombre_centro"
+                bindValue="id"
+                placeholder="Selecciona un centro"
+                formControlName="centro_id"
+                [loading]="loadingCentros"
+                [searchable]="true">
+        </ng-select>
+
+
+        <!--        <div *ngIf="form.get('centro_id')?.invalid && form.get('centro_id')?.touched">-->
+<!--            <small class="text-danger">{{ getErrorMessage('centro_id') }}</small>-->
+<!--        </div>-->
+    </div>
+
     <button type="submit" class="btn btn-success">Guardar formación</button>
 </form>

@@ -13,3 +13,20 @@ export interface FormacionResponse {
     success: boolean;
     data: Formacion[];
 }
+
+export interface AddCentroPayload {
+    formacion: Formacion;
+    modulos: { nombre_modulo: string }[];
+    objetivos: { descripcion: string }[];
+    centros: number[];
+    cursos: string[];
+}
+
+export interface ModificarCentroPayload {
+    id: number;
+    formacion: Formacion;
+    modulos: { nombre_modulo: string }[];
+    objetivos: { descripcion: string }[];
+    centros: number[];
+    cursos: string[];
+}

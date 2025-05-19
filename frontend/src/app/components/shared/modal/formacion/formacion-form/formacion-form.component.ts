@@ -1,20 +1,29 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray, AbstractControl, ValidationErrors } from '@angular/forms';
+import {CentrosService} from "../../../../../services/centros.service";
 
 @Component({
   selector: 'app-formacion-form',
   templateUrl: './formacion-form.component.html',
 })
-export class FormacionFormComponent implements OnInit {
+export class FormacionFormComponent implements OnInit ,OnDestroy{
 
   @Input() formacionData?: any;
   @Input() esEditar?: boolean;
   @Output() formSubmit = new EventEmitter<any>();
-  form!: FormGroup;
+  public centros: any[] = [];
+  public centroSeleccionado: any = null;
+  public form!: FormGroup;
+  // @ts-ignore
+  public loadingCentros: boolean;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+      private fb: FormBuilder,
+      private centrosService: CentrosService,
+      private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
+    this.loadCentros();
     if (this.esEditar) {
       this.form = this.fb.group({
         lugar_imparticion: [this.formacionData?.lugar_imparticion || '', [Validators.required, Validators.maxLength(60)]],
@@ -40,7 +49,8 @@ export class FormacionFormComponent implements OnInit {
         dirigido_a: ['', [Validators.required, Validators.maxLength(255)]],
         curso_academico: ['', [Validators.required, Validators.pattern(/^\d{4}\/\d{2}$/)]],
         modulos: this.fb.array([]),
-        objetivos: this.fb.array([])
+        objetivos: this.fb.array([]),
+        centro_id: [this.formacionData?.centro_id || '', [Validators.required]],
       });
     }
 
@@ -57,6 +67,10 @@ export class FormacionFormComponent implements OnInit {
     } else {
       this.addObjetivo();
     }
+  }
+
+  ngOnDestroy() {
+
   }
 
   get modulos(): FormArray {
@@ -98,7 +112,7 @@ export class FormacionFormComponent implements OnInit {
         },
         modulos: (this.form.value.modulos as string[]).map((nombre: string) => ({ nombre_modulo: nombre })),
         objetivos: (this.form.value.objetivos as string[]).map((desc: string) => ({ descripcion: desc })),
-        centros: this.form.value.centros,
+        centros: this.form.value.centro_id,
         cursos: [this.form.value.curso_academico]
       };
       this.formSubmit.emit(payload);
@@ -140,4 +154,21 @@ export class FormacionFormComponent implements OnInit {
     const objetivos = this.form.get('objetivos') as FormArray;
     return objetivos.length > 1;
   }
+
+  private loadCentros() {
+    this.loadingCentros = true;
+    this.centrosService.getCentros().subscribe({
+      next: (centros) => {
+        this.centros = centros.data;
+        this.loadingCentros = false;
+      },
+      error: () => (this.loadingCentros = false)
+    });
+  }
+
+  trackById(index: number, item: any): number {
+    return item.id;
+  }
+
+
 }
