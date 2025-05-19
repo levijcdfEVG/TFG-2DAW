@@ -5,8 +5,6 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 require_once 'config/config.php';
 
 Class cFormaciones {
-
-
     public function __construct(){
         $this->mFormacion = new MFormacion();
     }
