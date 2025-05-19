@@ -29,20 +29,6 @@ CREATE TABLE IF NOT EXISTS curso_academico (
   CONSTRAINT pk_curso_academico PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS usuario (
-  id SMALLINT NOT NULL AUTO_INCREMENT,
-  nombre_user VARCHAR(40) NOT NULL,
-  apellido_user VARCHAR(50) NOT NULL,
-  correo_user VARCHAR(70) NOT NULL,
-  telefono_user VARCHAR(9) NOT NULL,
-  nuevo_educador BOOLEAN NOT NULL DEFAULT 1,
-  id_rol TINYINT NOT NULL,
-  CONSTRAINT pk_usuario PRIMARY KEY (id),
-  CONSTRAINT fk_usuario_rol FOREIGN KEY (id_rol) REFERENCES roles(id),
-  CONSTRAINT cck_telefono_user CHECK (telefono_user REGEXP '^[0-9]{9}$'),
-  CONSTRAINT cck_correo_user CHECK (correo_user REGEXP '^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@fundacionloyola\\.net$')
-);
-
 CREATE TABLE IF NOT EXISTS formacion (
   id SMALLINT NOT NULL AUTO_INCREMENT,
   lugar_imparticion VARCHAR(60) NOT NULL,
@@ -54,15 +40,6 @@ CREATE TABLE IF NOT EXISTS formacion (
   dirigido_a VARCHAR(255) NOT NULL,
   activo BOOLEAN NOT NULL,
   CONSTRAINT pk_formacion PRIMARY KEY (id)
-);
-
-CREATE TABLE IF NOT EXISTS inscripciones(
-  id_formacion SMALLINT NOT NULL,
-  id_usu SMALLINT NOT NULL,
-  fecha_inscripcion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT pk_inscripiones PRIMARY KEY (id_formacion, id_usu),
-  CONSTRAINT fk_inscripcion_formacion FOREIGN KEY (id_formacion) REFERENCES formacion(id),
-  CONSTRAINT fk_inscripcion_usuario FOREIGN KEY (id_usu) REFERENCES usuario(id)
 );
 
 CREATE TABLE IF NOT EXISTS centro_fundacion (
@@ -116,4 +93,34 @@ CREATE TABLE IF NOT EXISTS formacion_curso (
   CONSTRAINT pk_formacion_curso PRIMARY KEY (id_curso, id_formacion),
   CONSTRAINT fk_formacion_curso_curso_academico FOREIGN KEY (id_curso) REFERENCES curso_academico(id),
   CONSTRAINT fk_formacion_curso_formacion FOREIGN KEY (id_formacion) REFERENCES formacion(id)
+);
+
+CREATE TABLE IF NOT EXISTS usuario (
+  id SMALLINT NOT NULL AUTO_INCREMENT,
+  nombre_user VARCHAR(40) NOT NULL,
+  apellido_user VARCHAR(50) NOT NULL,
+  correo_user VARCHAR(70) NOT NULL,
+  telefono_user VARCHAR(9) NOT NULL,
+  provincia_id CHAR(2) NOT NULL,
+  localidad_id TINYINT NOT NULL,
+  centro_id TINYINT NOT NULL,
+  nuevo_educador BOOLEAN NOT NULL DEFAULT 1,
+  id_rol TINYINT NOT NULL,
+  activo BOOLEAN NOT NULL DEFAULT 1,
+  CONSTRAINT pk_usuario PRIMARY KEY (id),
+  CONSTRAINT fk_usuario_rol FOREIGN KEY (id_rol) REFERENCES roles(id),
+  CONSTRAINT fk_usuario_provincia FOREIGN KEY (provincia_id) REFERENCES provincia(id),
+  CONSTRAINT fk_usuario_localidad FOREIGN KEY (localidad_id) REFERENCES localidad(id),
+  CONSTRAINT fk_usuario_centro FOREIGN KEY (centro_id) REFERENCES centro_fundacion(id),
+  CONSTRAINT cck_telefono_user CHECK (telefono_user REGEXP '^[0-9]{9}$'),
+  CONSTRAINT cck_correo_user CHECK (correo_user REGEXP '^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@fundacionloyola\\.net$')
+);
+
+CREATE TABLE IF NOT EXISTS inscripciones(
+  id_formacion SMALLINT NOT NULL,
+  id_usu SMALLINT NOT NULL,
+  fecha_inscripcion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT pk_inscripiones PRIMARY KEY (id_formacion, id_usu),
+  CONSTRAINT fk_inscripcion_formacion FOREIGN KEY (id_formacion) REFERENCES formacion(id),
+  CONSTRAINT fk_inscripcion_usuario FOREIGN KEY (id_usu) REFERENCES usuario(id)
 );
