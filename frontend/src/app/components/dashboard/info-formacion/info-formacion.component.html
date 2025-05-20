@@ -1,7 +1,7 @@
 <div class="container mt-4">
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h4>Listado de formaciones</h4>
-    <button class="btn btn-primary">Añadir formación</button>
+    <button class="btn btn-primary" data-bs-target="#crearFormacionModal" data-bs-toggle="modal">+ Añadir formación</button>
   </div>
 
   <table class="table table-bordered table-hover">
@@ -19,16 +19,19 @@
     <tbody>
     <tr *ngFor="let f of formaciones">
       <td>{{ f.id }}</td>
-      <td>{{ f.nombre }}</td>
+      <td>{{ f.lugar_imparticion }}</td>
       <td>{{ f.duracion }}</td>
       <td>{{ f.modalidad }}</td>
       <td>{{ f.justificacion }}</td>
-      <td>{{ f.dirigidoA }}</td>
+      <td>{{ f.dirigido_a }}</td>
       <td>
-        <button class="btn btn-sm btn-outline-primary me-2"><i class="fa-solid fa-pencil"></i></button>
+        <button (click)="editarFormacion(f)" class="btn btn-sm btn-outline-primary me-2" data-bs-target="#editarFormacionModal" data-bs-toggle="modal"><i class="fa-solid fa-pencil"></i></button>
         <button class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash-can"></i></button>
       </td>
     </tr>
     </tbody>
   </table>
 </div>
+
+<app-crear-formacion-modal (formSubmit)="fetchFormaciones()" ></app-crear-formacion-modal>
+<app-editar-formacion-modal (formSubmit)="fetchFormaciones()"></app-editar-formacion-modal>

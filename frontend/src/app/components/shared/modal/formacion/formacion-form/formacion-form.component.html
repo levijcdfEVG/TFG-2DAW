@@ -1,0 +1,176 @@
+<form [formGroup]="form" (ngSubmit)="submit()"
+      class="p-3 rounded"
+      style="max-height: 80vh; overflow-y: auto;">
+
+    <!-- Primera fila: inputs full width -->
+    <div class="mb-3">
+        <label for="lugar" class="form-label">Lugar</label>
+        <input
+                id="lugar"
+                formControlName="lugar_imparticion"
+                placeholder="Lugar"
+                [ngClass]="{'is-invalid': form.get('lugar_imparticion')?.invalid && form.get('lugar_imparticion')?.touched}"
+                class="form-control w-100" />
+        <div *ngIf="form.get('lugar_imparticion')?.invalid && form.get('lugar_imparticion')?.touched">
+            <small class="text-danger">{{ getErrorMessage('lugar_imparticion') }}</small>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label for="modalidad" class="form-label">Modalidad</label>
+        <input
+                id="modalidad"
+                formControlName="modalidad"
+                placeholder="Modalidad"
+                [ngClass]="{'is-invalid': form.get('modalidad')?.invalid && form.get('modalidad')?.touched}"
+                class="form-control w-100" />
+        <div *ngIf="form.get('modalidad')?.invalid && form.get('modalidad')?.touched">
+            <small class="text-danger">{{ getErrorMessage('modalidad') }}</small>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label for="duracion" class="form-label">Duración (horas)</label>
+        <input
+                id="duracion"
+                formControlName="duracion"
+                type="number"
+                placeholder="Horas"
+                [ngClass]="{'is-invalid': form.get('duracion')?.invalid && form.get('duracion')?.touched}"
+                class="form-control w-100" />
+        <div *ngIf="form.get('duracion')?.invalid && form.get('duracion')?.touched">
+            <small class="text-danger">{{ getErrorMessage('duracion') }}</small>
+        </div>
+    </div>
+
+    <!-- Segunda fila: textareas full width -->
+    <div class="mb-3">
+        <label for="justificacion" class="form-label">Justificación</label>
+        <textarea
+                id="justificacion"
+                formControlName="justificacion"
+                rows="3"
+                [ngClass]="{'is-invalid': form.get('justificacion')?.invalid && form.get('justificacion')?.touched}"
+                class="form-control w-100 textarea-limit"></textarea>
+        <div *ngIf="form.get('justificacion')?.invalid && form.get('justificacion')?.touched">
+            <small class="text-danger">{{ getErrorMessage('justificacion') }}</small>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label for="metodologia" class="form-label">Metodología</label>
+        <textarea
+                id="metodologia"
+                formControlName="metodologia"
+                rows="3"
+                [ngClass]="{'is-invalid': form.get('metodologia')?.invalid && form.get('metodologia')?.touched}"
+                class="form-control w-100 textarea-limit"></textarea>
+        <div *ngIf="form.get('metodologia')?.invalid && form.get('metodologia')?.touched">
+            <small class="text-danger">{{ getErrorMessage('metodologia') }}</small>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label for="docentes" class="form-label">Docentes</label>
+        <textarea
+                id="docentes"
+                formControlName="docentes"
+                rows="2"
+                [ngClass]="{'is-invalid': form.get('docentes')?.invalid && form.get('docentes')?.touched}"
+                class="form-control w-100 textarea-limit"></textarea>
+        <div *ngIf="form.get('docentes')?.invalid && form.get('docentes')?.touched">
+            <small class="text-danger">{{ getErrorMessage('docentes') }}</small>
+        </div>
+    </div>
+
+    <!-- Tercera fila: full width again -->
+    <div class="mb-3">
+        <label for="dirigido_a" class="form-label">Dirigido a</label>
+        <textarea
+                id="dirigido_a"
+                formControlName="dirigido_a"
+                rows="2"
+                [ngClass]="{'is-invalid': form.get('dirigido_a')?.invalid && form.get('dirigido_a')?.touched}"
+                class="form-control w-100 textarea-limit"></textarea>
+        <div *ngIf="form.get('dirigido_a')?.invalid && form.get('dirigido_a')?.touched">
+            <small class="text-danger">{{ getErrorMessage('dirigido_a') }}</small>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label for="curso_academico" class="form-label">Curso académico</label>
+        <input
+                id="curso_academico"
+                formControlName="curso_academico"
+                placeholder="2024/25"
+                [ngClass]="{'is-invalid': form.get('curso_academico')?.invalid && form.get('curso_academico')?.touched}"
+                class="form-control w-100" />
+        <div *ngIf="form.get('curso_academico')?.invalid && form.get('curso_academico')?.touched">
+            <small class="text-danger">{{ getErrorMessage('curso_academico') }}</small>
+        </div>
+    </div>
+    <!-- Módulos dinámicos -->
+    <div formArrayName="modulos" class="mb-3">
+        <label class="form-label">Módulos</label>
+        <div *ngFor="let control of modulos.controls; let i = index" class="input-group mb-2">
+            <input
+                    [formControlName]="i"
+                    placeholder="Módulo"
+                    [ngClass]="{'is-invalid': control.invalid && control.touched}"
+                    class="form-control" />
+            <button
+                    *ngIf="evaluarCantidadModulos()"
+                    type="button"
+                    class="btn btn-danger"
+                    (click)="removeModulo(i)"
+                    aria-label="Eliminar módulo">
+                <i class="fa-solid fa-trash-can"></i>
+            </button>
+        </div>
+        <div *ngIf="modulos.invalid && (modulos.dirty || modulos.touched)">
+            <small class="text-danger">Cada módulo es obligatorio.</small>
+        </div>
+        <button type="button" class="btn btn-outline-primary" (click)="addModulo()">+ Añadir módulo</button>
+    </div>
+
+    <!-- Objetivos dinámicos -->
+    <div formArrayName="objetivos" class="mb-3">
+        <label class="form-label">Objetivos</label>
+        <div *ngFor="let control of objetivos.controls; let i = index" class="input-group mb-2">
+            <input
+                    [formControlName]="i"
+                    placeholder="Objetivo"
+                    [ngClass]="{'is-invalid': control.invalid && control.touched}"
+                    class="form-control" />
+            <button
+                    *ngIf="evaluarCantidadObjetivos()"
+                    type="button"
+                    class="btn btn-danger"
+                    (click)="removeObjetivo(i)"
+                    aria-label="Eliminar objetivo">
+                <i class="fa-solid fa-trash-can"></i>
+            </button>
+        </div>
+        <div *ngIf="objetivos.invalid && (objetivos.dirty || objetivos.touched)">
+            <small class="text-danger">Cada objetivo es obligatorio.</small>
+        </div>
+        <button type="button" class="btn btn-outline-primary" (click)="addObjetivo()">+ Añadir objetivo</button>
+    </div>
+
+    <!-- MultiSelect para Centro de formación -->
+    <div class="mb-3">
+        <label for="centro_formacion" class="form-label">Centro de formación</label>
+        <ng-select
+                [items]="centros"
+                bindLabel="nombre_centro"
+                bindValue="id"
+                placeholder="Selecciona un centro"
+                formControlName="centro_id"
+                [loading]="loadingCentros"
+                [searchable]="true"
+                [ngClass]="{'is-invalid': form.get('centro_id')?.invalid && form.get('centro_id')?.touched}">
+        </ng-select>
+    </div>
+
+    <button type="submit" class="btn btn-success w-100">Guardar formación</button>
+</form>

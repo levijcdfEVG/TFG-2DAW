@@ -1,0 +1,23 @@
+{
+  "id": 1,
+  "formacion": {
+    "lugar_imparticion": "Aula 102",
+    "duracion": "25 horas",
+    "modalidad": "Online",
+    "justificacion": "Actualización de contenidos",
+    "metodologia": "Virtual",
+    "docentes": "Ana Martínez",
+    "dirigido_a": "Estudiantes",
+    "activo": 1
+  },
+  "modulos": [
+    {"nombre_modulo": "Modulo 1 actualizado"},
+    {"nombre_modulo": "Modulo 3 nuevo"}
+  ],
+  "objetivos": [
+    {"descripcion": "Objetivo 1 actualizado"},
+    {"descripcion": "Objetivo 3 nuevo"}
+  ],
+  "centros": [1],
+  "cursos": ["23/24", "24/25"]
+}

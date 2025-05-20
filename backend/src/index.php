@@ -66,5 +66,8 @@ if (method_exists($controlador, $_GET["accion"])) {
     // Ejecuta y permite que el controlador maneje la respuesta.
     $controlador->$accion($parametros);
 }
-
+// Responder correctamente a la petición OPTIONS y salir
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+}
 exit;

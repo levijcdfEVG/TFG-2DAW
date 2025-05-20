@@ -21,6 +21,10 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { GoogleSignInComponent } from './components/google-sign-in/google-sign-in.component';
 import {CookieService} from "ngx-cookie-service";
+import { FormacionFormComponent } from './components/shared/modal/formacion/formacion-form/formacion-form.component';
+import { CrearFormacionModalComponent } from './components/shared/modal/formacion/crear-formacion-modal/crear-formacion-modal.component';
+import { EditarFormacionModalComponent } from './components/shared/modal/formacion/editar-formacion-modal/editar-formacion-modal.component';
+import {NgSelectModule} from "@ng-select/ng-select";
 
 @NgModule({
   declarations: [
@@ -35,7 +39,10 @@ import {CookieService} from "ngx-cookie-service";
     AltaCentroComponent,
     ModificarCentroComponent,
     FooterComponent,
-    GoogleSignInComponent
+    GoogleSignInComponent,
+    FormacionFormComponent,
+    CrearFormacionModalComponent,
+    EditarFormacionModalComponent
   ],
   imports: [
     BrowserModule,
@@ -50,7 +57,8 @@ import {CookieService} from "ngx-cookie-service";
     FormsModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    NgSelectModule
   ],
   providers: [
     CookieService
