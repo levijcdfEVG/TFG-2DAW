@@ -58,10 +58,10 @@ Class cFormaciones {
     }
 
     public function updateFormacion() {
-        if ($_SERVER['REQUEST_METHOD'] !== 'PUT') {
-            $this->methodNotAllowed(['PUT']);
-            return;
-        }
+        // if ($_SERVER['REQUEST_METHOD'] !== 'PUT') {
+        //     $this->methodNotAllowed(['PUT']);
+        //     return;
+        // }
         
         try {
             // Recibimos JSON del body
