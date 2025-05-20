@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import {InfoCentroComponent} from "./components/dashboard/info-centro/info-centro.component";
 import {InfoFormacionComponent} from "./components/dashboard/info-formacion/info-formacion.component";
+import {MenuComponent} from "./components/menu/menu.component";
 import {GoogleSignInComponent} from "./components/google-sign-in/google-sign-in.component";
 import {AuthGuard} from "./guards/auth.guard";
 
@@ -29,6 +30,10 @@ const routes: Routes = [
   {
     path: "login",
     component: GoogleSignInComponent
+  },
+  {
+    path: "menu",
+    component: MenuComponent, canActivate: [AuthGuard]
   },
   {
     path: '**',

@@ -1,3 +1,7 @@
 <app-header *ngIf="authService.isAuthenticated()"></app-header>
+
+<!-- Solo si en ruta con menú -->
+<!-- <app-menu *ngIf="mostrarMenu()" [rol]="rolSimulado"></app-menu> -->
+
 <router-outlet></router-outlet>
 <!--<app-footer></app-footer>-->

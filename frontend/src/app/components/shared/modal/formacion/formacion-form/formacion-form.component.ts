@@ -33,13 +33,13 @@ export class FormacionFormComponent implements OnInit ,OnDestroy{
       this.loadFormacionAEditar();
       this.form = this.fb.group({
         id: [this.formacionData?.id || ''],
-        lugar_imparticion: [this.formacionData?.lugar_imparticion || '', [Validators.required, Validators.maxLength(60)]],
-        modalidad: [this.formacionData?.modalidad || '', [Validators.required, Validators.maxLength(20)]],
-        duracion: [this.formacionData?.duracion || '', [Validators.required, Validators.min(1), Validators.maxLength(255)]],
-        justificacion: [this.formacionData?.justificacion || '', [Validators.required, Validators.maxLength(255)]],
-        metodologia: [this.formacionData?.metodologia || '', [Validators.required, Validators.maxLength(255)]],
-        docentes: [this.formacionData?.docentes || '', [Validators.required, Validators.maxLength(255)]],
-        dirigido_a: [this.formacionData?.dirigido_a || '', [Validators.required, Validators.maxLength(255)]],
+        lugar_imparticion: [this.formacionData?.lugar_imparticion || '', [Validators.required, Validators.maxlength(60)]],
+        modalidad: [this.formacionData?.modalidad || '', [Validators.required, Validators.maxlength(20)]],
+        duracion: [this.formacionData?.duracion || '', [Validators.required, Validators.min(1), Validators.maxlength(255)]],
+        justificacion: [this.formacionData?.justificacion || '', [Validators.required, Validators.maxlength(255)]],
+        metodologia: [this.formacionData?.metodologia || '', [Validators.required, Validators.maxlength(255)]],
+        docentes: [this.formacionData?.docentes || '', [Validators.required, Validators.maxlength(255)]],
+        dirigido_a: [this.formacionData?.dirigido_a || '', [Validators.required, Validators.maxlength(255)]],
         curso_academico: [this.formacionData?.cursos[0] || '', [Validators.required, Validators.pattern(/^\d{4}\/\d{2}$/)]],
         modulos: this.fb.array([]),
         objetivos: this.fb.array([]),
@@ -48,13 +48,13 @@ export class FormacionFormComponent implements OnInit ,OnDestroy{
 
     }else {
       this.form = this.fb.group({
-        lugar_imparticion: ['', [Validators.required, Validators.maxLength(60)]],
-        modalidad: ['', [Validators.required, Validators.maxLength(20)]],
-        duracion: ['', [Validators.required, Validators.min(1), Validators.maxLength(255)]],
-        justificacion: ['', [Validators.required, Validators.maxLength(255)]],
-        metodologia: ['', [Validators.required, Validators.maxLength(255)]],
-        docentes: ['', [Validators.required, Validators.maxLength(255)]],
-        dirigido_a: ['', [Validators.required, Validators.maxLength(255)]],
+        lugar_imparticion: ['', [Validators.required, Validators.maxlength(60)]],
+        modalidad: ['', [Validators.required, Validators.maxlength(20)]],
+        duracion: ['', [Validators.required, Validators.min(1), Validators.maxlength(255)]],
+        justificacion: ['', [Validators.required, Validators.maxlength(255)]],
+        metodologia: ['', [Validators.required, Validators.maxlength(255)]],
+        docentes: ['', [Validators.required, Validators.maxlength(255)]],
+        dirigido_a: ['', [Validators.required, Validators.maxlength(255)]],
         curso_academico: ['', [Validators.required, Validators.pattern(/^\d{4}\/\d{2}$/)]],
         modulos: this.fb.array([]),
         objetivos: this.fb.array([]),
@@ -65,13 +65,13 @@ export class FormacionFormComponent implements OnInit ,OnDestroy{
 
 
     if (this.formacionData?.modulos?.length) {
-      this.formacionData.modulos.forEach((m: string) => this.modulos.push(this.fb.control(m, [Validators.required, Validators.maxLength(50)])));
+      this.formacionData.modulos.forEach((m: string) => this.modulos.push(this.fb.control(m, [Validators.required, Validators.maxlength(50)])));
     } else {
       this.addModulo();
     }
 
     if (this.formacionData?.objetivos?.length) {
-      this.formacionData.objetivos.forEach((o: string) => this.objetivos.push(this.fb.control(o, [Validators.required, Validators.maxLength(150)])));
+      this.formacionData.objetivos.forEach((o: string) => this.objetivos.push(this.fb.control(o, [Validators.required, Validators.maxlength(150)])));
     } else {
       this.addObjetivo();
     }

@@ -1,0 +1,34 @@
+<!-- Simulación de cambio de rol (solo en desarrollo) -->
+<div  class="btn-group mb-4">
+  <button class="btn btn-primary" (click)="cambiarRol('admin')">Admin</button>
+  <button class="btn btn-secondary" (click)="cambiarRol('responsable')">Responsable</button>
+  <button class="btn btn-success" (click)="cambiarRol('educador')">Educador</button>
+</div>
+
+<nav class="nav flex-column" [ngSwitch]="rol">
+  <!-- Menú para administrador -->
+  <div *ngSwitchCase="'admin'">
+    <a class="nav-link" routerLink="/info-centros">Centros</a>
+    <a class="nav-link" routerLink="/info-cursos">Curso Académico</a>
+    <a class="nav-link" routerLink="/info-formaciones">Formaciones</a>
+    <a class="nav-link" routerLink="/info-educadores">Educadores</a>
+  </div>
+
+  <!-- Menú para responsable -->
+  <div *ngSwitchCase="'responsable'">
+    <a class="nav-link" routerLink="/info-cursos">Curso Académico</a>
+    <a class="nav-link" routerLink="/info-formaciones">Formaciones</a>
+    <a class="nav-link" routerLink="/info-educadores">Educadores</a>
+  </div>
+
+  <!-- Menú para educador -->
+  <div *ngSwitchCase="'educador'">
+    <a class="nav-link" routerLink="/mi-perfil">Mi Información</a>
+  </div>
+
+  <!-- Fallback -->
+  <div *ngSwitchDefault>
+    <span class="text-danger">Rol no reconocido</span>
+  </div>
+</nav>
+
