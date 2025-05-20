@@ -151,7 +151,7 @@ class MFormacion {
         }
     }
 
-    public function insertarFormacion(array $data): array {
+   public function insertarFormacion(array $data): array {
         try {
             $this->conectar();
             $this->conexion->beginTransaction();
@@ -201,7 +201,7 @@ class MFormacion {
                     $idObjetivo = $this->conexion->lastInsertId();
                 }
 
-                // Insertar relación con formacion
+                // Insertar relación con formación
                 $stmt = $this->conexion->prepare("
                     INSERT INTO objetivo_formacion (id_formacion, id_objetivo)
                     VALUES (:id_formacion, :id_objetivo)
@@ -212,20 +212,23 @@ class MFormacion {
                 ]);
             }
 
-            // 4. Insertar asociaciones a centros
-            foreach ($data['centros'] as $idCentro) {
+            // 4. Insertar asociación con centro si se ha proporcionado
+            if (!is_null($data['centros'])) {
                 $stmt = $this->conexion->prepare("
                     INSERT INTO centro_formacion (id_centro, id_formacion)
                     VALUES (:id_centro, :id_formacion)
                 ");
                 $stmt->execute([
-                    ':id_centro' => $idCentro,
+                    ':id_centro' => $data['centros'],
                     ':id_formacion' => $idFormacion
                 ]);
             }
 
-            // 5. Insertar/reusar cursos académicos
-            foreach ($data['cursos'] as $nombreCurso) {
+            // 5. Insertar cursos académicos de inicio y fin
+            foreach ($data['cursos'] as $cursoArray) {
+                $nombreCurso = trim($cursoArray[0]);
+                if ($nombreCurso === '') continue;
+
                 $stmt = $this->conexion->prepare("SELECT id FROM curso_academico WHERE nombre_curso = :nombre LIMIT 1");
                 $stmt->execute([':nombre' => $nombreCurso]);
                 $idCurso = $stmt->fetchColumn();
@@ -250,14 +253,14 @@ class MFormacion {
             }
 
             $this->conexion->commit();
-
-            return ['success' => true, 'message' => 'Formación creada correctamente.', 'id_formacion' => $idFormacion];
+            return ['success' => true];
 
         } catch (PDOException $e) {
             $this->conexion->rollBack();
-            return ['success' => false, 'message' => 'Error al crear formación: ' . $e->getMessage()];
+            return ['success' => false,$e->getMessage()];
         }
     }
+
 
     public function updateFormacion(int $idFormacion, array $data): array {
         try {
@@ -319,19 +322,22 @@ class MFormacion {
                 ]);
             }
 
-            // 4. Limpiar y volver a insertar centros
+            // 4. Limpiar y volver a insertar centro (solo uno, si hay)
             $this->conexion->prepare("DELETE FROM centro_formacion WHERE id_formacion = :id")->execute([':id' => $idFormacion]);
-            foreach ($data['centros'] as $idCentro) {
+            if (!is_null($data['centros'])) {
                 $stmt = $this->conexion->prepare("INSERT INTO centro_formacion (id_centro, id_formacion) VALUES (:idc, :idf)");
                 $stmt->execute([
-                    ':idc' => $idCentro,
+                    ':idc' => $data['centros'],
                     ':idf' => $idFormacion
                 ]);
             }
 
-            // 5. Limpiar y volver a insertar cursos
+            // 5. Limpiar y volver a insertar cursos académicos
             $this->conexion->prepare("DELETE FROM formacion_curso WHERE id_formacion = :id")->execute([':id' => $idFormacion]);
-            foreach ($data['cursos'] as $nombreCurso) {
+            foreach ($data['cursos'] as $cursoArray) {
+                $nombreCurso = trim($cursoArray[0]);
+                if ($nombreCurso === '') continue;
+
                 $stmt = $this->conexion->prepare("SELECT id FROM curso_academico WHERE nombre_curso = :nombre");
                 $stmt->execute([':nombre' => $nombreCurso]);
                 $idCurso = $stmt->fetchColumn();
@@ -350,13 +356,14 @@ class MFormacion {
             }
 
             $this->conexion->commit();
-            return ['success' => true, 'message' => 'Formación actualizada correctamente'];
+            return ['success' => true];
 
         } catch (PDOException $e) {
             $this->conexion->rollBack();
-            return ['success' => false, 'message' => 'Error al actualizar formación: ' . $e->getMessage()];
+            return ['success' => false, $e->getMessage()];
         }
     }
+
 
 
 

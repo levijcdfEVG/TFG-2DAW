@@ -97,18 +97,36 @@
         </div>
     </div>
 
+    <!-- Curso de Inicio -->
     <div class="mb-3">
-        <label for="curso_academico" class="form-label">Curso académico</label>
+        <label for="curso_inicio" class="form-label">Curso académico de Inicio</label>
         <input
-                id="curso_academico"
-                formControlName="curso_academico"
-                placeholder="2024/25"
-                [ngClass]="{'is-invalid': form.get('curso_academico')?.invalid && form.get('curso_academico')?.touched}"
+                id="curso_inicio"
+                formControlName="curso_inicio"
+                placeholder="ejemplo: 2024/25"
+                [ngClass]="{'is-invalid': form.get('curso_inicio')?.invalid && form.get('curso_inicio')?.touched}"
                 class="form-control w-100" />
-        <div *ngIf="form.get('curso_academico')?.invalid && form.get('curso_academico')?.touched">
-            <small class="text-danger">{{ getErrorMessage('curso_academico') }}</small>
+        <div *ngIf="form.get('curso_inicio')?.invalid && form.get('curso_inicio')?.touched">
+            <small class="text-danger">{{ getErrorMessage('curso_inicio') }}</small>
         </div>
     </div>
+
+    <!-- Curso de Final -->
+    <div class="mb-3">
+        <label for="curso_fin" class="form-label">Curso académico de Final</label>
+        <input
+                id="curso_fin"
+                formControlName="curso_fin"
+                placeholder="ejemplo: 2025/26"
+                [ngClass]="{'is-invalid': form.get('curso_fin')?.invalid && form.get('curso_fin')?.touched}"
+                class="form-control w-100" />
+        <div *ngIf="form.get('curso_fin')?.invalid && form.get('curso_fin')?.touched">
+            <small class="text-danger">{{ getErrorMessage('curso_fin') }}</small>
+        </div>
+    </div>
+
+
+
     <!-- Módulos dinámicos -->
     <div formArrayName="modulos" class="mb-3">
         <label class="form-label">Módulos</label>

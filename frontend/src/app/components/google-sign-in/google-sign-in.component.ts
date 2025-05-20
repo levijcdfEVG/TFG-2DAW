@@ -6,6 +6,7 @@ import {googleID} from "../../config/config";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import Swal2 from "sweetalert2";
 import {CookieService} from "ngx-cookie-service";
+import {ToastrService} from "ngx-toastr";
 
 declare const google: any;
 
@@ -24,7 +25,8 @@ export class GoogleSignInComponent implements OnInit {
   constructor(private ngZone: NgZone,
               private authService: AuthService,
               private router: Router,
-              private cookieService: CookieService ) { }
+              private cookieService: CookieService,
+              private toastr: ToastrService) { }
 
 
   /**
@@ -88,12 +90,9 @@ export class GoogleSignInComponent implements OnInit {
   handleCredentialResponse(response: any) {
     this.authService.checkExistingAccounts(response.credential).subscribe(res => {
       if (res.success) {
-        Swal2.fire({
-          icon: 'success',
-          title: 'Inicio de sesión exitoso',
-          showConfirmButton: false,
-          timer: 1500
-        })
+        this.toastr.success("Inicio de sesión exitoso", "Login de Google", {
+          positionClass: "toast-bottom-right"
+        });
         this.cookieService.set('token', res.token, 1, '/');
         this.ngZone.run(() => {
           this.authService.setAuthState(true);

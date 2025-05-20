@@ -47,8 +47,24 @@ export class FormacionService {
       modulos: data.modulos,
       objetivos: data.objetivos,
       centros: data.centros ?? [],
-      cursos: data.cursos
+      cursos: [data.curso_inicio, data.curso_fin]
     };
+    console.log(payloadData);
+    return this.http.post<any>(url, payloadData);
+  }
+
+  editarFormacion(data: any): Observable<any> {
+    const url = `${this.backendUrl}?controlador=cFormaciones&accion=updateFormacion`;
+    console.log("Datos que vienen del form",data);
+    const payloadData = {
+      id: data.id,
+      formacion: data.formacion,
+      modulos: data.modulos,
+      objetivos: data.objetivos,
+      centros: data.centros ?? [],
+      cursos: [data.curso_inicio, data.curso_fin]
+    };
+    console.log("Datos a subir a la api",payloadData);
     return this.http.post<any>(url, payloadData);
   }
 

@@ -40,10 +40,11 @@ export class FormacionFormComponent implements OnInit ,OnDestroy{
         metodologia: [this.formacionData?.metodologia || '', [Validators.required, Validators.maxLength(255)]],
         docentes: [this.formacionData?.docentes || '', [Validators.required, Validators.maxLength(255)]],
         dirigido_a: [this.formacionData?.dirigido_a || '', [Validators.required, Validators.maxLength(255)]],
-        curso_academico: [this.formacionData?.cursos[0] || '', [Validators.required, Validators.pattern(/^\d{4}\/\d{2}$/)]],
+        curso_inicio: ['', [Validators.required, Validators.pattern(/^[0-9]{4}\/[0-9]{2}$/)]],
+        curso_fin: ['', [Validators.pattern(/^[0-9]{4}\/[0-9]{2}$/)]],
         modulos: this.fb.array([]),
         objetivos: this.fb.array([]),
-        centro_id: [this.formacionData?.centro?.id, [Validators.min(1)]],
+        centro_id: [this.formacionData?.centro, [Validators.required]],
       });
 
     }else {
@@ -55,10 +56,11 @@ export class FormacionFormComponent implements OnInit ,OnDestroy{
         metodologia: ['', [Validators.required, Validators.maxLength(255)]],
         docentes: ['', [Validators.required, Validators.maxLength(255)]],
         dirigido_a: ['', [Validators.required, Validators.maxLength(255)]],
-        curso_academico: ['', [Validators.required, Validators.pattern(/^\d{4}\/\d{2}$/)]],
+        curso_inicio: ['', [Validators.required, Validators.pattern(/^[0-9]{4}\/[0-9]{2}$/)]],
+        curso_fin: ['', [Validators.pattern(/^[0-9]{4}\/[0-9]{2}$/)]],
         modulos: this.fb.array([]),
         objetivos: this.fb.array([]),
-        centro_id: [this.formacionData?.centro_id || '', [Validators.required]],
+        centro_id: ['', [Validators.required]],
       });
     }
 
@@ -108,6 +110,7 @@ export class FormacionFormComponent implements OnInit ,OnDestroy{
   submit() {
     if (this.form.valid) {
       const payload = {
+        id: this.form.value.id,
         formacion: {
           lugar_imparticion: this.form.value.lugar_imparticion,
           modalidad: this.form.value.modalidad,
@@ -121,7 +124,8 @@ export class FormacionFormComponent implements OnInit ,OnDestroy{
         modulos: (this.form.value.modulos as string[]).map((nombre: string) => ({ nombre_modulo: nombre })),
         objetivos: (this.form.value.objetivos as string[]).map((desc: string) => ({ descripcion: desc })),
         centros: this.form.value.centro_id,
-        cursos: [this.form.value.curso_academico]
+        curso_inicio: [this.form.value.curso_inicio],
+        curso_fin: [this.form.value.curso_fin]
       };
       this.formSubmit.emit(payload);
     } else {
@@ -145,7 +149,7 @@ export class FormacionFormComponent implements OnInit ,OnDestroy{
       return 'El texto es demasiado largo.';
     }
     if (control.hasError('pattern')) {
-      if (controlName === 'curso_academico') {
+      if (controlName === 'curso-inicio' || controlName === 'curso_fin') {
         return 'El formato debe ser AAAA/AA (ejemplo: 2024/25).';
       }
       return 'Formato inválido.';
@@ -185,6 +189,7 @@ export class FormacionFormComponent implements OnInit ,OnDestroy{
       next: (formacion) => {
         this.formacionData = formacion;
         this.form.patchValue(this.formacionData);
+        this.form.patchValue({ curso_inicio: this.formacionData.cursos[0], curso_fin: this.formacionData.cursos[1] || null });
         this.loadCentros();
         this.loadingFormacionAEditar = false;
         console.log("Valores fetcheados",this.formacionData);
