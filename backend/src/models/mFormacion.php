@@ -67,12 +67,32 @@ class MFormacion {
                 $cursosPorFormacion[$curso['id_formacion']][] = $curso['nombre_curso'];
             }
 
-            // 5. Montar resultado final agregando modulos, objetivos y cursos a cada formación
+            //5. Traer el centro
+            $sql = "SELECT cf.id_formacion, c.id, c.nombre_centro
+                    FROM centro_formacion cf
+                    JOIN centro_fundacion c ON cf.id_centro = c.id
+                    WHERE cf.id_formacion IN ($placeholders)";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute($formacionIds);
+            $centrosRaw = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Agrupar por id_formacion
+            $centrosPorFormacion = [];
+            foreach ($centrosRaw as $centro) {
+                $idFormacion = $centro['id_formacion'];
+                $centrosPorFormacion[$idFormacion] = [
+                    'id' => $centro['id'],
+                    'nombre' => $centro['nombre_centro']
+                ];
+            }
+
+            // 6. Montar resultado final agregando modulos, objetivos y cursos a cada formación
             foreach ($formaciones as &$formacion) {
                 $id = $formacion['id'];
                 $formacion['modulos'] = $modulosPorFormacion[$id] ?? [];
                 $formacion['objetivos'] = $objetivosPorFormacion[$id] ?? [];
                 $formacion['cursos'] = $cursosPorFormacion[$id] ?? [];
+                $formacion['centro'] = $centrosPorFormacion[$id] ?? null;
             }
 
             return [

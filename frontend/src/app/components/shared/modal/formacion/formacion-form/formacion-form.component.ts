@@ -40,10 +40,10 @@ export class FormacionFormComponent implements OnInit ,OnDestroy{
         metodologia: [this.formacionData?.metodologia || '', [Validators.required, Validators.maxLength(255)]],
         docentes: [this.formacionData?.docentes || '', [Validators.required, Validators.maxLength(255)]],
         dirigido_a: [this.formacionData?.dirigido_a || '', [Validators.required, Validators.maxLength(255)]],
-        curso_academico: [this.formacionData?.curso_academico || '', [Validators.required, Validators.pattern(/^\d{4}\/\d{2}$/)]],
+        curso_academico: [this.formacionData?.cursos[0] || '', [Validators.required, Validators.pattern(/^\d{4}\/\d{2}$/)]],
         modulos: this.fb.array([]),
         objetivos: this.fb.array([]),
-        centro_id: [this.formacionData?.centro_id, [Validators.min(1)]],
+        centro_id: [this.formacionData?.centro?.id, [Validators.min(1)]],
       });
 
     }else {
