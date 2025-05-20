@@ -90,10 +90,10 @@ Class cFormaciones {
     }
 
     public function desactivarFormacion() {
-        if ($_SERVER['REQUEST_METHOD'] !== 'PUT') {
-            $this->methodNotAllowed(['PUT']);
-            return;
-        }
+        // if ($_SERVER['REQUEST_METHOD'] !== 'PUT') {
+        //     $this->methodNotAllowed(['PUT']);
+        //     return;
+        // }
         
         
         try {

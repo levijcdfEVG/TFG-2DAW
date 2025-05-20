@@ -15,7 +15,7 @@ export class FormacionService {
   constructor(private http: HttpClient,
               private toastr: ToastrService) { }
 
-  getAllFormaciones(): Observable<FormacionResponse> {
+  public getAllFormaciones(): Observable<FormacionResponse> {
     const url = `${this.backendUrl}?controlador=cFormaciones&accion=getAllFormaciones`;
     return this.http.get<FormacionResponse>(url).pipe(
       tap({
@@ -40,7 +40,7 @@ export class FormacionService {
     );
   }
 
-  insertarFormacion(data: any): Observable<any> {
+  public insertarFormacion(data: any): Observable<any> {
     const url = `${this.backendUrl}?controlador=cFormaciones&accion=crearFormacion`;
     const payloadData = {
       formacion: data.formacion,
@@ -49,13 +49,11 @@ export class FormacionService {
       centros: data.centros ?? [],
       cursos: [data.curso_inicio, data.curso_fin]
     };
-    console.log(payloadData);
     return this.http.post<any>(url, payloadData);
   }
 
-  editarFormacion(data: any): Observable<any> {
+  public editarFormacion(data: any): Observable<any> {
     const url = `${this.backendUrl}?controlador=cFormaciones&accion=updateFormacion`;
-    console.log("Datos que vienen del form",data);
     const payloadData = {
       id: data.id,
       formacion: data.formacion,
@@ -64,34 +62,14 @@ export class FormacionService {
       centros: data.centros ?? [],
       cursos: [data.curso_inicio, data.curso_fin]
     };
-    console.log("Datos a subir a la api",payloadData);
     return this.http.post<any>(url, payloadData);
   }
 
 
-  desactivarFormacionPorId(id: number): Observable<any> {
-    const url = `${this.backendUrl}?controlador=cFormaciones&accion=desactivarFormacionPorId`;
+  public desactivarFormacion(id: number): Observable<any> {
+    const url = `${this.backendUrl}?controlador=cFormaciones&accion=desactivarFormacion`;
 
-    return this.http.post<any>(url, { id }).pipe(
-      tap({
-        next: (response) => {
-          if (response.success) {
-            this.toastr.success("Formación desactivada exitosamente", "CRUD Formaciones", {
-              positionClass: "toast-bottom-right"
-            });
-          } else {
-            this.toastr.error("Error al desactivar la formación", "CRUD Formaciones", {
-              positionClass: "toast-bottom-right"
-            });
-          }
-        },
-        error: () => {
-          this.toastr.error("Error al desactivar la formación", "CRUD Formaciones", {
-            positionClass: "toast-bottom-right"
-          });
-        }
-      })
-    );
+    return this.http.post<any>(url, { id });
   }
 
   public getFormacionAEditar(): Observable<any> {

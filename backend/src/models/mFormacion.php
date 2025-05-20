@@ -117,15 +117,15 @@ class MFormacion {
 
             if ($stmt->execute()) {
                 if ($stmt->rowCount() > 0) {
-                    return ['success' => true, 'message' => 'Formación desactivada correctamente.'];
+                    return ['success' => true];
                 } else {
-                    return ['success' => false, 'message' => 'No se encontró la formación con el ID proporcionado.'];
+                    return ['success' => false];
                 }
             } else {
-                return ['success' => false, 'message' => 'No se pudo desactivar la formación.'];
+                return ['success' => false];
             }
         } catch (PDOException $e) {
-            return ['success' => false, 'message' => 'Error al desactivar la formación: ' . $e->getMessage()];
+            return ['success' => false, 'message' => 'Error:' . $e->getMessage()];
         }
     }
 
