@@ -1,6 +1,8 @@
 import {ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray, AbstractControl, ValidationErrors } from '@angular/forms';
 import {CentrosService} from "../../../../../services/centros.service";
+import {FormacionService} from "../../../../../services/formacion.service";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-formacion-form',
@@ -16,16 +18,21 @@ export class FormacionFormComponent implements OnInit ,OnDestroy{
   public form!: FormGroup;
   // @ts-ignore
   public loadingCentros: boolean;
+  public loadingFormacionAEditar: boolean = false;
 
   constructor(
       private fb: FormBuilder,
       private centrosService: CentrosService,
-      private cdr: ChangeDetectorRef) {}
+      private cdr: ChangeDetectorRef,
+      private formacionService: FormacionService,
+      private toastr: ToastrService ) {}
 
   ngOnInit(): void {
     this.loadCentros();
     if (this.esEditar) {
+      this.loadFormacionAEditar();
       this.form = this.fb.group({
+        id: [this.formacionData?.id || ''],
         lugar_imparticion: [this.formacionData?.lugar_imparticion || '', [Validators.required, Validators.maxLength(60)]],
         modalidad: [this.formacionData?.modalidad || '', [Validators.required, Validators.maxLength(20)]],
         duracion: [this.formacionData?.duracion || '', [Validators.required, Validators.min(1), Validators.maxLength(255)]],
@@ -38,6 +45,7 @@ export class FormacionFormComponent implements OnInit ,OnDestroy{
         objetivos: this.fb.array([]),
         centro_id: [this.formacionData?.centro_id, [Validators.min(1)]],
       });
+
     }else {
       this.form = this.fb.group({
         lugar_imparticion: ['', [Validators.required, Validators.maxLength(60)]],
@@ -171,4 +179,18 @@ export class FormacionFormComponent implements OnInit ,OnDestroy{
   }
 
 
+  private loadFormacionAEditar() {
+    this.loadingFormacionAEditar = true;
+    this.formacionService.getFormacionAEditar().subscribe({
+      next: (formacion) => {
+        this.formacionData = formacion;
+        this.form.patchValue(this.formacionData);
+        this.loadCentros();
+        this.loadingFormacionAEditar = false;
+        console.log("Valores fetcheados",this.formacionData);
+        console.log("Valores del form",this.form.value);
+      },
+      error: () => (this.loadingCentros = false)
+    });
+  }
 }

@@ -30,10 +30,11 @@ export class FormacionService {
             });
           }
         },
-        error: () => {
+        error: (response) => {
           this.toastr.error("Error al cargar las formaciones", "CRUD Formaciones", {
             positionClass: "toast-bottom-right"
           });
+          console.error(response);
         }
       })
     );

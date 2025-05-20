@@ -109,21 +109,6 @@
             <small class="text-danger">{{ getErrorMessage('curso_academico') }}</small>
         </div>
     </div>
-
-    <div *ngIf="esEditar" class="mb-3">
-        <label for="centro_id" class="form-label">ID del centro</label>
-        <input
-                id="centro_id"
-                formControlName="centro_id"
-                type="number"
-                placeholder="ID"
-                [ngClass]="{'is-invalid': form.get('centro_id')?.invalid && form.get('centro_id')?.touched}"
-                class="form-control w-100" />
-        <div *ngIf="form.get('centro_id')?.invalid && form.get('centro_id')?.touched">
-            <small class="text-danger">{{ getErrorMessage('centro_id') }}</small>
-        </div>
-    </div>
-
     <!-- Módulos dinámicos -->
     <div formArrayName="modulos" class="mb-3">
         <label class="form-label">Módulos</label>

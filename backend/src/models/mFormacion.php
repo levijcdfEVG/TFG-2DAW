@@ -13,25 +13,78 @@ class MFormacion {
         try {
             $this->conectar();
 
+            // 1. Traer todas las formaciones activas
             $sql = "SELECT * FROM formacion WHERE activo = 1;";
             $stmt = $this->conexion->prepare($sql);
             $stmt->execute();
+            $formaciones = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-            if (empty($resultados)) {
+            if (empty($formaciones)) {
                 return ['success' => false, 'message' => 'No se encontraron registros.'];
+            }
+
+            // Extraer IDs de formaciones para consultas posteriores
+            $formacionIds = array_column($formaciones, 'id');
+            $placeholders = implode(',', array_fill(0, count($formacionIds), '?'));
+
+            // 2. Traer módulos de esas formaciones
+            $sql = "SELECT id_formacion, nombre_modulo FROM modulo WHERE id_formacion IN ($placeholders)";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute($formacionIds);
+            $modulosRaw = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Agrupar módulos por id_formacion
+            $modulosPorFormacion = [];
+            foreach ($modulosRaw as $mod) {
+                $modulosPorFormacion[$mod['id_formacion']][] = $mod['nombre_modulo'];
+            }
+
+            // 3. Traer objetivos asociados
+            $sql = "SELECT ofm.id_formacion, o.descripcion
+                    FROM objetivo_formacion ofm
+                    JOIN objetivo o ON ofm.id_objetivo = o.id
+                    WHERE ofm.id_formacion IN ($placeholders)";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute($formacionIds);
+            $objetivosRaw = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $objetivosPorFormacion = [];
+            foreach ($objetivosRaw as $obj) {
+                $objetivosPorFormacion[$obj['id_formacion']][] = $obj['descripcion'];
+            }
+
+            // 4. Traer cursos asociados
+            $sql = "SELECT fc.id_formacion, ca.nombre_curso
+                    FROM formacion_curso fc
+                    JOIN curso_academico ca ON fc.id_curso = ca.id
+                    WHERE fc.id_formacion IN ($placeholders)";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute($formacionIds);
+            $cursosRaw = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $cursosPorFormacion = [];
+            foreach ($cursosRaw as $curso) {
+                $cursosPorFormacion[$curso['id_formacion']][] = $curso['nombre_curso'];
+            }
+
+            // 5. Montar resultado final agregando modulos, objetivos y cursos a cada formación
+            foreach ($formaciones as &$formacion) {
+                $id = $formacion['id'];
+                $formacion['modulos'] = $modulosPorFormacion[$id] ?? [];
+                $formacion['objetivos'] = $objetivosPorFormacion[$id] ?? [];
+                $formacion['cursos'] = $cursosPorFormacion[$id] ?? [];
             }
 
             return [
                 'success' => true,
                 'message' => 'Formaciones obtenidas correctamente',
-                'data' => $resultados
+                'data' => $formaciones
             ];
         } catch (PDOException $e) {
             return ['success' => false, 'message' => 'Error al ejecutar la consulta: ' . $e->getMessage()];
         }
     }
+
 
     
     public function desactivarFormacionPorId(int $id): array {

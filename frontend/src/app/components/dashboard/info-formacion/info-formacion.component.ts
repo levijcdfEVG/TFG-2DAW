@@ -28,6 +28,7 @@ export class InfoFormacionComponent implements OnInit {
     this.formacionService.getAllFormaciones().subscribe(response => {
       if (response.success) {
         this.formaciones = response.data;
+        console.log(this.formaciones);
         this.cdr.detectChanges();
       }
     });
