@@ -1,14 +1,16 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {FormacionService} from "../../../../../services/formacion.service";
 
 @Component({
   selector: 'app-editar-formacion-modal',
   templateUrl: './editar-formacion-modal.component.html',
 })
-export class EditarFormacionModalComponent {
-  @Input() formacion!: any;
+export class EditarFormacionModalComponent{
 
-  constructor(private formacionService: FormacionService) {}
+  constructor(private formacionService: FormacionService,
+              private cdr: ChangeDetectorRef) {
+  }
+
 
 
   onFormSubmit(data: any) {

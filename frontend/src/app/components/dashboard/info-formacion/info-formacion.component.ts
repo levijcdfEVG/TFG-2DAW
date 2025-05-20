@@ -13,7 +13,7 @@ declare const $datatable: any;
 export class InfoFormacionComponent implements OnInit {
 
   public formaciones: Formacion[] = [];
-  formacionSeleccionada: any = null;
+  protected formacionSeleccionada: any = null;
 
   constructor(
       private formacionService: FormacionService,
@@ -24,7 +24,7 @@ export class InfoFormacionComponent implements OnInit {
     this.fetchFormaciones();
   }
 
-  private fetchFormaciones() {
+  protected fetchFormaciones() {
     this.formacionService.getAllFormaciones().subscribe(response => {
       if (response.success) {
         this.formaciones = response.data;
@@ -34,6 +34,7 @@ export class InfoFormacionComponent implements OnInit {
   }
 
   editarFormacion(formacion: any) {
-    this.formacionSeleccionada = formacion;
+    this.formacionService.setFormacionAEditar(formacion);
+    this.cdr.detectChanges();
   }
 }

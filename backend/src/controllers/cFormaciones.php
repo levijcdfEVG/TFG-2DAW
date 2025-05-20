@@ -10,30 +10,27 @@ Class cFormaciones {
     }
 
     public function getAllFormaciones() {
-        
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             $this->methodNotAllowed(['GET']);
             return;
         }
-        
-        
+
         try {
+            // Esto ya devuelve un array con success, message y data
             $response = $this->mFormacion->listarAllFormaciones();
-            if ($response === false || $response === null) {
-                $this->sendResponse(['error' => 'No se pudieron obtener las formaciones'], 500);
-            } else {
-                $this->sendResponse($response);
-            }
+
+            echo json_encode($response);
         } catch (Exception $e) {
-            $this->sendResponse(['error' => $e->getMessage()], 500);
+            $this->sendResponse(false, $e->getMessage(), null, 500);
         }
     }
 
+
     public function crearFormacion() {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->methodNotAllowed(['POST']);
-            return;
-        }
+        // if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        //     $this->methodNotAllowed(['POST']);
+        //     return;
+        // }
         
         try {
             // Obtener los datos JSON enviados desde el frontend
@@ -41,7 +38,7 @@ Class cFormaciones {
             $data = json_decode($json, true);
 
             if (!$data) {
-                $this->sendResponse(['error' => 'Datos JSON no válidos o mal formateados'], 400);
+                $this->sendResponse(false, 'Datos JSON no válidos o mal formateados', null, 400);
                 return;
             }
 
@@ -50,13 +47,13 @@ Class cFormaciones {
 
             // Respuesta según resultado
             if ($resultado['success']) {
-                $this->sendResponse($resultado, 201); // 201 Created
+                $this->sendResponse(true, 'Formación creada correctamente', $resultado, 201);
             } else {
-                $this->sendResponse($resultado, 400);
+                $this->sendResponse(false, 'Error al crear formación', $resultado, 400);
             }
 
         } catch (Exception $e) {
-            $this->sendResponse(['error' => 'Error inesperado: ' . $e->getMessage()], 500);
+            $this->sendResponse(false, 'Error inesperado: ' . $e->getMessage(), null, 500);
         }
     }
 
@@ -71,7 +68,7 @@ Class cFormaciones {
             $input = json_decode(file_get_contents('php://input'), true);
 
             if (!isset($input['id']) || empty($input['id'])) {
-                $this->sendResponse(['error' => 'Falta el ID de la formación'], 400);
+                $this->sendResponse(false, 'Falta el ID de la formación', null, 400);
                 return;
             }
 
@@ -82,13 +79,13 @@ Class cFormaciones {
             $response = $this->mFormacion->updateFormacion($idFormacion, $input);
 
             if ($response['success']) {
-                $this->sendResponse(['message' => $response['message']]);
+                $this->sendResponse(true, $response['message']);
             } else {
-                $this->sendResponse(['error' => $response['message']], 500);
+               $this->sendResponse(false, $response['message'], null, 500);
             }
 
         } catch (Exception $e) {
-            $this->sendResponse(['error' => $e->getMessage()], 500);
+            $this->sendResponse(false, $e->getMessage(), null, 500);
         }
     }
 
@@ -102,7 +99,7 @@ Class cFormaciones {
         try {
             $input = json_decode(file_get_contents('php://input'), true);
             if (!isset($input['id']) || empty($input['id'])) {
-                $this->sendResponse(['error' => 'Falta el ID de la formación'], 400);
+                $this->sendResponse(false, 'Falta el ID de la formación', null, 400);
                 return;
             }
             $idFormacion = (int)$input['id'];
@@ -110,13 +107,13 @@ Class cFormaciones {
             $response = $this->mFormacion->desactivarFormacionPorId($idFormacion);
 
             if ($response['success']) {
-                $this->sendResponse(['message' => $response['message']]);
+                $this->sendResponse(true, $response['message']);
             } else {
-                $this->sendResponse(['error' => $response['message']], 404);
+                $this->sendResponse(false, $response['message'], null, 404);
             }
 
         } catch (Exception $e) {
-            $this->sendResponse(['error' => $e->getMessage()], 500);
+           $this->sendResponse(false, $e->getMessage(), null, 500);
         }
     }
 
@@ -129,7 +126,7 @@ Class cFormaciones {
         try {
             $input = json_decode(file_get_contents('php://input'), true);
             if (!isset($input['id']) || empty($input['id'])) {
-                $this->sendResponse(['error' => 'Falta el ID de la formación'], 400);
+                $this->sendResponse(false, 'Falta el ID de la formación', null, 400);
                 return;
             }
             $idFormacion = (int)$input['id'];
@@ -137,21 +134,32 @@ Class cFormaciones {
             $response = $this->mFormacion->borrarFormacionPorId($idFormacion);
 
             if ($response['success']) {
-                $this->sendResponse(['message' => $response['message']]);
+                $this->sendResponse(true, $response['message']);
             } else {
-                $this->sendResponse(['error' => $response['message']], 404);
+              $this->sendResponse(false, $response['message'], null, 404);
             }
 
         } catch (Exception $e) {
-            $this->sendResponse(['error' => $e->getMessage()], 500);
+            $this->sendResponse(false, $e->getMessage(), null, 500);
         }
     }
 
-    private function sendResponse($response, $statusCode = 200) {
+    private function sendResponse($success, $message = '', $data = null, $statusCode = 200) {
         header('Content-Type: application/json');
         http_response_code($statusCode);
+
+        $response = [
+            'success' => $success,
+            'message' => $message,
+        ];
+
+        if ($data !== null) {
+            $response['data'] = $data;
+        }
+
         echo json_encode($response);
     }
+
 
      private function methodNotAllowed(array $allowed) {
         header('Allow: ' . implode(', ', $allowed));

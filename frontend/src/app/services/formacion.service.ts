@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
-import { Observable, tap } from 'rxjs';
+import {BehaviorSubject, Observable, tap} from 'rxjs';
 import {AddCentroPayload, FormacionResponse} from '../services/interfaces/formacionesResponse';
 import { ToastrService } from 'ngx-toastr';
+import {error} from "@angular/compiler-cli/src/transformers/util";
 
 @Injectable({
   providedIn: 'root'
 })
 export class FormacionService {
   private backendUrl = 'http://localhost:8000/index.php';
+  private formacionAEditar = new BehaviorSubject<any>(null)
 
   constructor(private http: HttpClient,
               private toastr: ToastrService) { }
@@ -38,41 +40,21 @@ export class FormacionService {
   }
 
   insertarFormacion(data: any): Observable<any> {
-    const url = `${this.backendUrl}?controlador=cFormaciones&accion=insertarFormacion`;
-    console.log("Datos del form: ", data);
-    const payloadData: AddCentroPayload = {
+    const url = `${this.backendUrl}?controlador=cFormaciones&accion=crearFormacion`;
+    const payloadData = {
       formacion: data.formacion,
-      modulos: data.modulos, // ya tienen { nombre_modulo: string }
-      objetivos: data.objetivos, // ya tienen { descripcion: string }
-      centros: data.centros ?? [], // asegúrate que esté definido
+      modulos: data.modulos,
+      objetivos: data.objetivos,
+      centros: data.centros ?? [],
       cursos: data.cursos
     };
-
-
-    return this.http.post<any>(url, payloadData).pipe(
-      tap({
-        next: (response) => {
-          if (response.success) {
-            this.toastr.success("Formación creada exitosamente", "CRUD Formaciones", {
-              positionClass: "toast-bottom-right"
-            });
-          } else {
-            this.toastr.error("Error al crear la formación", "CRUD Formaciones", {
-              positionClass: "toast-bottom-right"
-            });
-          }
-        },
-        error: () => {
-          this.toastr.error("Error al crear la formación", "CRUD Formaciones", {
-            positionClass: "toast-bottom-right"
-          });
-        }
-      })
-    );
+    return this.http.post<any>(url, payloadData);
   }
+
 
   desactivarFormacionPorId(id: number): Observable<any> {
     const url = `${this.backendUrl}?controlador=cFormaciones&accion=desactivarFormacionPorId`;
+
     return this.http.post<any>(url, { id }).pipe(
       tap({
         next: (response) => {
@@ -93,6 +75,14 @@ export class FormacionService {
         }
       })
     );
+  }
+
+  public getFormacionAEditar(): Observable<any> {
+    return this.formacionAEditar.asObservable();
+  }
+
+  public setFormacionAEditar(formacion: any) {
+    this.formacionAEditar.next(formacion);
   }
 
 

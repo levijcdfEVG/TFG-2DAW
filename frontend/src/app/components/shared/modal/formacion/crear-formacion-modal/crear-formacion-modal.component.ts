@@ -1,6 +1,8 @@
-import { Component, ViewChild } from '@angular/core';
+import {Component, EventEmitter, Output, ViewChild} from '@angular/core';
 import { FormacionFormComponent } from '../formacion-form/formacion-form.component';
 import {FormacionService} from "../../../../../services/formacion.service";
+import {ToastrService} from "ngx-toastr";
+import Swal2 from "sweetalert2";
 
 
 @Component({
@@ -9,26 +11,44 @@ import {FormacionService} from "../../../../../services/formacion.service";
 })
 export class CrearFormacionModalComponent {
   @ViewChild(FormacionFormComponent) formComponent!: FormacionFormComponent;
+  @Output() formSubmit = new EventEmitter<any>();
 
-  constructor(private formacionService: FormacionService) {}
+  constructor(private formacionService: FormacionService,
+              private toastr: ToastrService ) {}
 
   onFormSubmit(data: any) {
-  //   this.formacionService.crear(data).subscribe({
-  //     next: () => {
-  //       alert('Formación creada con éxito');
-  //       this.cerrar();
-  //       // Aquí podrías emitir un evento para que el padre actualice la lista
-  //     },
-  //     error: (err) => alert('Error al crear formación: ' + err.message)
-  //   });
-    console.log(data);
-    this.formacionService.insertarFormacion(data).subscribe(
-      (response) => {
-        console.log(response);
-      },
-      (error) => {
-        console.error(error);
+    Swal2.fire({
+      title: '¿Estás seguro?',
+      text: "La formación será guardada en la base de datos",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, guardar!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.formacionService.insertarFormacion(data).subscribe({
+          next: (response) => {
+            if (response.success) {
+              this.toastr.success("Formación creada exitosamente", "CRUD Formaciones", {
+                positionClass: "toast-bottom-right"
+              });
+              this.formSubmit.emit();
+            } else {
+              this.toastr.error("Error al crear la formación", "CRUD Formaciones", {
+                positionClass: "toast-bottom-right"
+              });
+            }
+          },
+          error: () => {
+            this.toastr.error("Error al crear la formación", "CRUD Formaciones", {
+              positionClass: "toast-bottom-right"
+            });
+          }
+        });
       }
-    )
+    });
   }
+
+
 }

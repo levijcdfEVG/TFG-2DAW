@@ -9,30 +9,30 @@ class MFormacion {
     }
 
 
-    public function listarAllFormaciones():array  {
+    public function listarAllFormaciones(): array {
         try {
             $this->conectar();
-    
-            $sql = "
-                SELECT *
-                FROM formacion
-                WHERE activo = 1;
-            ";
-    
+
+            $sql = "SELECT * FROM formacion WHERE activo = 1;";
             $stmt = $this->conexion->prepare($sql);
             $stmt->execute();
-    
+
             $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
+
             if (empty($resultados)) {
                 return ['success' => false, 'message' => 'No se encontraron registros.'];
             }
-    
-            return ['success' => true, 'data' => $resultados];
+
+            return [
+                'success' => true,
+                'message' => 'Formaciones obtenidas correctamente',
+                'data' => $resultados
+            ];
         } catch (PDOException $e) {
             return ['success' => false, 'message' => 'Error al ejecutar la consulta: ' . $e->getMessage()];
         }
     }
+
     
     public function desactivarFormacionPorId(int $id): array {
         try {
