@@ -60,7 +60,7 @@ export class FormacionFormComponent implements OnInit ,OnDestroy{
         curso_fin: ['', [Validators.pattern(/^[0-9]{4}\/[0-9]{2}$/)]],
         modulos: this.fb.array([]),
         objetivos: this.fb.array([]),
-        centro_id: ['', [Validators.required]],
+        centro_id: [1, [Validators.required]],
       });
     }
 
@@ -197,5 +197,11 @@ export class FormacionFormComponent implements OnInit ,OnDestroy{
       },
       error: () => (this.loadingCentros = false)
     });
+  }
+
+  public clearForm() {
+    this.form.reset();
+    this.form.markAsUntouched();
+    this.form.markAsPristine();
   }
 }

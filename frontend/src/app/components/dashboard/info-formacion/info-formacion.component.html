@@ -1,37 +1,43 @@
 <div class="container mt-4">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4>Listado de formaciones</h4>
-    <button class="btn btn-primary" data-bs-target="#crearFormacionModal" data-bs-toggle="modal">+ Añadir formación</button>
-  </div>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>Listado de formaciones</h4>
+        <button class="btn btn-primary" data-bs-target="#crearFormacionModal" data-bs-toggle="modal">+ Añadir formación</button>
+    </div>
 
-  <table class="table table-bordered table-hover">
-    <thead class="table-light">
-    <tr>
-      <th>Id</th>
-      <th>Nombre</th>
-      <th>Duración</th>
-      <th>Modalidad</th>
-      <th>Justificación</th>
-      <th>Dirigido a</th>
-      <th>Acciones</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let f of formaciones">
-      <td>{{ f.id }}</td>
-      <td>{{ f.lugar_imparticion }}</td>
-      <td>{{ f.duracion }} horas</td>
-      <td>{{ f.modalidad }}</td>
-      <td>{{ f.justificacion }}</td>
-      <td>{{ f.dirigido_a }}</td>
-      <td>
-        <button (click)="editarFormacion(f)" class="btn btn-sm btn-outline-primary me-2" data-bs-target="#editarFormacionModal" data-bs-toggle="modal"><i class="fa-solid fa-pencil"></i></button>
-        <button (click)="borrarFormacion(f)" class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash-can"></i></button>
-      </td>
-    </tr>
-    </tbody>
-  </table>
+    <table id="formaciones" class="table table-bordered table-hover">
+        <thead class="table-light">
+        <tr>
+            <th>Informacion Completa</th>
+            <th>Id</th>
+            <th>Nombre</th>
+            <th>Duración</th>
+            <th>Modalidad</th>
+            <th>Justificación</th>
+            <th>Dirigido a</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let f of formaciones">
+            <td>
+                <button (click)="mostrarInformacionCompleta(f)" class="btn btn-info btn-sm">
+                    <i class="fa fa-list"></i>
+                </button>
+            </td>
+            <td>{{ f.id }}</td>
+            <td>{{ f.lugar_imparticion }}</td>
+            <td>{{ f.duracion }} horas</td>
+            <td>{{ f.modalidad }}</td>
+            <td>{{ f.justificacion }}</td>
+            <td>{{ f.dirigido_a }}</td>
+            <td>
+                <button (click)="editarFormacion(f)" class="btn btn-sm btn-outline-primary me-2" data-bs-target="#editarFormacionModal" data-bs-toggle="modal"><i class="fa-solid fa-pencil"></i></button>
+                <button (click)="borrarFormacion(f)" class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash-can"></i></button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 
-<app-crear-formacion-modal (formSubmit)="fetchFormaciones()" ></app-crear-formacion-modal>
+<app-crear-formacion-modal (formSubmit)="fetchFormaciones()"></app-crear-formacion-modal>
 <app-editar-formacion-modal (formSubmit)="fetchFormaciones()"></app-editar-formacion-modal>

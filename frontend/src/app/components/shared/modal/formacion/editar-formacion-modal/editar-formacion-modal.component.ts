@@ -6,12 +6,13 @@ import {
   OnChanges,
   OnInit,
   Output,
-  SimpleChanges
+  SimpleChanges, ViewChild
 } from '@angular/core';
 import {FormacionService} from "../../../../../services/formacion.service";
 import {ToastrService} from "ngx-toastr";
 import Swal2 from "sweetalert2";
 import {error} from "@angular/compiler-cli/src/transformers/util";
+import {FormacionFormComponent} from "../formacion-form/formacion-form.component";
 
 @Component({
   selector: 'app-editar-formacion-modal',
@@ -19,6 +20,7 @@ import {error} from "@angular/compiler-cli/src/transformers/util";
 })
 export class EditarFormacionModalComponent{
 
+  @ViewChild(FormacionFormComponent) formComponent!: FormacionFormComponent;
   @Output() formSubmit = new EventEmitter<any>();
   constructor(private formacionService: FormacionService,
               private cdr: ChangeDetectorRef,
@@ -61,5 +63,9 @@ export class EditarFormacionModalComponent{
         })
       }
     })
+  }
+
+  protected clearForm() {
+    this.formComponent.clearForm();
   }
 }

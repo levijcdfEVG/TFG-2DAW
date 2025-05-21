@@ -105,8 +105,6 @@ class MFormacion {
         }
     }
 
-
-    
     public function desactivarFormacionPorId(int $id): array {
         try {
             $this->conectar();
@@ -356,11 +354,11 @@ class MFormacion {
             }
 
             $this->conexion->commit();
-            return ['success' => true];
+            return ['success' => true, 'message' => 'Formacion Actualizada con Exito'];
 
         } catch (PDOException $e) {
             $this->conexion->rollBack();
-            return ['success' => false, $e->getMessage()];
+            return ['success' => false, 'message' => $e->getMessage()];
         }
     }
 

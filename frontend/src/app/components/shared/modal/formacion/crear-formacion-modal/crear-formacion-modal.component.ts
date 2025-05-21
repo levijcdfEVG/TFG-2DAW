@@ -51,4 +51,7 @@ export class CrearFormacionModalComponent {
   }
 
 
+    protected clearForm() {
+        this.formComponent.clearForm();
+    }
 }

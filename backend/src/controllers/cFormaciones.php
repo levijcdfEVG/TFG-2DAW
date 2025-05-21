@@ -83,7 +83,7 @@ Class cFormaciones {
             $response = $this->mFormacion->updateFormacion($idFormacion, $validatedData);
 
             if ($response['success']) {
-                $this->sendResponse(true, $response['message']);
+                $this->sendResponse(true);
             } else {
                $this->sendResponse(false, $response['message'], null, 500);
             }
@@ -215,12 +215,12 @@ Class cFormaciones {
             exit;
         }
 
-        foreach ($data['cursos'] as $curso) {
-            if (!is_array($curso) || !isset($curso[0]) || !preg_match('/^[0-9]{4}\/[0-9]{2}$/', $curso[0])) {
-                $this->sendResponse(false, "Formato de curso académico inválido", null, 422);
-                exit;
-            }
-        }
+        // foreach ($data['cursos'] as $curso) {
+        //     if (!is_array($curso) || !isset($curso[0]) || !preg_match('/^[0-9]{4}\/[0-9]{2}$/', $curso[0])) {
+        //         $this->sendResponse(false, "Formato de curso académico inválido", null, 422);
+        //         exit;
+        //     }
+        // }
 
         // Validar módulos
         if (!empty($data['modulos']) && is_array($data['modulos'])) {
