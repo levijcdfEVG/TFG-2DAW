@@ -164,7 +164,7 @@ export class InfoFormacionComponent implements OnInit{
     Swal2.fire({
       title: 'Información completa',
       html: contenido,
-      width: '600px',
+      width: '1400px',
       confirmButtonText: 'Cerrar'
     });
   }

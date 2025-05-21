@@ -5,3 +5,9 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: 'Open Sans', sans-serif; }
+
+/* Estilos para el difuminado del fondo en los swal */
+.swal2-backdrop-blur {
+    backdrop-filter: blur(4px);
+    background-color: rgba(0, 0, 0, 0.4) !important;
+}
