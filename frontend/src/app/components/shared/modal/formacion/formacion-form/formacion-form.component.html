@@ -4,11 +4,25 @@
 
     <!-- Primera fila: inputs full width -->
     <div class="mb-3">
+        <label for="justificacion" class="form-label">Justificación/Temática</label>
+        <textarea
+                id="justificacion"
+                formControlName="justificacion"
+                rows="3"
+                placeholder="Introduce la justificación de la formación"
+                [ngClass]="{'is-invalid': form.get('justificacion')?.invalid && form.get('justificacion')?.touched}"
+                class="form-control w-100 textarea-limit"></textarea>
+        <div *ngIf="form.get('justificacion')?.invalid && form.get('justificacion')?.touched">
+            <small class="text-danger">{{ getErrorMessage('justificacion') }}</small>
+        </div>
+    </div>
+
+    <div class="mb-3">
         <label for="lugar" class="form-label">Lugar</label>
         <input
                 id="lugar"
                 formControlName="lugar_imparticion"
-                placeholder="Lugar"
+                placeholder="Introduce el lugar de impartición"
                 [ngClass]="{'is-invalid': form.get('lugar_imparticion')?.invalid && form.get('lugar_imparticion')?.touched}"
                 class="form-control w-100" />
         <div *ngIf="form.get('lugar_imparticion')?.invalid && form.get('lugar_imparticion')?.touched">
@@ -21,7 +35,7 @@
         <input
                 id="modalidad"
                 formControlName="modalidad"
-                placeholder="Modalidad"
+                placeholder="Introduce la modalidad"
                 [ngClass]="{'is-invalid': form.get('modalidad')?.invalid && form.get('modalidad')?.touched}"
                 class="form-control w-100" />
         <div *ngIf="form.get('modalidad')?.invalid && form.get('modalidad')?.touched">
@@ -35,7 +49,7 @@
                 id="duracion"
                 formControlName="duracion"
                 type="number"
-                placeholder="Horas"
+                placeholder="Introduce la duración en horas"
                 [ngClass]="{'is-invalid': form.get('duracion')?.invalid && form.get('duracion')?.touched}"
                 class="form-control w-100" />
         <div *ngIf="form.get('duracion')?.invalid && form.get('duracion')?.touched">
@@ -45,23 +59,11 @@
 
     <!-- Segunda fila: textareas full width -->
     <div class="mb-3">
-        <label for="justificacion" class="form-label">Justificación</label>
-        <textarea
-                id="justificacion"
-                formControlName="justificacion"
-                rows="3"
-                [ngClass]="{'is-invalid': form.get('justificacion')?.invalid && form.get('justificacion')?.touched}"
-                class="form-control w-100 textarea-limit"></textarea>
-        <div *ngIf="form.get('justificacion')?.invalid && form.get('justificacion')?.touched">
-            <small class="text-danger">{{ getErrorMessage('justificacion') }}</small>
-        </div>
-    </div>
-
-    <div class="mb-3">
         <label for="metodologia" class="form-label">Metodología</label>
         <textarea
                 id="metodologia"
                 formControlName="metodologia"
+                placeholder="Introduce la metodología"
                 rows="3"
                 [ngClass]="{'is-invalid': form.get('metodologia')?.invalid && form.get('metodologia')?.touched}"
                 class="form-control w-100 textarea-limit"></textarea>
@@ -76,6 +78,7 @@
                 id="docentes"
                 formControlName="docentes"
                 rows="2"
+                placeholder="Introduce los docentes de la formación"
                 [ngClass]="{'is-invalid': form.get('docentes')?.invalid && form.get('docentes')?.touched}"
                 class="form-control w-100 textarea-limit"></textarea>
         <div *ngIf="form.get('docentes')?.invalid && form.get('docentes')?.touched">
@@ -89,6 +92,7 @@
         <textarea
                 id="dirigido_a"
                 formControlName="dirigido_a"
+                placeholder="Introduce los destinatarios de la formación"
                 rows="2"
                 [ngClass]="{'is-invalid': form.get('dirigido_a')?.invalid && form.get('dirigido_a')?.touched}"
                 class="form-control w-100 textarea-limit"></textarea>
@@ -133,7 +137,7 @@
         <div *ngFor="let control of modulos.controls; let i = index" class="input-group mb-2">
             <input
                     [formControlName]="i"
-                    placeholder="Módulo"
+                    placeholder="Introduce el módulo"
                     [ngClass]="{'is-invalid': control.invalid && control.touched}"
                     class="form-control" />
             <button
@@ -157,7 +161,7 @@
         <div *ngFor="let control of objetivos.controls; let i = index" class="input-group mb-2">
             <input
                     [formControlName]="i"
-                    placeholder="Objetivo"
+                    placeholder="Introduce el objetivo"
                     [ngClass]="{'is-invalid': control.invalid && control.touched}"
                     class="form-control" />
             <button

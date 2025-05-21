@@ -17,7 +17,7 @@ import 'datatables.net-bs5'; // Estilo
 })
 export class InfoFormacionComponent implements OnInit{
 
-  public formaciones: Formacion[] = [];
+  public formaciones: any[] = [];
   protected formacionSeleccionada: any = null;
 
   constructor(

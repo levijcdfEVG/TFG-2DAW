@@ -9,28 +9,28 @@
         <tr>
             <th>Informacion Completa</th>
             <th>Id</th>
-            <th>Nombre</th>
+            <th>Justificación</th>
             <th>Duración</th>
             <th>Modalidad</th>
-            <th>Justificación</th>
-            <th>Dirigido a</th>
+            <th>Curso de Inicio</th>
+            <th>Curso de Final</th>
             <th>Acciones</th>
         </tr>
         </thead>
         <tbody>
         <tr *ngFor="let f of formaciones">
-            <td>
+            <td class="text-center align-middle">
                 <button (click)="mostrarInformacionCompleta(f)" class="btn btn-info btn-sm">
                     <i class="fa fa-list"></i>
                 </button>
             </td>
             <td>{{ f.id }}</td>
-            <td>{{ f.lugar_imparticion }}</td>
+            <td>{{ f.justificacion }}</td>
             <td>{{ f.duracion }} horas</td>
             <td>{{ f.modalidad }}</td>
-            <td>{{ f.justificacion }}</td>
-            <td>{{ f.dirigido_a }}</td>
-            <td>
+            <td>{{ f.cursos[0] }}</td>
+            <td>{{ f.cursos[1] || 'No hay curso de final' }}</td>
+            <td class="text-center align-middle">
                 <button (click)="editarFormacion(f)" class="btn btn-sm btn-outline-primary me-2" data-bs-target="#editarFormacionModal" data-bs-toggle="modal"><i class="fa-solid fa-pencil"></i></button>
                 <button (click)="borrarFormacion(f)" class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash-can"></i></button>
             </td>

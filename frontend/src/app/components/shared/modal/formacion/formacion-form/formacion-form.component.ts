@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, FormArray, AbstractControl, Validat
 import {CentrosService} from "../../../../../services/centros.service";
 import {FormacionService} from "../../../../../services/formacion.service";
 import {ToastrService} from "ngx-toastr";
+import Swal2 from "sweetalert2";
 
 @Component({
   selector: 'app-formacion-form',
@@ -107,8 +108,30 @@ export class FormacionFormComponent implements OnInit ,OnDestroy{
     this.objetivos.removeAt(index);
   }
 
+  protected evaluarObjetivosUnicos(): boolean {
+    const valores = this.objetivos.controls.map(c => c.value);
+    const valoresUnicos = valores.filter((v, i) => valores.indexOf(v) === i);
+    return valoresUnicos.length === valores.length;
+  }
+
+  protected evaluarModulosUnicos(): boolean {
+    const valores = this.modulos.controls.map(c => c.value);
+    const valoresUnicos = valores.filter((v, i) => valores.indexOf(v) === i);
+    return valoresUnicos.length === valores.length;
+  }
+
+
   submit() {
     if (this.form.valid) {
+      if (!this.evaluarObjetivosUnicos() || !this.evaluarModulosUnicos()) {
+        Swal2.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Los objetivos y módulos deben ser únicos',
+        })
+        return;
+      }
+
       const payload = {
         id: this.form.value.id,
         formacion: {
