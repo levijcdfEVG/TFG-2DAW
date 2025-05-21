@@ -38,6 +38,25 @@ export class AuthService {
     return this.cookieService.get('token');
   }
 
+decodeToken(): any | null {
+  const token = this.getToken();
+  if (!token) return null;
+
+  const parts = token.split('.');
+  if (parts.length !== 3 || !parts[1]) {
+    console.error('Token mal formado');
+    return null;
+  }
+
+  try {
+    const decoded = atob(parts[1]); // Aquí ya garantizamos que parts[1] es string
+    return JSON.parse(decoded);
+  } catch (error) {
+    console.error('Error al decodificar token:', error);
+    return null;
+  }
+}
+
   /**
    * Verifica si el token JWT ha expirado.
    * @param token - Token JWT a verificar.

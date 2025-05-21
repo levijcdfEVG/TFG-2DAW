@@ -25,7 +25,7 @@ const routes: Routes = [
   },
   {
     path: "",
-    component: InfoCentroComponent, canActivate: [AuthGuard]
+    component: MenuComponent, canActivate: [AuthGuard]
   },
   {
     path: "login",
@@ -37,7 +37,7 @@ const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: '/info-centros',
+    redirectTo: '/menu',
     pathMatch: 'full'
   }
 ];
