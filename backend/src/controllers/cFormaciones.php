@@ -42,8 +42,10 @@ Class cFormaciones {
                 return;
             }
 
+            $validatedData = $this->validateForm($data);
+
             // Llamar al modelo
-            $resultado = $this->mFormacion->insertarFormacion($data);
+            $resultado = $this->mFormacion->insertarFormacion($validatedData);
 
             // Respuesta según resultado
             if ($resultado['success']) {
@@ -74,9 +76,11 @@ Class cFormaciones {
 
             $idFormacion = (int)$input['id'];
 
-            // Validar y sanitizar aquí si quieres antes
+            //Validaciones
+            $validatedData = $this->validateForm($input);
 
-            $response = $this->mFormacion->updateFormacion($idFormacion, $input);
+
+            $response = $this->mFormacion->updateFormacion($idFormacion, $validatedData);
 
             if ($response['success']) {
                 $this->sendResponse(true, $response['message']);
@@ -167,6 +171,87 @@ Class cFormaciones {
         echo json_encode(['error' => 'Metodo no permitido. Usa: ' . implode(', ', $allowed)]);
         exit;
     }
+
+    private function validateForm($data) {
+        // Validar bloque formacion
+        if (!isset($data['formacion']) || !is_array($data['formacion'])) {
+            $this->sendResponse(false, 'Falta el bloque "formacion" en los datos', null, 422);
+            exit;
+        }
+
+        $formacion = $data['formacion'];
+
+        $requiredFields = [
+            'lugar_imparticion' => 60,
+            'modalidad' => 20,
+            'duracion' => 255,
+            'justificacion' => 255,
+            'metodologia' => 255,
+            'docentes' => 255,
+            'dirigido_a' => 255,
+        ];
+
+        foreach ($requiredFields as $field => $maxLength) {
+            if (!isset($formacion[$field]) || trim($formacion[$field]) === '') {
+                $this->sendResponse(false, "Falta el campo obligatorio: $field", null, 422);
+                exit;
+            }
+
+            if (strlen($formacion[$field]) > $maxLength) {
+                $this->sendResponse(false, "El campo $field supera los $maxLength caracteres", null, 422);
+                exit;
+            }
+        }
+
+        // Validar duracion si debe ser numérica (lo decides tú)
+        if (!is_numeric($formacion['duracion'])) {
+            $this->sendResponse(false, "La duración debe ser un número", null, 422);
+            exit;
+        }
+
+        // Validar cursos
+        if (empty($data['cursos']) || !is_array($data['cursos'])) {
+            $this->sendResponse(false, "Debes seleccionar al menos un curso académico", null, 422);
+            exit;
+        }
+
+        foreach ($data['cursos'] as $curso) {
+            if (!is_array($curso) || !isset($curso[0]) || !preg_match('/^[0-9]{4}\/[0-9]{2}$/', $curso[0])) {
+                $this->sendResponse(false, "Formato de curso académico inválido", null, 422);
+                exit;
+            }
+        }
+
+        // Validar módulos
+        if (!empty($data['modulos']) && is_array($data['modulos'])) {
+            foreach ($data['modulos'] as $i => $modulo) {
+                if (empty($modulo['nombre_modulo']) || strlen($modulo['nombre_modulo']) > 50) {
+                    $this->sendResponse(false, "Módulo #" . ($i + 1) . " inválido o demasiado largo", null, 422);
+                    exit;
+                }
+            }
+        }
+
+        // Validar objetivos
+        if (!empty($data['objetivos']) && is_array($data['objetivos'])) {
+            foreach ($data['objetivos'] as $i => $objetivo) {
+                if (empty($objetivo['descripcion']) || strlen($objetivo['descripcion']) > 150) {
+                    $this->sendResponse(false, "Objetivo #" . ($i + 1) . " inválido o demasiado largo", null, 422);
+                    exit;
+                }
+            }
+        }
+
+        // Validar centros
+        if (!isset($data['centros']) || !is_numeric($data['centros'])) {
+            $this->sendResponse(false, "Centro no válido o no seleccionado", null, 422);
+            exit;
+        }
+
+        //Válido
+        return $data;
+    }
+
     
 
 }
