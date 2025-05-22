@@ -1,7 +1,14 @@
 <app-header *ngIf="authService.isAuthenticated()"></app-header>
 
-<!-- Solo si en ruta con menú -->
-<!-- <app-menu *ngIf="mostrarMenu()" [rol]="rolSimulado"></app-menu> -->
+<div class="container my-3 d-flex justify-content-end">
+  <button
+    *ngIf="mostrarBotonVolver"
+    class="btn btn-outline-secondary"
+    (click)="volverAlMenu()"
+  >
+    ← Menú
+  </button>
+</div>
 
 <router-outlet></router-outlet>
 <!--<app-footer></app-footer>-->

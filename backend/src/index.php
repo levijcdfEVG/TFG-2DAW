@@ -23,6 +23,12 @@ header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Access-Control-Allow-Credentials: true");
 
+// Responder correctamente a la petición OPTIONS y salir
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
+
 // Carga de configuraciones y dependencias.
 require_once 'config/config.php'; 
 require_once MODELS . 'conexion.php';
@@ -66,8 +72,5 @@ if (method_exists($controlador, $_GET["accion"])) {
     // Ejecuta y permite que el controlador maneje la respuesta.
     $controlador->$accion($parametros);
 }
-// Responder correctamente a la petición OPTIONS y salir
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-}
+
 exit;
