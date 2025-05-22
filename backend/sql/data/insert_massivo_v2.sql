@@ -14,23 +14,14 @@ INSERT INTO provincia (id, nombre) VALUES
 
 -- Localidades
 INSERT INTO localidad (nombre_localidad, provincia_id) VALUES
-    -- Badajoz
     ('Badajoz', '06'),
     ('Don Benito', '06'),
-
-    -- Salamanca
     ('Salamanca', '37'),
     ('Ciudad Rodrigo', '37'),
-
-    -- Almería
     ('Almería', '04'),
     ('Roquetas de Mar', '04'),
-
-    -- Sevilla
     ('Sevilla', '41'),
     ('Tomares', '41'),
-
-    -- Valencia
     ('Valencia', '46'),
     ('Alicante', '46');
 
@@ -56,11 +47,11 @@ INSERT INTO usuario (nombre_user, apellido_user, correo_user, telefono_user, nue
 
 -- Cursos académicos
 INSERT INTO curso_academico (nombre_curso, fecha_inicio, fecha_fin) VALUES
-    ('2020/2021', '2020-09-01 00:00:00', '2021-06-30 23:59:59'),
-    ('2019/2020', '2019-09-01 00:00:00', '2020-06-30 23:59:59'),
-    ('2018/2019', '2018-09-01 00:00:00', '2019-06-30 23:59:59'),
-    ('2017/2018', '2017-09-01 00:00:00', '2018-06-30 23:59:59'),
-    ('2021/2022', '2021-09-01 00:00:00', '2022-06-30 23:59:59');
+    ('2020/21', '2020-09-01 00:00:00', '2021-06-30 23:59:59'),
+    ('2019/20', '2019-09-01 00:00:00', '2020-06-30 23:59:59'),
+    ('2018/19', '2018-09-01 00:00:00', '2019-06-30 23:59:59'),
+    ('2017/18', '2017-09-01 00:00:00', '2018-06-30 23:59:59'),
+    ('2021/22', '2021-09-01 00:00:00', '2022-06-30 23:59:59');
 
 -- Formaciones
 INSERT INTO formacion (lugar_imparticion, duracion, modalidad, justificacion, metodologia, docentes, dirigido_a, activo) VALUES
