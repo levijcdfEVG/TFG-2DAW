@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
 import { MenuService } from 'src/app/services/menu.service';
+import { SharedService } from 'src/app/services/shared.service';
 
 @Component({
   selector: 'app-menu',
@@ -13,10 +14,10 @@ export class MenuComponent implements OnInit {
   userEmail: string = '';
   datosUsuario: any = {};
 
-  idRol: number | null = null;
-  idCentro: number | null = null;
+  idRol: number  = 0;
+  idCentro: number  = 0;
 
-  constructor(private menuService: MenuService,private authService: AuthService) {}
+  constructor(private menuService: MenuService, private authService: AuthService, private sharedService: SharedService) {}
 
   ngOnInit(): void {
   const tokenPayload = this.authService.decodeToken();
@@ -32,6 +33,9 @@ export class MenuComponent implements OnInit {
         this.datosUsuario = respuesta.data;
         this.idRol = this.datosUsuario.id_rol;
         this.idCentro = this.datosUsuario.id_centro;
+
+        this.sharedService.setIdRol(this.idRol);
+        this.sharedService.setIdCentro(this.idCentro);
 
         switch (this.idRol) {
       case 1:
