@@ -247,24 +247,39 @@ export class FormacionFormComponent implements OnInit{
     this.form.markAsPristine();
   }
 
-  isCursoFinalValido(): boolean {
+  public isCursoFinalValido(): boolean {
     const inicio = this.form.get('curso_inicio')?.value;
     const fin = this.form.get('curso_fin')?.value;
 
     if (!inicio || !fin) return true; // Sin datos no validamos error
 
-    const [inicioPrimeraParte, inicioSegundaParte] = inicio.split('/');
-    const [finPrimeraParte, finSegundaParte] = fin.split('/');
+    const [inicioAnioCompleto, inicioAnioCorto] = inicio.split('/');
+    const [finAnioCompleto, finAnioCorto] = fin.split('/');
 
-    if (!inicioPrimeraParte || !inicioSegundaParte || !finPrimeraParte || !finSegundaParte) return true;
+    if (!inicioAnioCompleto || !inicioAnioCorto || !finAnioCompleto || !finAnioCorto) return true;
 
-    const inicioNum = parseInt(inicioPrimeraParte.slice(-2));
-    const finNum = parseInt(finSegundaParte.slice(-2));
+    const inicioAnioCompNum = parseInt(inicioAnioCompleto);
+    const finAnioCompNum = parseInt(finAnioCompleto);
 
-    if (isNaN(inicioNum) || isNaN(finNum)) return true;
+    const inicioAnioCortoNum = parseInt(inicioAnioCorto);
+    const finAnioCortoNum = parseInt(finAnioCorto);
 
-    return finNum > inicioNum;
+    if (
+        isNaN(inicioAnioCompNum) || isNaN(finAnioCompNum) ||
+        isNaN(inicioAnioCortoNum) || isNaN(finAnioCortoNum)
+    ) return true;
+
+    // Validaciones:
+    // 1) La fecha final debe ser posterior en año completo
+    if (finAnioCompNum <= inicioAnioCompNum) return false;
+
+    // 2) El año corto final debe ser exactamente uno más que el año corto inicio
+    if (finAnioCortoNum !== inicioAnioCortoNum + 1) return false;
+
+    return true;
   }
+
+
 
 
 
