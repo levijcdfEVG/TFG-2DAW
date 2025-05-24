@@ -1,5 +1,5 @@
-import {ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormArray, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import {CentrosService} from "../../../../../services/centros.service";
 import {FormacionService} from "../../../../../services/formacion.service";
 import {ToastrService} from "ngx-toastr";
@@ -15,7 +15,6 @@ export class FormacionFormComponent implements OnInit{
   @Input() esEditar?: boolean;
   @Output() formSubmit = new EventEmitter<any>();
   public centros: any[] = [];
-  public centroSeleccionado: any = null;
   public form!: FormGroup;
   // @ts-ignore
   public loadingCentros: boolean;
@@ -24,9 +23,8 @@ export class FormacionFormComponent implements OnInit{
   constructor(
       private fb: FormBuilder,
       private centrosService: CentrosService,
-      private cdr: ChangeDetectorRef,
-      private formacionService: FormacionService,
-      private toastr: ToastrService ) {}
+      private formacionService: FormacionService
+  ) {}
 
   ngOnInit(): void {
     this.loadCentros();
@@ -212,10 +210,6 @@ export class FormacionFormComponent implements OnInit{
     });
   }
 
-  trackById(index: number, item: any): number {
-    return item.id;
-  }
-
 
   private loadFormacionAEditar() {
     this.loadingFormacionAEditar = true;
@@ -251,7 +245,7 @@ export class FormacionFormComponent implements OnInit{
     const inicio = this.form.get('curso_inicio')?.value;
     const fin = this.form.get('curso_fin')?.value;
 
-    if (!inicio || !fin) return true; // Sin datos no validamos error
+    if (!inicio || !fin) return true;
 
     const [inicioAnioCompleto, inicioAnioCorto] = inicio.split('/');
     const [finAnioCompleto, finAnioCorto] = fin.split('/');
@@ -269,18 +263,15 @@ export class FormacionFormComponent implements OnInit{
         isNaN(inicioAnioCortoNum) || isNaN(finAnioCortoNum)
     ) return true;
 
-    // Validaciones:
-    // 1) La fecha final debe ser posterior en año completo
-    if (finAnioCompNum <= inicioAnioCompNum) return false;
+    if (finAnioCompNum <= inicioAnioCompNum) return false;  // El año completo final debe ser mayor
 
-    // 2) El año corto final debe ser exactamente uno más que el año corto inicio
-    if (finAnioCortoNum !== inicioAnioCortoNum + 1) return false;
+    // La diferencia de años cortos debe ser igual a la diferencia de años completos
+    const diffCompleto = finAnioCompNum - inicioAnioCompNum;
+    const diffCorto = finAnioCortoNum - inicioAnioCortoNum;
+
+    if (diffCorto !== diffCompleto) return false;
 
     return true;
   }
-
-
-
-
 
 }
