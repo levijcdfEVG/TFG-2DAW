@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormArray, AbstractControl, ValidationErrors } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import {CentrosService} from "../../../../../services/centros.service";
 import {FormacionService} from "../../../../../services/formacion.service";
 import {ToastrService} from "ngx-toastr";
@@ -9,9 +9,9 @@ import Swal2 from "sweetalert2";
   selector: 'app-formacion-form',
   templateUrl: './formacion-form.component.html',
 })
-export class FormacionFormComponent implements OnInit ,OnDestroy{
+export class FormacionFormComponent implements OnInit{
 
-  @Input() formacionData?: any;
+  @Input() formacionData?: any | null;
   @Input() esEditar?: boolean;
   @Output() formSubmit = new EventEmitter<any>();
   public centros: any[] = [];
@@ -31,7 +31,6 @@ export class FormacionFormComponent implements OnInit ,OnDestroy{
   ngOnInit(): void {
     this.loadCentros();
     if (this.esEditar) {
-      this.loadFormacionAEditar();
       this.form = this.fb.group({
         id: [this.formacionData?.id || ''],
         lugar_imparticion: [this.formacionData?.lugar_imparticion || '', [Validators.required, Validators.maxLength(60)]],
@@ -45,9 +44,9 @@ export class FormacionFormComponent implements OnInit ,OnDestroy{
         curso_fin: ['', [Validators.pattern(/^[0-9]{4}\/[0-9]{2}$/)]],
         modulos: this.fb.array([]),
         objetivos: this.fb.array([]),
-        centro_id: [this.formacionData?.centro, [Validators.required]],
+        centro_id: [this.formacionData?.centro?.id, [Validators.required]],
       });
-
+      this.loadFormacionAEditar();
     }else {
       this.form = this.fb.group({
         lugar_imparticion: ['', [Validators.required, Validators.maxLength(60)]],
@@ -80,9 +79,6 @@ export class FormacionFormComponent implements OnInit ,OnDestroy{
     }
   }
 
-  ngOnDestroy() {
-
-  }
 
   get modulos(): FormArray {
     return this.form.get('modulos') as FormArray;
@@ -91,6 +87,13 @@ export class FormacionFormComponent implements OnInit ,OnDestroy{
   get objetivos(): FormArray {
     return this.form.get('objetivos') as FormArray;
   }
+
+  get cursoFinalInvalido(): false | true | undefined {
+    return this.form.hasError('cursoFinalNoPosterior') &&
+        this.form.get('curso_inicio')?.touched &&
+        this.form.get('curso_fin')?.touched;
+  }
+
 
   addModulo() {
     this.modulos.push(this.fb.control('', Validators.required));
@@ -122,6 +125,14 @@ export class FormacionFormComponent implements OnInit ,OnDestroy{
 
 
   submit() {
+    if (!this.isCursoFinalValido()) {
+      this.form.get('curso_fin')?.setErrors({ cursoFinalNoPosterior: true });
+      this.form.get('curso_fin')?.markAsTouched();
+      return;
+    } else {
+      this.form.get('curso_fin')?.setErrors(null);
+    }
+
     if (this.form.valid) {
       if (!this.evaluarObjetivosUnicos() || !this.evaluarModulosUnicos()) {
         Swal2.fire({
@@ -210,21 +221,53 @@ export class FormacionFormComponent implements OnInit ,OnDestroy{
     this.loadingFormacionAEditar = true;
     this.formacionService.getFormacionAEditar().subscribe({
       next: (formacion) => {
+        if (!formacion) {
+          this.loadingFormacionAEditar = false;
+          return;  // No haces patch si no hay datos
+        }
         this.formacionData = formacion;
+
+        // Aquí ya tienes los datos: parcheas el form
         this.form.patchValue(this.formacionData);
-        this.form.patchValue({ curso_inicio: this.formacionData.cursos[0], curso_fin: this.formacionData.cursos[1] || null });
-        this.loadCentros();
+        this.form.patchValue({ curso_inicio: this.formacionData.cursos[0], curso_fin: this.formacionData.cursos[1] || null,  centro_id: this.formacionData.centro?.id || null });
+
         this.loadingFormacionAEditar = false;
         console.log("Valores fetcheados",this.formacionData);
         console.log("Valores del form",this.form.value);
       },
-      error: () => (this.loadingCentros = false)
+      error: () => {
+        this.loadingFormacionAEditar = false;
+        // Opcional: mostrar error
+      }
     });
   }
+
 
   public clearForm() {
     this.form.reset();
     this.form.markAsUntouched();
     this.form.markAsPristine();
   }
+
+  isCursoFinalValido(): boolean {
+    const inicio = this.form.get('curso_inicio')?.value;
+    const fin = this.form.get('curso_fin')?.value;
+
+    if (!inicio || !fin) return true; // Sin datos no validamos error
+
+    const [inicioPrimeraParte, inicioSegundaParte] = inicio.split('/');
+    const [finPrimeraParte, finSegundaParte] = fin.split('/');
+
+    if (!inicioPrimeraParte || !inicioSegundaParte || !finPrimeraParte || !finSegundaParte) return true;
+
+    const inicioNum = parseInt(inicioPrimeraParte.slice(-2));
+    const finNum = parseInt(finSegundaParte.slice(-2));
+
+    if (isNaN(inicioNum) || isNaN(finNum)) return true;
+
+    return finNum > inicioNum;
+  }
+
+
+
 }

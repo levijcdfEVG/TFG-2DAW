@@ -117,7 +117,7 @@
 
     <!-- Curso de Final -->
     <div class="mb-3">
-        <label for="curso_fin" class="form-label">Curso académico de Final</label>
+        <label for="curso_fin" class="form-label">Curso académico de Final (Opcional)</label>
         <input
                 id="curso_fin"
                 formControlName="curso_fin"
@@ -126,6 +126,10 @@
                 class="form-control w-100" />
         <div *ngIf="form.get('curso_fin')?.invalid && form.get('curso_fin')?.touched">
             <small class="text-danger">{{ getErrorMessage('curso_fin') }}</small>
+        </div>
+        <!-- Mensaje error personalizado -->
+        <div *ngIf="!isCursoFinalValido() && form.get('curso_fin')?.touched" class="text-danger">
+            El curso final debe ser posterior al curso de inicio.
         </div>
     </div>
 
