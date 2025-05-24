@@ -60,7 +60,7 @@ export class FormacionFormComponent implements OnInit{
         curso_fin: ['', [Validators.pattern(/^[0-9]{4}\/[0-9]{2}$/)]],
         modulos: this.fb.array([]),
         objetivos: this.fb.array([]),
-        centro_id: [1, [Validators.required]],
+        centro_id: ['', [Validators.required]],
       });
     }
 
@@ -232,8 +232,6 @@ export class FormacionFormComponent implements OnInit{
         this.form.patchValue({ curso_inicio: this.formacionData.cursos[0], curso_fin: this.formacionData.cursos[1] || null,  centro_id: this.formacionData.centro?.id || null });
 
         this.loadingFormacionAEditar = false;
-        console.log("Valores fetcheados",this.formacionData);
-        console.log("Valores del form",this.form.value);
       },
       error: () => {
         this.loadingFormacionAEditar = false;

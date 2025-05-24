@@ -31,19 +31,22 @@ export class InfoFormacionComponent implements OnInit{
   }
 
   protected fetchFormaciones() {
+    const table: any = $('#formaciones');
+    if ($.fn.dataTable.isDataTable(table)) {
+      table.DataTable().destroy();
+    }
+
     this.formacionService.getAllFormaciones().subscribe(response => {
       if (response.success) {
         this.formaciones = response.data;
-        console.log(this.formaciones);
         this.cdr.detectChanges();
 
-        // Esperamos a que Angular pinte la tabla antes de aplicar DataTables
+        // Llenar tabla con jQuery
+        this.renderTableRows();
+        this.bindEvents();
+
         setTimeout(() => {
-          const table: any = $('#formaciones');
-          if ($.fn.dataTable.isDataTable(table)) {
-            table.DataTable().destroy(); // por si ya se había inicializado
-          }
-          table.DataTable({
+          $('#formaciones').DataTable({
             language: {
               lengthMenu: 'Mostrar _MENU_ registros',
               zeroRecords: 'No se encontraron resultados',
@@ -59,10 +62,12 @@ export class InfoFormacionComponent implements OnInit{
               }
             }
           });
-        }, 0);
+        }, 100);
       }
     });
   }
+
+
 
 
   protected editarFormacion(formacion: any) {
@@ -99,7 +104,7 @@ export class InfoFormacionComponent implements OnInit{
     });
   }
 
-  mostrarInformacionCompleta(f: any) {
+  public mostrarInformacionCompleta(f: any) {
     // Construimos listas en HTML para los arrays
     const modulosHtml = f.modulos && f.modulos.length > 0
         //@ts-ignore
@@ -169,4 +174,61 @@ export class InfoFormacionComponent implements OnInit{
     });
   }
 
+  private renderTableRows() {
+    const tbody = $('#formaciones tbody');
+    tbody.empty();
+
+    this.formaciones.forEach(f => {
+      // Construye fila html con botones con clases para jQuery
+      const row = `
+      <tr data-id="${f.id}">
+        <td class="text-center align-middle">
+          <button class="btn btn-info btn-sm btn-info-detalle" title="Ver info"><i class="fa fa-list"></i></button>
+        </td>
+        <td>${f.id}</td>
+        <td>${f.justificacion}</td>
+        <td>${f.duracion} horas</td>
+        <td>${f.modalidad}</td>
+        <td>${f.cursos[0]}</td>
+        <td>${f.cursos[1] || 'No hay curso de final'}</td>
+        <td class="text-center align-middle">
+          <button class="btn btn-sm btn-outline-primary me-2 btn-editar" title="Editar" data-bs-toggle="modal" data-bs-target="#editarFormacionModal"><i class="fa-solid fa-pencil"></i></button>
+          <button class="btn btn-sm btn-outline-danger btn-borrar" title="Borrar"><i class="fa-solid fa-trash-can"></i></button>
+        </td>
+      </tr>
+      `;
+      tbody.append(row);
+    });
+  }
+
+  public bindEvents(){
+    const self = this;
+
+    // Mostrar info
+    $(document).off('click', '.btn-info-detalle').on('click', '.btn-info-detalle', function () {
+      const id = $(this).closest('tr').data('id');
+      const f = self.formaciones.find(x => x.id === id);
+      if (f) {
+        self.mostrarInformacionCompleta(f);
+      }
+    });
+
+    // Editar
+    $(document).off('click', '.btn-editar').on('click', '.btn-editar', function () {
+      const id = $(this).closest('tr').data('id');
+      const f = self.formaciones.find(x => x.id === id);
+      if (f) {
+        self.editarFormacion(f);
+      }
+    });
+
+    // Borrar
+    $(document).off('click', '.btn-borrar').on('click', '.btn-borrar', function () {
+      const id = $(this).closest('tr').data('id');
+      const f = self.formaciones.find(x => x.id === id);
+      if (f) {
+        self.borrarFormacion(f);
+      }
+    });
+  }
 }
