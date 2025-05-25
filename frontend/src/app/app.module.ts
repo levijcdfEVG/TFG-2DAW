@@ -25,6 +25,7 @@ import { FormacionFormComponent } from './components/shared/modal/formacion/form
 import { CrearFormacionModalComponent } from './components/shared/modal/formacion/crear-formacion-modal/crear-formacion-modal.component';
 import { EditarFormacionModalComponent } from './components/shared/modal/formacion/editar-formacion-modal/editar-formacion-modal.component';
 import {NgSelectModule} from "@ng-select/ng-select";
+import { MenuComponent } from './components/menu/menu.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import {NgSelectModule} from "@ng-select/ng-select";
     GoogleSignInComponent,
     FormacionFormComponent,
     CrearFormacionModalComponent,
-    EditarFormacionModalComponent
+    EditarFormacionModalComponent,
+    MenuComponent
   ],
   imports: [
     BrowserModule,

@@ -96,7 +96,7 @@ export class GoogleSignInComponent implements OnInit {
         this.cookieService.set('token', res.token, 1, '/');
         this.ngZone.run(() => {
           this.authService.setAuthState(true);
-          this.router.navigate(['/info-centros']);
+          this.router.navigate(['/menu']); 
         });
       }else{
         Swal2.fire({
