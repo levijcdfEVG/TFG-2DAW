@@ -8,9 +8,7 @@
     define('MODELS','models/');
     define('CONTROLLERS','controllers/');
 
-
-    /*-- Parámetros por defecto--
-    define('DEFAULT_CONTROLADOR','MenuPrincipal'); //Controlador por defecto, el que llama a pais
-    define('DEFAULT_ACCION','cMenuAdmin'); //Metodo por defecto, el que despliega el listado de paises
-    */
+    /*-- Parámetros por defecto --*/
+    define('DEFAULT_CONTROLLER','CUsuario'); //Controlador por defecto
+    define('DEFAULT_ACCION','getUsersByParams'); //Acción por defecto
 ?>

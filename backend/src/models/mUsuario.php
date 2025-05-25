@@ -1,68 +1,80 @@
 <?php
-class mUsuario {
 
-    private $conexion;
+    class MUsuario {
+        private $conexion;
 
-    public function conectar() {
-        $objetoBD = new bbdd();
-        $this->conexion = $objetoBD->conexion;
+        public function conectar() {
+            $objetoBD = new bbdd();
+            $this->conexion = $objetoBD->conexion;
+        }
+
+        public function getUsersByParams($params): array {
+            try {
+                $this->conectar();
+
+                // Usa los parametros para crear la consulta
+                $sql = "SELECT u.*, r.nombre_rol 
+                        FROM usuario u
+                        LEFT JOIN roles r ON u.id_rol = r.id
+                        WHERE 1=1";
+
+                $conditions = [];
+                $values = [];
+
+                if (!empty($params['nombre_user'])) {
+                    $conditions[] = "u.nombre_user LIKE :nombre_user";
+                    $values[':nombre_user'] = "%" . $params['nombre_user'] . "%";
+                }
+
+                if (!empty($params['apellido_user'])) {
+                    $conditions[] = "u.apellido_user LIKE :apellido_user";
+                    $values[':apellido_user'] = "%" . $params['apellido_user'] . "%";
+                }
+
+                if (!empty($params['correo_user'])) {
+                    $conditions[] = "u.correo_user LIKE :correo_user";
+                    $values[':correo_user'] = "%" . $params['correo_user'] . "%";
+                }
+
+                if (!empty($params['telefono_user'])) {
+                    $conditions[] = "u.telefono_user LIKE :telefono_user";
+                    $values[':telefono_user'] = "%" . $params['telefono_user'] . "%";
+                }
+
+                if (isset($params['id_rol']) && $params['id_rol'] !== '0' && $params['id_rol'] !== 0) {
+                    $conditions[] = "u.id_rol = :id_rol";
+                    $values[':id_rol'] = $params['id_rol'];
+                }
+
+                if (isset($params['nuevo_educador']) && $params['nuevo_educador'] !== '0' && $params['nuevo_educador'] !== 0) {
+                    $conditions[] = "u.nuevo_educador = :nuevo_educador";
+                    $values[':nuevo_educador'] = $params['nuevo_educador'];
+                }
+
+                if (isset($params['estado']) && $params['estado'] !== '2' && $params['estado'] !== 2) {
+                    $conditions[] = "u.estado = :estado";
+                    $values[':estado'] = $params['estado'];
+                }
+
+                if (!empty($conditions)) {
+                    $sql .= " AND " . implode(" AND ", $conditions);
+                }
+
+                $sql .= " ORDER BY u.nombre_user ASC";
+
+                // Prepara y ejecuta la consulta
+                $stmt = $this->conexion->prepare($sql);
+                $stmt->execute($values);
+                $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                return [
+                    'success' => true,
+                    'message' => count($results) . ' usuario(s) encontrado(s)',
+                    'data' => $results
+                ];
+            } catch (PDOException $e) {
+                error_log('Database Error: ' . $e->getMessage());
+                return ['success' => false, 'message' => 'Error al ejecutar la consulta: ' . $e->getMessage()];
+            }
+        }
     }
-
-    public function getUsersByParams($params) {
-        $this->conectar();
-
-        $conditions = [];
-        $values = [];
-
-        if (!empty($params['nombre_user'])) {
-            $conditions[] = "nombre_user LIKE ?";
-            $values[] = "%{$params['nombre_user']}%";
-        }
-
-        if (!empty($params['apellidos_user'])) {
-            $conditions[] = "apellidos_user LIKE ?";
-            $values[] = "%{$params['apellidos_user']}%";
-        }
-
-        if (!empty($params['email_user'])) {
-            $conditions[] = "email_user LIKE ?";
-            $values[] = "%{$params['email_user']}%";
-        }
-
-        if (!empty($params['telefono_user'])) {
-            $conditions[] = "telefono_user LIKE ?";
-            $values[] = "%{$params['telefono_user']}%";
-        }
-
-        if ($params['id_rol'] !== 'all') {
-            $conditions[] = "id_rol = ?";
-            $values[] = $params['id_rol'];
-        }
-
-        if ($params['nuevo_educador'] != 0) {
-            $conditions[] = "nuevo_educador = ?";
-            $values[] = $params['nuevo_educador'];
-        }
-
-        if ($params['estado'] != 0) {
-            $conditions[] = "estado = ?";
-            $values[] = $params['estado'];
-        }
-
-        $sql = 'SELECT * FROM usuario';
-        if (!empty($conditions)) {
-            $sql .= ' WHERE ' . implode(' AND ', $conditions);
-        }
-
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->execute($values);
-
-        $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        if (empty($resultados)) {
-            return ['success' => false, 'message' => 'No se encontraron registros en la tabla.'];
-        } else {
-            return ['success' => true, 'data' => $resultados];
-        }
-    }
-}

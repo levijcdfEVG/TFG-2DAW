@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UsuarioService } from '../../services/usuario.service';
 import { Subject, takeUntil} from "rxjs";
@@ -17,7 +17,9 @@ export class UsuariosComponent implements OnInit {
   dataUsers: any[] = [];
   filterForm!: FormGroup;
 
-  private unsub$= new Subject<void>();
+  hasSearched: boolean = false;
+
+  private unsubscribe$ = new Subject<void>();
 
   constructor(
     private userService: UsuarioService,
@@ -27,23 +29,25 @@ export class UsuariosComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.crearFormulario();
-    this.cargarDatosFormulario();
+    this.createFilterForm();
+    this.setDefaultValuesForm();
   }
 
   searchByFilter() {
     // Recoge los datos del formulario
     const params = this.filterForm.value;
-
-    this.userService.getUsersByParams(params).subscribe({
+    
+    this.userService.getUsersByParams(params)
+      .pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: (response: User[]) => {
         this.dataUsers = response;
+        this.hasSearched = true;
         this.cdr.detectChanges();
-        //console.log($.fn.dataTable); // Comprueba si DataTable está cargado
         if ($.fn.DataTable.isDataTable('#usersTable')) {
+          console.log('DataTable está cargado');
           $('#usersTable').DataTable().destroy();
         }
-        this.cargarDataTable();
+        this.loadDataTable();
       },
       error: (error) => {
         console.error('Error al obtener usuarios:', error);
@@ -52,44 +56,44 @@ export class UsuariosComponent implements OnInit {
   }
 
 // METODOS DEL BUSCADOR ---------------------------------------
-  crearFormulario() {
+  createFilterForm() {
     this.filterForm = this.fb.group({
-      nombre: [''],
-      apellidos: [''],
+      name: [''],
+      surname: [''],
       email: [''],
-      telefono: [''],
-      rol: ['', Validators.required],
-      nuevo_educador: ['', Validators.required],
-      estado: ['', Validators.required],
+      phone: [''],
+      role: [0],
+      new_educator: [0],
+      status: [1],
     });
   }
 
-  cargarDatosFormulario() { // Establece valores por defecto
+  setDefaultValuesForm() { // Establece valores por defecto
     this.filterForm.patchValue({
-      nombre: '',
-      apellidos: '',
+      name: '',
+      surname: '',
       email: '',
-      telefono: '',
-      rol: 'all',
-      nuevo_educador: 0,
-      estado: 0
+      phone: '',
+      role: 0,
+      new_educator: 0,
+      status: 1,
     });
   }
 
   resetFilter() {
     this.filterForm.reset({
-      nombre: '',
-      apellidos: '',
+      name: '',
+      surname: '',
       email: '',
-      telefono: '',
-      rol: 'all',
-      nuevo_educador: 0,
-      estado: 0
+      phone: '',
+      role: 0,
+      new_educator: 0,
+      status: 1,
     });
   }
 
 // METODOS DE LA TABLA ---------------------------------------
-  cargarDataTable() {
+  loadDataTable() {
     $('#usersTable').DataTable({
       data: this.dataUsers,
       autoWidth: true,
@@ -98,7 +102,6 @@ export class UsuariosComponent implements OnInit {
       ordering: false,
       lengthChange: false,
       language: {
-
         lengthMenu: "Mostrar _MENU_ entradas",
         info: "Mostrando _START_ a _END_ de _TOTAL_ entradas",
         infoEmpty: "Mostrando 0 a 0 de 0 entradas",
@@ -109,24 +112,29 @@ export class UsuariosComponent implements OnInit {
       },
       columns: [{
         data: 'nombre_user',
+        className: 'ps-4',
       }, {
         data: 'apellido_user',
       }, {
         data: 'correo_user',
       }, {
+        data: 'nombre_rol',
+      },{
         data: 'telefono_user',
         className: 'text-end',
       }, {
-        data: 'id',
+        data: null,
         render: (data: any, row: any) => {
           return `<div class="dropdown text-end pe-3">
                     <button class="btn btn-sm" type="button" id="dropdownMenuButton${data}" data-bs-toggle="dropdown" aria-expanded="false">
                       <i class="fas fa-cog"></i>
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${data}">
-                      <li><a class="dropdown-item" href="/usuarios/${data}">
-                        <i class="fas fa-eye text-theme"></i> Ver ficha
-                      </a></li>
+                      <li>
+                        <a class="dropdown-item" href="/usuarios/${row.id}">
+                          <i class="fas fa-eye text-theme"></i> Ver ficha
+                        </a>
+                      </li>
                       <li><a class="dropdown-item" href="/usuarios/editar/${data}">
                         <i class="fas fa-${row.activo ? 'check' : 'ban'} text-theme"></i> ${row.activo ? 'Habilitar' : 'Deshabilitar'}
                       </a></li>

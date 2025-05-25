@@ -1,33 +1,41 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { UsuarioService } from '../../../services/usuario.service';
+import {ActivatedRoute} from "@angular/router";
+import {User} from "../../../interfaces/user.interface";
 
 @Component({
   selector: 'app-user-file',
   templateUrl: './user-file.component.html',
   styleUrls: ['./user-file.component.css']
 })
-export class UserFileComponent {
-  user = {
-    nombre_user: 'Ernesto',
-    apellido_user: 'Gonzalez',
-    correo_user: 'egonzalez.evg.es',
-    provincia: 'Badajoz',
-    localidad: 'Badajoz'
-  };
-  userPhotoUrl: string = '';
-  activeTab: string = 'formaciones';
+export class UserFileComponent implements OnInit {
+  imgPath = 'assets/avatar.png';
 
-  onPhotoSelected(event: any): void {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.userPhotoUrl = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
+  userId!: number;
+  userData!: User;
+  formaciones: any[] = [];
+  formacionesPendientes: any[] = [];
+  formacionesFinalizadas: any[] = [];
+
+  activeTab: string = 'general';
+
+  constructor(private userService: UsuarioService,
+              private route: ActivatedRoute) {}
+
+  ngOnInit() {
+    this.route.params.subscribe(params => {
+      this.userId = params['id'];
+    });
+
+    this.loadUser();
   }
 
-  getInitials(nombre: string, apellido: string): string {
-    return (nombre?.charAt(0) || '') + (apellido?.charAt(0) || '');
+  loadUser() {
+    this.userService.getUserById(this.userId).subscribe(
+      (response: any) => {
+        // this.imgPath = user.avatar;
+        this.userData = response;
+      }
+    );
   }
 }

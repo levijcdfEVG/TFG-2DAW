@@ -1,6 +1,13 @@
 <?php
-    define("SERVIDOR", "localhost"); // DATOS SERVIDOR
-    define("USUARIO", "root");  // DATOS USUARIO BBDD
-    define("PASSWORD", ""); // DATOS CONTRASEÃ‘A BBDD
-    define("BBDD", "tfg_demo"); // NOMBRE BBDD
+    // Localhost
+    define("SERVIDOR", "localhost"); 
+    define("USUARIO", "root"); 
+    define("PASSWORD", ""); 
+    define("BBDD", "tfg_demo"); 
+
+    // Servidor remoto
+    // define("SERVIDOR", "15.proyectos.esvirgua.com"); 
+    // define("USUARIO", "proyectosevg_15"); 
+    // define("PASSWORD", "t45sG)J*Xp_I"); 
+    // define("BBDD", "proyectoevg_BD1-15"); 
 ?>

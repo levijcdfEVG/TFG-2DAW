@@ -1,0 +1,134 @@
+<div class="modal fade" id="newUserModal" data-backdrop="static" tabindex="-1" aria-labelledby="newUserModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header p-2 px-3 bg-theme">
+        <div>
+            <h5 class="w-100 modal-title text-white" id="newUserModalLabel">Nuevo Usuario</h5>
+            <p class="mb-0 text-white-50">Añade un usuario a la lista</p>
+        </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="userModalForm" (ngSubmit)="saveForm()">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="name" class="form-label"><strong>Nombre</strong></label>
+                    <input class="form-control"
+                           type="text"
+                           id="name"
+                           formControlName="name"
+                           [class.is-invalid]="validarCampos('name')"
+                    />
+                    <small *ngIf="validarCampos('name')" class="form-text text-danger">{{validarCampos('name')}}</small>
+                </div>
+                <div class="col-md-6">
+                    <label for="surname" class="form-label"><strong>Apellidos</strong></label>
+                    <input class="form-control"
+                           type="text"
+                           id="surname"
+                           formControlName="surname"
+                           [class.is-invalid]="validarCampos('surname')"
+                    />
+                    <small *ngIf="validarCampos('surname')" class="form-text text-danger">{{validarCampos('surname')}}</small>
+                </div>
+            </div>
+<!--        CORREO Y TELEFONO-->
+            <div class="row mb-3">
+                <div class="col-md-9 mx-auto">
+                    <label for="email" class="form-label"><strong>Email</strong></label>
+                    <input class="form-control"
+                           type="email"
+                           id="email"
+                           formControlName="email"
+                           [class.is-invalid]="validarCampos('email')"
+                    />
+                    <small *ngIf="validarCampos('email')" class="form-text text-danger">{{validarCampos('email')}}</small>
+                </div>
+                <div class="col-md-3">
+                    <label for="phone" class="form-label"><strong>Teléfono</strong></label>
+                    <input class="form-control"
+                           type="tel"
+                           id="phone"
+                           formControlName="phone"
+                           [class.is-invalid]="validarCampos('phone')"
+                    />
+                    <small *ngIf="validarCampos('phone')" class="form-text text-danger">{{validarCampos('phone')}}</small>
+                </div>
+            </div>
+<!--        PROVINCIA Y LOCALIDAD-->
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="province" class="form-label"><strong>Provincia</strong></label>
+                    <ng-select class="ng-select"
+                               [items]="provinceData"
+                               bindLabel="name"
+                               bindValue="id"
+                               placeholder="Seleccione una provincia"
+                               formControlName="province"
+                               [class.is-invalid]="validarCampos('province')">
+                    </ng-select>
+                    <small *ngIf="validarCampos('province')" class="form-text text-danger">{{validarCampos('province')}}</small>
+                </div>
+                <div class="col-md-6">
+                    <label for="locality" class="form-label"><strong>Localidad</strong></label>
+                    <ng-select class="ng-select"
+                               [items]="localityData"
+                               bindLabel="name"
+                               bindValue="id"
+                               placeholder="Seleccione una localidad"
+                               formControlName="locality"
+                               [class.is-invalid]="validarCampos('locality')">
+                    </ng-select>
+                    <small *ngIf="validarCampos('locality')" class="form-text text-danger">{{validarCampos('locality')}}</small>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="role" class="form-label"><strong>Rol</strong></label>
+                    <ng-select class="ng-select"
+                               [items]="roleData"
+                               bindLabel="name"
+                               bindValue="id"
+                               placeholder="Seleccione un rol"
+                               formControlName="role"
+                               [class.is-invalid]="validarCampos('role')">
+                    </ng-select>
+                    <small *ngIf="validarCampos('role')" class="form-text text-danger">{{validarCampos('role')}}</small>
+                </div>
+                <div class="col-md-6">
+                    <label for="center" class="form-label"><strong>Centro</strong></label>
+                    <ng-select class="ng-select"
+                               [items]="centerData"
+                               bindLabel="name"
+                               bindValue="id"
+                               placeholder="Seleccione una localidad"
+                               formControlName="center"
+                               [class.is-invalid]="validarCampos('center')">
+                    </ng-select>
+                    <small *ngIf="validarCampos('center')" class="form-text text-danger">{{validarCampos('center')}}</small>
+                </div>
+            </div>
+
+            <div class="row mb-3 ">
+                <div class="col-md-6 d-flex align-items-end">
+                    <div class="form-check">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               id="new_educator"
+                               formControlName="new_educator">
+                        <label class="form-check-label" for="new_educator">
+                            Marcar como nuevo educador
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="resetForm()">Cancelar</button>
+          <button type="button" class="btn btn-primary" (click)="saveForm()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>

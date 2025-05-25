@@ -8,22 +8,27 @@
     require_once 'config/config.php'; //Constantes config php
     require_once MODELS.'conexion.php'; //Clase BBDD
 
-    //if(!isset($_GET["controller"])){$_GET["controller"] = DEFAULT_CONTROLLER;}
-    //if(!isset($_GET["accion"])){$_GET["accion"] = DEFAULT_ACCION;}
+    // Establecer valores por defecto si no existen
+    if(!isset($_GET["controlador"])){$_GET["controlador"] = DEFAULT_CONTROLLER;}
+    if(!isset($_GET["accion"])){$_GET["accion"] = DEFAULT_ACCION;}
 
-    $rutaControlador = CONTROLLERS.$_GET["controlador"].'.php'; // 'controllers/cControlador.php'
+    $rutaControlador = CONTROLLERS.$_GET["controlador"].'.php';
 
-    //if(!file_exists($rutaControlador)){$rutaControlador = CONTROLLERS.'c'.DEFAULT_CONTROLADOR.'.php';} // 'controller/cPais.php'
+    if(!file_exists($rutaControlador)){
+        $rutaControlador = CONTROLLERS.DEFAULT_CONTROLLER.'.php';
+    }
 
     require_once $rutaControlador;
 
-    $nombreControlador = $_GET["controlador"]; //nombre de la clase controlador (Ejemplo: cPais)
-    $controlador = new $nombreControlador(); //Instanciamos objeto de la clase controlador
+    $nombreControlador = $_GET["controlador"];
+    $controlador = new $nombreControlador();
 
-    $dataToView["data"] = array();
-    if(method_exists($controlador,$_GET["accion"])){
-        $dataToView["data"] = $controlador->{$_GET["accion"]}();
+    $response = [];
+    if(method_exists($controlador, $_GET["accion"])){
+        $response = $controlador->{$_GET["accion"]}();
+    } else {
+        $response = ['success' => false, 'message' => 'Acción no válida o no especificada'];
     }
 
-    exit(json_encode($dataToView)); 
-?>
+    exit(json_encode($response)); 
+

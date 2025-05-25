@@ -1,35 +1,65 @@
-<div class="user-file-horizontal">
-  <div class="user-photo-box">
-    <img *ngIf="userPhotoUrl; else initials" [src]="userPhotoUrl" alt="Foto de usuario" class="user-photo-large" />
-    <ng-template #initials>
-      <div class="user-initials">{{ getInitials(user.nombre_user, user.apellido_user) }}</div>
-    </ng-template>
-    <input type="file" (change)="onPhotoSelected($event)" accept="image/*" />
-  </div>
-  <div class="user-data-box">
-    <div class="user-data-card">
-      <div class="user-data-header">Datos generales</div>
-      <div class="user-data-grid">
-        <div><strong>Nombre:</strong> {{ user.nombre_user }}</div>
-        <div><strong>Provincia:</strong> {{ user.provincia }}</div>
-        <div><strong>Apellidos:</strong> {{ user.apellido_user }}</div>
-        <div><strong>Localidad:</strong> {{ user.localidad }}</div>
-        <div style="grid-column: 1 / span 2;"><strong>Correo:</strong> {{ user.correo_user }}</div>
-      </div>
+<div class="container-fluid p-4">
+
+    <!-- Sección del usuario -->
+    <div class="row mb-4">
+        <!-- Card con la imagen -->
+        <div class="col-md-1">
+            <div class="card text-center">
+                <img [src]="imgPath" class="card-img-top p-3" alt="Foto de usuario" />
+                <div class="card-body">
+                    <h5 class="card-title">Foto de Usuario</h5>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card con los datos -->
+        <div class="col-md-8">
+            <div class="card p-3">
+                <h4>Datos del Usuario</h4>
+                <p><strong>Nombre:</strong> {{ userData.nombre_user }}</p>
+                <p><strong>Apellidos:</strong> {{ userData.apellido_user }}</p>
+                <p><strong>Correo:</strong> {{ userData.correo_user }}</p>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
-<div class="tabs">
-  <button [class.active]="activeTab === 'formaciones'" (click)="activeTab = 'formaciones'">Formaciones</button>
-  <button [class.active]="activeTab === 'extra'" (click)="activeTab = 'extra'">Otra sección</button>
-</div>
-<div class="tab-content">
-  <div *ngIf="activeTab === 'formaciones'">
-    <div class="formaciones-box">
-      <p>Contenido de formaciones...</p>
+
+    <!-- Sección de Tabs -->
+    <div class="card">
+        <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs">
+                <li class="nav-item" (click)="activeTab = 'general'">
+                    <a class="nav-link" [class.active]="activeTab === 'general'" href="#">Formaciones generales</a>
+                </li>
+                <li class="nav-item" (click)="activeTab = 'pendientes'">
+                    <a class="nav-link" [class.active]="activeTab === 'pendientes'" href="#">Formaciones pendientes</a>
+                </li>
+                <li class="nav-item" (click)="activeTab = 'finalizadas'">
+                    <a class="nav-link" [class.active]="activeTab === 'finalizadas'" href="#">Formaciones finalizadas</a>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body">
+            <!-- Tab content -->
+            <div *ngIf="activeTab === 'general'">
+                <h5>Formaciones Generales</h5>
+                <ul>
+                    <li *ngFor="let form of formaciones">{{ form.nombre }}</li>
+                </ul>
+            </div>
+            <div *ngIf="activeTab === 'pendientes'">
+                <h5>Formaciones Pendientes</h5>
+                <ul>
+                    <li *ngFor="let form of formacionesPendientes">{{ form.nombre }}</li>
+                </ul>
+            </div>
+            <div *ngIf="activeTab === 'finalizadas'">
+                <h5>Formaciones Finalizadas</h5>
+                <ul>
+                    <li *ngFor="let form of formacionesFinalizadas">
+                        {{ form.nombre }} - Finalizado el: {{ form.fechaFinalizacion | date:'longDate' }}
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
-  </div>
-  <div *ngIf="activeTab === 'extra'">
-    <p>Contenido de la otra sección...</p>
-  </div>
 </div>
