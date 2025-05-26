@@ -77,4 +77,74 @@
                 return ['success' => false, 'message' => 'Error al ejecutar la consulta: ' . $e->getMessage()];
             }
         }
+
+        public function getUserById($id): array {
+            $this->conectar();
+            $stmt = $this->conexion->prepare("SELECT u.*, r.nombre_rol FROM usuario u LEFT JOIN roles r ON u.id_rol = r.id WHERE u.id = :id");
+            $stmt->execute([':id' => $id]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($user) {
+                return ['success' => true, 'data' => $user];
+            } else {
+                return ['success' => false, 'message' => 'Usuario no encontrado'];
+            }
+        }
+
+        public function createUser($data): array {
+            $this->conectar();
+
+            $sql = "INSERT INTO usuario (nombre_user, apellido_user, correo_user, telefono_user, id_rol, nuevo_educador, estado)
+                    VALUES (:nombre_user, :apellido_user, :correo_user, :telefono_user, :id_rol, :nuevo_educador, :estado)";
+
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute([
+                ':nombre_user' => $data['nombre_user'],
+                ':apellido_user' => $data['apellido_user'],
+                ':correo_user' => $data['correo_user'],
+                ':telefono_user' => $data['telefono_user'],
+                ':id_rol' => $data['id_rol'],
+                ':nuevo_educador' => $data['nuevo_educador'] ?? 0,
+                ':estado' => $data['estado']
+            ]);
+
+            return ['success' => true, 'message' => 'Usuario creado exitosamente'];
+        }
+
+        public function updateUser($data): array {
+            $this->conectar();
+
+            $sql = "UPDATE usuario SET
+                        nombre_user = :nombre_user,
+                        apellido_user = :apellido_user,
+                        correo_user = :correo_user,
+                        telefono_user = :telefono_user,
+                        id_rol = :id_rol,
+                        nuevo_educador = :nuevo_educador,
+                        estado = :estado
+                    WHERE id = :id";
+
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute([
+                ':id' => $data['id'],
+                ':nombre_user' => $data['nombre_user'],
+                ':apellido_user' => $data['apellido_user'],
+                ':correo_user' => $data['correo_user'],
+                ':telefono_user' => $data['telefono_user'],
+                ':id_rol' => $data['id_rol'],
+                ':nuevo_educador' => $data['nuevo_educador'] ?? 0,
+                ':estado' => $data['estado']
+            ]);
+
+            return ['success' => true, 'message' => 'Usuario actualizado correctamente'];
+        }
+
+        public function deleteUser($id): array {
+            $this->conectar();
+            $stmt = $this->conexion->prepare("DELETE FROM usuario WHERE id = :id");
+            $stmt->execute([':id' => $id]);
+
+            return ['success' => true, 'message' => 'Usuario eliminado correctamente'];
+        }
+
     }

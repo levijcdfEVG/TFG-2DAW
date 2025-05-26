@@ -13,23 +13,45 @@ export class UsuarioService {
 
   constructor(private http: HttpClient) {}
 
-  // Get a user list with or without params
+  // Mostrar usuarios con o sin parametros de filtro
   getUsersByParams(params: any): Observable<User[]> {
     // Convertir los parámetros a HttpParams
     const httpParams = new HttpParams({ fromObject: params });
 
     return this.http.get<any>(this.userPath + 'getUsersByParams', { params: httpParams })
       .pipe(
+        map(res => res.data), catchError(this.handleError)
+      );
+  }
+
+  // Obtener un usuario por su id
+  getUserById(userId: number): Observable<User> {
+    const params = new HttpParams().set('id', userId.toString());
+    // console.log(this.userPath + `getUserById&id=${userId}`);
+    return this.http.get<any>(this.userPath + 'getUserById', { params })
+      .pipe(
         map(res => res.data),
         catchError(this.handleError)
       );
   }
 
-  getUserById(userId: any): Observable<User> {
-    return this.http.get<any>(this.userPath + 'getUser')
-      .pipe(
-        map(res => res.data),
-      )
+  // Crear un nuevo usuario
+  createUser(user: any): Observable<any> {
+    return this.http.post<any>(this.userPath + 'createUser', user)
+        .pipe(catchError(this.handleError));
+  }
+
+  // Actualizar un usuario
+  updateUser(user: User): Observable<any> {
+    return this.http.put<any>(this.userPath + 'updateUser', user)
+        .pipe(catchError(this.handleError));
+  }
+
+  // Eliminar un usuario
+  deleteUser(userId: number): Observable<any> {
+    const params = new HttpParams().set('id', userId.toString());
+    return this.http.delete<any>(this.userPath + 'deleteUser', { params })
+        .pipe(catchError(this.handleError));
   }
 
   // Handle HTTP errors

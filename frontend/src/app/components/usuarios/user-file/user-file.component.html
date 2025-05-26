@@ -1,24 +1,33 @@
 <div class="container-fluid p-4">
 
     <!-- Sección del usuario -->
-    <div class="row mb-4">
+    <div class="d-flex mb-4 border">
         <!-- Card con la imagen -->
-        <div class="col-md-1">
-            <div class="card text-center">
-                <img [src]="imgPath" class="card-img-top p-3" alt="Foto de usuario" />
-                <div class="card-body">
-                    <h5 class="card-title">Foto de Usuario</h5>
-                </div>
+        <div class="card mx-4">
+            <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                <img [src]="imgPath" class="img-fluid rounded-circle mb-3" style="max-width: 200px; height: auto;" alt="Foto de usuario" />
             </div>
         </div>
 
         <!-- Card con los datos -->
-        <div class="col-md-8">
-            <div class="card p-3">
-                <h4>Datos del Usuario</h4>
-                <p><strong>Nombre:</strong> {{ userData.nombre_user }}</p>
-                <p><strong>Apellidos:</strong> {{ userData.apellido_user }}</p>
-                <p><strong>Correo:</strong> {{ userData.correo_user }}</p>
+        <div class="card w-75 ms-5">
+            <div class="card-title p-1 border-bottom">
+                <h5>Datos del Usuario</h5>
+            </div>
+            <div class="card-body ">
+                <div *ngIf="userData; else loading" class="row">
+                    <div class="col-md-4 border">
+                        <p><strong>Nombre:</strong> {{ userData.nombre_user }} </p>
+                        <p><strong>Correo:</strong> {{ userData.correo_user }} </p>
+                    </div>
+                    <div class="col-md-4 border">
+                        <p><strong>Apellidos:</strong> {{ userData.apellido_user }} </p>
+                    </div>
+                    
+                </div>
+                <ng-template #loading>
+                    <p>Cargando datos del usuario...</p>
+                </ng-template>
             </div>
         </div>
     </div>

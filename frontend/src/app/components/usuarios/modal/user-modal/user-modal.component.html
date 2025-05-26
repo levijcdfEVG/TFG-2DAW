@@ -1,4 +1,4 @@
-<div class="modal fade" id="newUserModal" data-backdrop="static" tabindex="-1" aria-labelledby="newUserModalLabel" aria-hidden="true">
+<div class="modal fade" id="newUserModal" data-backdrop="static" tabindex="-1" aria-labelledby="newUserModalLabel">
   <div class="modal-dialog modal-xl modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header p-2 px-3 bg-theme">
@@ -6,7 +6,7 @@
             <h5 class="w-100 modal-title text-white" id="newUserModalLabel">Nuevo Usuario</h5>
             <p class="mb-0 text-white-50">Añade un usuario a la lista</p>
         </div>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button #closeModalBtn type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <form [formGroup]="userModalForm" (ngSubmit)="saveForm()">
@@ -40,6 +40,7 @@
                            type="email"
                            id="email"
                            formControlName="email"
+                           placeholder="Ejemplo: ejemplo@fundacionloyola.net"
                            [class.is-invalid]="validarCampos('email')"
                     />
                     <small *ngIf="validarCampos('email')" class="form-text text-danger">{{validarCampos('email')}}</small>
@@ -61,7 +62,7 @@
                     <label for="province" class="form-label"><strong>Provincia</strong></label>
                     <ng-select class="ng-select"
                                [items]="provinceData"
-                               bindLabel="name"
+                               bindLabel="nombre"
                                bindValue="id"
                                placeholder="Seleccione una provincia"
                                formControlName="province"
@@ -73,7 +74,8 @@
                     <label for="locality" class="form-label"><strong>Localidad</strong></label>
                     <ng-select class="ng-select"
                                [items]="localityData"
-                               bindLabel="name"
+                               [groupBy]="'provincia_nombre'"
+                               bindLabel="nombre_localidad"
                                bindValue="id"
                                placeholder="Seleccione una localidad"
                                formControlName="locality"
@@ -88,7 +90,7 @@
                     <label for="role" class="form-label"><strong>Rol</strong></label>
                     <ng-select class="ng-select"
                                [items]="roleData"
-                               bindLabel="name"
+                               bindLabel="nombre_rol"
                                bindValue="id"
                                placeholder="Seleccione un rol"
                                formControlName="role"
