@@ -35,6 +35,7 @@ INSERT INTO centro_fundacion (nombre_centro, direccion_centro, cp, correo_centro
 
 -- Usuarios (corrigiendo: se añade id_centro)
 INSERT INTO usuario (nombre_user, apellido_user, correo_user, telefono_user, nuevo_educador, id_rol, id_centro) VALUES
+  ('Alvaro', 'Gomez Delgado', 'agomezdelgado.guadalupe@alumnado.fundacionloyola.net', '672775698', 0, 2, 1),
   ('David', 'Silva Vega', 'dsilvavega.guadalupe@alumnado.fundacionloyola.net', '644266926', 0, 2, 1),
   ('Juan Carlos', 'García Fernández', 'juan.garcia@fundacionloyola.net', '615123456', 0, 2, 1),
   ('Ana Isabel', 'Martínez López', 'ana.martinez.centro1@fundacionloyola.net', '666789012', 0, 3, 2),

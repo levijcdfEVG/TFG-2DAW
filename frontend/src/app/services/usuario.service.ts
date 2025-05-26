@@ -9,7 +9,7 @@ import { map, catchError } from 'rxjs/operators';
 })
 export class UsuarioService {
 
-  private userPath = 'http://localhost:8000/index.php?controlador=CUsuario&accion=';
+  private userPath = 'http://localhost:8000/index.php?controlador=cUsuario&accion=';
 
   constructor(private http: HttpClient) {}
 

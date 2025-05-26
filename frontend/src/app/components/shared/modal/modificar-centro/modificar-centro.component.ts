@@ -23,12 +23,12 @@ export class ModificarCentroComponent implements OnInit, OnChanges {
     this.formCentro = this.fb.group({
       nombre_centro: ['', [
         Validators.required,
-        Validators.maxlength(50),
+        Validators.maxLength(50),
         ModificarCentroComponent.sinNumerosValidator
       ]],
       direccion_centro: ['', [
         Validators.required,
-        Validators.maxlength(50)
+        Validators.maxLength(50)
       ]],
       cp: ['', [
         Validators.required,
@@ -46,7 +46,7 @@ export class ModificarCentroComponent implements OnInit, OnChanges {
       ]],
       correo_centro: ['', [
         Validators.required,
-        Validators.maxlength(255),
+        Validators.maxLength(255),
         ModificarCentroComponent.emailFundacionLoyolaValidator
       ]]
     });

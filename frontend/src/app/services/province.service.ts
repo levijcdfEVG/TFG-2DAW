@@ -7,7 +7,7 @@ import { Province } from '../interfaces/province.interface';
   providedIn: 'root'
 })
 export class ProvinciaService {
-  private provincePath = 'http://localhost:8000/index.php?controlador=CProvincia&accion=';
+  private provincePath = 'http://localhost:8000/index.php?controlador=cProvincia&accion=';
 
   constructor(private http: HttpClient) {}
 

@@ -1,12 +1,22 @@
 <?php
-class mUsuario {
+    class mUsuario {
 
-    private $conexion;
+        private $conexion;
 
-    public function conectar(){
-        $objetoBD = new bbdd(); //Conectamos a la base de datos. Creamos objeto $objetoBD
-        $this->conexion = $objetoBD->conexion; //Llamamos al metodo que realiza la conexion a la BBDD
-    }
+        public function conectar(){
+            $objetoBD = new bbdd(); //Conectamos a la base de datos. Creamos objeto $objetoBD
+            $this->conexion = $objetoBD->conexion; //Llamamos al metodo que realiza la conexion a la BBDD
+        }
+
+        public function getUsuarioPorCorreo($correo) {
+                $this->conectar(); //Llamo al metodo conectar de arriba
+
+                $sql = "SELECT * FROM usuario WHERE correo_user = ?";
+                $stmt = $this->conexion->prepare($sql);
+                $stmt->bindValue(1, $correo, PDO::PARAM_STR);
+                $stmt->execute();
+                return $stmt->fetch(PDO::FETCH_ASSOC);
+            }
 
         public function getUsersByParams($params): array {
             try {

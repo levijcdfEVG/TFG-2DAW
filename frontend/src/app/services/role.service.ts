@@ -9,7 +9,7 @@ import {map, catchError} from "rxjs/operators";
 })
 export class RoleService {
 
-  private rolePath = 'http://localhost:8000/index.php?controlador=CRol&accion=';
+  private rolePath = 'http://localhost:8000/index.php?controlador=cRol&accion=';
 
   constructor(private http: HttpClient) { }
 

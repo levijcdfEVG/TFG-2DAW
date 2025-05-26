@@ -24,7 +24,7 @@ const routes: Routes = [
   },
   {
     path: "info-educadores",
-    component: InfoFormacionComponent, canActivate: [AuthGuard]
+    component: UsuariosComponent, canActivate: [AuthGuard]
   },
   {
     path: "",
@@ -44,7 +44,6 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   { path: '', redirectTo: 'usuarios', pathMatch: 'full'},
-  { path: 'usuarios', component: UsuariosComponent},
   { path: 'usuarios/:id', component: UserFileComponent},
 
 ];

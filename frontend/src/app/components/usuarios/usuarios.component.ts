@@ -41,6 +41,7 @@ export class UsuariosComponent implements OnInit {
     this.userService.getUsersByParams(params)
       .pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: (response: User[]) => {
+        console.log('Usuarios encontrados:', response);
         this.dataUsers = response;
         this.hasSearched = true;
         this.cdr.detectChanges();

@@ -6,6 +6,6 @@ export interface User {
     telefono_user: string;
     id_rol: string;
     estado: boolean;
+    // id_centro: number;
     nuevo_educador: boolean;
-    // fch_creacion: string;
 } 

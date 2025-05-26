@@ -7,7 +7,7 @@ import { catchError, map, Observable, throwError } from 'rxjs';
   providedIn: 'root'
 })
 export class LocalidadService {
-  private localityPath = 'http://localhost:8000/index.php?controlador=CLocalidad&accion=';
+  private localityPath = 'http://localhost:8000/index.php?controlador=cLocalidad&accion=';
 
   constructor(private http: HttpClient) { }
 

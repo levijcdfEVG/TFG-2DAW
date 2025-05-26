@@ -20,7 +20,7 @@ export class TemplateComponent implements OnInit, AfterViewInit, OnDestroy {
     console.log('Toastr button clicked!');
   }
 
-  fakeUsers = [
+  fakedataUsers = [
     { nombre: 'Ana García', edad: 28, pais: 'España', correo: 'ana@example.com' },
     { nombre: 'Juan Pérez', edad: 35, pais: 'México', correo: 'juan@example.com' },
     { nombre: 'Sara López', edad: 22, pais: 'Argentina', correo: 'sara@example.com' },

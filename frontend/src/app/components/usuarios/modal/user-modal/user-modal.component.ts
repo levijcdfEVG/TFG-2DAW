@@ -26,10 +26,7 @@ export class UserModalComponent implements OnInit {
 
   roleData: Role[] = [];
 
-  centerData: Center[] = [
-    { id: 1, name: 'Centro Loyola Madrid' },
-    { id: 2, name: 'Centro Loyola Sevilla' },
-  ];
+  centerData: Center[] = [];
 
   private unsubscribe$ = new Subject<void>();
 
@@ -44,8 +41,8 @@ export class UserModalComponent implements OnInit {
     this.crearFormulario();
     this.cargarFormulario();
 
-    this.loadProvinces();
-    this.loadLocalities();
+    // this.loadProvinces();
+    // this.loadLocalities();
     this.loadRoles();
     // this.loadCenters();
 
