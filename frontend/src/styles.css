@@ -2,6 +2,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
 @import "@ng-select/ng-select/themes/default.theme.css";
 
+:root {
+    --color-primario: #006DA4;
+    --color-secundario: #012179;
+    --color-terciario: #1274CA;
+    --color-detalles: #DD890D;
+    /*--color-quintario: #dd890d;*/
+    --color-exito:#28a745;
+    --color-error: #9E3F3F;
+    --color-aviso: #ffc107;
+    --info-color: #17a2b8;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --font-family: 'Open Sans', sans-serif;
+}
 
 html, body { height: 100%; }
 body { margin: 0; font-family: 'Open Sans', sans-serif; }

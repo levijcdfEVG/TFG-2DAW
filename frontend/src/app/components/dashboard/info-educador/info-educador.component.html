@@ -1,1 +1,170 @@
-<p>info-educador works!</p>
+<app-new-user></app-new-user>
+<div class="container-fluid">
+    <!-- User Filter -->
+    <div class="card rounded-0 my-3 mx-4">
+        <div class="card-header font-weight-bold bg-light">
+            <div class="row fs-6">
+                <div class="col-6">
+                    <h5 class="mb-0">Filtro de Usuarios</h5>
+                </div>
+                <div class="col-6 text-end font-weight-bold">
+                    <button class="btn text-theme" data-bs-toggle="modal" data-bs-target="#newUserModal">
+                        <i class="fa fa-plus me-2"></i>Nuevo Usuario
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <form [formGroup]="filterForm" (ngSubmit)="searchByFilter()">
+                <div class="row mb-3">
+                    <div class="col-md-4 d-flex align-items-center mb-2 mb-md-0">
+                        <label for="nombre" class="form-label fw-bold mb-0 me-3" style="min-width: 110px;">Nombre:</label>
+                        <input type="text"
+                               class="form-control"
+                               id="name"
+                               formControlName="name"
+                               placeholder="Nombre del usuario"
+                        >
+                    </div>
+                    <div class="col-md-4 d-flex align-items-center mb-2 mb-md-0">
+                        <label for="apellidos" class="form-label fw-bold mb-0 me-3" style="min-width: 110px;">Apellidos:</label>
+                        <input type="text"
+                               class="form-control"
+                               id="surname"
+                               formControlName="surname"
+                               placeholder="Apellidos del usuario"
+                        >
+                    </div>
+                    <div class="col-md-4 d-flex align-items-center">
+                        <label class="form-label fw-bold mb-0 me-3" style="min-width: 110px;">Nuevo Educador:</label>
+                        <div class="d-flex gap-2">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       id="newEducatorAll"
+                                       formControlName="new_educator"
+                                       [value]="0"
+                                >
+                                <label class="form-check-label" for="newEducatorAll">Todos</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       id="newEducatorYes"
+                                       formControlName="new_educator"
+                                       [value]="true">
+                                <label class="form-check-label" for="newEducatorYes">Sí</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       id="newEducatorNo"
+                                       formControlName="new_educator"
+                                       [value]="false">
+                                <label class="form-check-label" for="newEducatorNo">No</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 d-flex align-items-center mb-2 mb-md-0">
+                        <label for="email" class="form-label fw-bold mb-0 me-3" style="min-width: 110px;">Email:</label>
+                        <input type="email"
+                               class="form-control"
+                               id="email"
+                               formControlName="email"
+                               placeholder="Correo electrónico"
+                        >
+                    </div>
+                    <div class="col-md-4 d-flex align-items-center mb-2 mb-md-0">
+                        <label for="telefono" class="form-label fw-bold mb-0 me-3" style="min-width: 110px;">Teléfono:</label>
+                        <input type="tel"
+                               class="form-control"
+                               id="phone"
+                               formControlName="phone"
+                               placeholder="Teléfono del usuario"
+                        >
+                    </div>
+                    <div class="col-md-4 d-flex align-items-center">
+                        <label class="form-label fw-bold mb-0 me-3" style="min-width: 110px;">Estado:</label>
+                        <div class="d-flex gap-2">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       id="statusAll"
+                                       formControlName="status"
+                                       [value]="2"
+                                >
+                                <label class="form-check-label" for="statusAll">Todos</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       id="statusActive"
+                                       formControlName="status"
+                                       [value]="1"
+                                >
+                                <label class="form-check-label" for="statusActive">Activo</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       id="statusInactive"
+                                       formControlName="status"
+                                       [value]="0"
+                                >
+                                <label class="form-check-label" for="statusInactive">Inactivo</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 d-flex align-items-center">
+                        <label for="role" class="form-label fw-bold mb-0 me-3" style="min-width: 110px;">Rol:</label>
+                        <select class="form-select" id="role" formControlName="role">
+                            <option selected value="0">Todos</option>
+                            <option value="1">Administrador</option>
+                            <option value="2">Educador</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 text-end">
+                        <button type="submit" class="btn btn-theme me-2">Filtrar</button>
+                        <button type="button" class="btn btn-secondary" (click)="resetFilter()">Limpiar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- End of User Filter -->
+
+    <!-- Users Table -->
+    <div class="mx-4">
+        <div *ngIf="hasSearched" class="card-body">
+            <div class="table-responsive" *ngIf="dataUsers && dataUsers.length > 0">
+                <table id="usersTable" class="w-100 table table-striped table-hover row-border mb-0">
+                    <thead class="table-primary">
+                    <tr>
+                        <th scope="col" class="py-3 ps-4">Nombre</th>
+                        <th scope="col" class="py-3">Apellidos</th>
+                        <th scope="col" class="py-3">Email</th>
+                        <th scope="col" class="py-3">Rol</th>
+                        <th scope="col" class="py-3 text-end">Teléfono</th>
+                        <th scope="col" class="py-3 text-end pe-4">Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div *ngIf="!dataUsers || dataUsers.length === 0" class="text-center py-3">
+                <div class="w-100 alert alert-danger d-inline-block fs-bold">
+                    <i class="fa fa-info-circle me-2"></i>
+                    No se han encontrado usuarios
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End of Users Table -->
+</div>
+

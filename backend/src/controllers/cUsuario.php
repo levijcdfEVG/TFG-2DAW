@@ -55,7 +55,8 @@ class cUsuario {
             ];
 
             $response = $modelo->getUsersByParams($params);
-            return $response;
+
+            echo json_encode($response);
         } catch (Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }

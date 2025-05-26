@@ -1,4 +1,9 @@
 /* Solo estilos mínimos no cubiertos por Bootstrap */
+nav {
+  background-color: var(--color-primario);
+}
+
+
 .logo {
   height: 90px;
 }

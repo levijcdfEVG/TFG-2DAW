@@ -9,15 +9,15 @@ import { map, catchError } from 'rxjs/operators';
 })
 export class UsuarioService {
 
-  private userPath = 'http://localhost:8000/index.php?controlador=cUsuario&accion=';
+  userPath = 'http://localhost:8000/index.php?controlador=cUsuario&accion=';
 
   constructor(private http: HttpClient) {}
 
   // Mostrar usuarios con o sin parametros de filtro
-  getUsersByParams(params: any): Observable<User[]> {
+  getUsersByParams(params: any): Observable<any> {
     // Convertir los parámetros a HttpParams
     const httpParams = new HttpParams({ fromObject: params });
-
+    // console.log(this.userPath + 'getUsersByParams', { params: httpParams });
     return this.http.get<any>(this.userPath + 'getUsersByParams', { params: httpParams })
       .pipe(
         map(res => res.data), catchError(this.handleError)

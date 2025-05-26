@@ -1,5 +1,5 @@
-import { ProvinciaService } from './../../../../services/province.service';
-import { LocalidadService } from './../../../../services/locality.service';
+import { ProvinciaService } from '../../../../services/province.service';
+import { LocalidadService } from '../../../../services/locality.service';
 import {Component, OnInit, NgZone, ViewChild, ElementRef, AfterViewInit
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -110,7 +110,7 @@ export class UserModalComponent implements OnInit {
     this.userModalForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       surname: ['', [Validators.required, Validators.minLength(5)]],
-      email: ['', [Validators.required, Validators.pattern(/^[_A-Za-z0-9\-+]+(\.[_A-Za-z0-9-]+)*@fundacionloyola\.net$/)]],
+      email: ['', [Validators.required, Validators.pattern(/^[_A-Za-z0-9\-+]+(\.[_A-Za-z0-9-]+)*@fundacionloyola\.es$/)]],
       phone: ['', [Validators.required, Validators.pattern('^[0-9]{9}$')]],
       province: ['', [Validators.required]],
       locality: ['', [Validators.required]],
