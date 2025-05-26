@@ -1,9 +1,9 @@
-:host .navbar {
-    background-color: var(--color-primario) !important;
-    color: white;
-  }
+/* Solo estilos mínimos no cubiertos por Bootstrap */
+.logo {
+  height: 90px;
+}
 
-  .navbar-brand {
-    color: white !important; /* Asegúrate de usar !important si otros estilos están sobrescribiendo este */
-    text-decoration: none; /* Opcional: elimina el subrayado */
-  }
+.nav-link.active {
+  border-bottom: 2.5px solid #066a97;
+  color: #066a97 !important;
+}

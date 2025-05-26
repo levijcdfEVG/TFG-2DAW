@@ -10,6 +10,10 @@ import { InfoFormacionComponent } from './components/dashboard/info-formacion/in
 import { InfoCursoComponent } from './components/dashboard/info-curso/info-curso.component';
 import { InfoEducadorComponent } from './components/dashboard/info-educador/info-educador.component';
 import { FooterComponent } from './components/shared/footer/footer.component';
+import { UsuariosComponent } from './components/usuarios/usuarios.component';
+import { UserFileComponent } from './components/usuarios/user-file/user-file.component';
+import { UserModalComponent } from './components/usuarios/modal/user-modal/user-modal.component';
+
 import { HttpClientModule } from '@angular/common/http';
 import { MatTableModule } from '@angular/material/table';
 import { FormsModule } from '@angular/forms';
@@ -37,6 +41,10 @@ import { MenuComponent } from './components/menu/menu.component';
     InfoCursoComponent,
     InfoEducadorComponent,
     FooterComponent,
+    UsuariosComponent,
+    UserFileComponent,
+    UserModalComponent,
+    FooterComponent,
     AltaCentroComponent,
     ModificarCentroComponent,
     FooterComponent,
@@ -60,7 +68,10 @@ import { MenuComponent } from './components/menu/menu.component';
     AppRoutingModule,
     ReactiveFormsModule,
     HttpClientModule,
-    NgSelectModule
+    AppRoutingModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+    NgSelectModule,
   ],
   providers: [
     CookieService

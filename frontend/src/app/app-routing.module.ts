@@ -5,6 +5,9 @@ import {InfoFormacionComponent} from "./components/dashboard/info-formacion/info
 import {MenuComponent} from "./components/menu/menu.component";
 import {GoogleSignInComponent} from "./components/google-sign-in/google-sign-in.component";
 import {AuthGuard} from "./guards/auth.guard";
+import { UsuariosComponent} from "./components/usuarios/usuarios.component";
+import { UserFileComponent} from "./components/usuarios/user-file/user-file.component";
+
 
 const routes: Routes = [
   {
@@ -39,7 +42,11 @@ const routes: Routes = [
     path: '**',
     redirectTo: '/menu',
     pathMatch: 'full'
-  }
+  },
+  { path: '', redirectTo: 'usuarios', pathMatch: 'full'},
+  { path: 'usuarios', component: UsuariosComponent},
+  { path: 'usuarios/:id', component: UserFileComponent},
+
 ];
 
 @NgModule({

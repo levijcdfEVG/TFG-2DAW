@@ -39,4 +39,7 @@ define('CONTROLLERS', 'controllers/');
  * Utilizado para la autenticación con servicios de Google.
  */
 define('GOOGLEID', '759419410954-niiprm9ddsbrn2pv833vbdista3mi6nr.apps.googleusercontent.com');
+    /*-- Parámetros por defecto --*/
+    define('DEFAULT_CONTROLLER','CUsuario'); //Controlador por defecto
+    define('DEFAULT_ACCION','getUsersByParams'); //Acción por defecto
 ?>

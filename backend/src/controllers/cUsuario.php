@@ -2,7 +2,7 @@
 require_once MODELS . 'mUsuario.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once 'config/config.php';
-require_once 'helpers/GoogleJWTVerifier.php'; 
+require_once 'helpers/GoogleJWTVerifier.php';
 
 class cUsuario {
 
@@ -39,7 +39,28 @@ class cUsuario {
         }
     }
 
-    public function getUserByid($param): array {
+    public function getUsersByParams() {
+
+                try {
+                    // Validación y sanitización de parámetros
+                    $params = [
+                        'nombre_user' => filter_var($_GET['name'] ?? '', FILTER_SANITIZE_STRING),
+                        'apellido_user' => filter_var($_GET['surname'] ?? '', FILTER_SANITIZE_STRING),
+                        'correo_user' => filter_var($_GET['email'] ?? '', FILTER_SANITIZE_EMAIL),
+                        'telefono_user' => filter_var($_GET['phone'] ?? '', FILTER_SANITIZE_STRING),
+                        'id_rol' => filter_var($_GET['role'] ?? '', FILTER_SANITIZE_STRING),
+                        'nuevo_educador' => filter_var($_GET['new_educator'] ?? 0, FILTER_VALIDATE_INT),
+                        'estado' => filter_var($_GET['status'] ?? 2, FILTER_VALIDATE_INT)
+                    ];
+
+                    $response = $this->mUsuario->getUsersByParams($params);
+                    return $response;
+                } catch (Exception $e) {
+                    return ['success' => false, 'message' => $e->getMessage()];
+                }
+            }
+
+    public function getUserById($param): array {
         $modelo = new mUsuario();
 
         try {
@@ -48,9 +69,9 @@ class cUsuario {
             }
 
             $id = intval($param['id']);
-            $usuario = $modelo->getUsuarioPorId($id);
+            $response = $this->mUsuario->getUserById($id);
 
-            if (!$usuario) {
+            if (!$response) {
                 return ["success" => false, "error" => "Usuario no encontrado"];
             }
 
@@ -61,10 +82,37 @@ class cUsuario {
         }
     }
 
+        public function deleteUser() {
+            try {
+                $id = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT);
+                if (!$id) {
+                    throw new Exception("ID inválido");
+                }
+                $response = $this->mUsuario->deleteUser($id);
+                return $response;
+            } catch (Exception $e) {
+                return ['success' => false, 'message' => $e->getMessage()];
+            }
+        }
+
     private function sendResponse($data) {
         header('Content-Type: application/json');
         echo json_encode($data);
         exit;
     }
 
-}
+        public function changeStatus() {
+            try {
+                $id = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT);
+                if (!$id) {
+                    throw new Exception("ID inválido");
+                }
+
+                $response = $this->mUsuario->changeStatus($id);
+                return $response;
+            } catch (Exception $e) {
+                return ['success' => false, 'message' => $e->getMessage()];
+            }
+        }
+
+    }

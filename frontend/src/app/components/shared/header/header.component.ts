@@ -8,13 +8,20 @@ import {Router} from "@angular/router";
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent {
-    
+
+    logoPath = 'assets/logotipo.png';
+
+    // RRSS
+    facebook = 'https://www.facebook.com';
+    twitter_X = 'https://www.twitter.com';
+    instagram = 'https://www.instagram.com';
+    youtube = 'https://www.youtube.com';
 
     constructor(private authService: AuthService, private router: Router) {
     }
+
   logout() {
         this.authService.logout();
         this.router.navigate(['/login']);
     }
-
 }

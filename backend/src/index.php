@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // Carga de configuraciones y dependencias.
-require_once 'config/config.php'; 
+require_once 'config/config.php';
 require_once MODELS . 'conexion.php';
 
 // Carga dinámica del controlador solicitado.
