@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { UsuarioService } from '../../services/usuario.service';
 import { Subject, takeUntil} from "rxjs";
 import { User } from 'src/app/interfaces/user.interface';
+import { error } from 'jquery';
 
 declare var $: any;
 
@@ -53,6 +54,21 @@ export class UsuariosComponent implements OnInit {
         console.error('Error al obtener usuarios:', error);
       }
     });
+  }
+
+  changeStatus(id: number) {
+    console.log(id);
+    this.userService.changeStatus(id)
+      .pipe(takeUntil(this.unsubscribe$)).subscribe({
+        next: (response: any) => {
+          console.log('Estado del usuario cambiado', response);
+          this.cdr.detectChanges();
+        },
+        error: (error: any) => {
+          console.error('Error al modificar el estado del usuario:', error);
+        }
+      })
+
   }
 
 // METODOS DEL BUSCADOR ---------------------------------------
@@ -135,13 +151,22 @@ export class UsuariosComponent implements OnInit {
                           <i class="fas fa-eye text-theme"></i> Ver ficha
                         </a>
                       </li>
-                      <li><a class="dropdown-item" href="/usuarios/editar/${data}">
-                        <i class="fas fa-${row.activo ? 'check' : 'ban'} text-theme"></i> ${row.activo ? 'Habilitar' : 'Deshabilitar'}
-                      </a></li>
+                      <li>
+                        <button class="dropdown-item status-change-btn" data-id="${data}" data-status="${row.activo}">
+                          <i class="fas fa-${row.activo ? 'check' : 'ban'} text-theme"></i> ${row.activo ? 'Habilitar' : 'Deshabilitar'}
+                        </button>
+                      </li>
                     </ul>
                   </div>`;
         }
       }]
+    });
+
+    // Agregar el evento click después de inicializar la tabla
+    $('#usersTable').on('click', '.status-change-btn', (event: any) => {
+      const id = $(event.currentTarget).data('id');
+      console.log(id);
+      this.changeStatus(id);
     });
   }
 }

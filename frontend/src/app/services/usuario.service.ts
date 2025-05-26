@@ -27,7 +27,7 @@ export class UsuarioService {
   // Obtener un usuario por su id
   getUserById(userId: number): Observable<User> {
     const params = new HttpParams().set('id', userId.toString());
-    // console.log(this.userPath + `getUserById&id=${userId}`);
+    console.log(this.userPath + `getUserById&${userId}`);
     return this.http.get<any>(this.userPath + 'getUserById', { params })
       .pipe(
         map(res => res.data),
@@ -52,6 +52,13 @@ export class UsuarioService {
     const params = new HttpParams().set('id', userId.toString());
     return this.http.delete<any>(this.userPath + 'deleteUser', { params })
         .pipe(catchError(this.handleError));
+  }
+
+  // Cambiar el estado del usuario
+  changeStatus(userId: number): Observable<any> {
+    console.log(this.userPath + `changeStatus$id=${userId}`);
+    return this.http.put<any>(this.userPath + 'changeStatus', { id: userId })
+      .pipe(catchError(this.handleError));
   }
 
   // Handle HTTP errors

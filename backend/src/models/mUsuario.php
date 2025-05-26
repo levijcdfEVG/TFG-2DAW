@@ -147,4 +147,19 @@
             return ['success' => true, 'message' => 'Usuario eliminado correctamente'];
         }
 
+        public function changeStatus($id): array {
+            $this->conectar();
+
+            $sql = "UPDATE usuario SET estado = CASE 
+                    WHEN estado = 1 THEN 0 
+                    WHEN estado = 0 THEN 1 
+                    ELSE estado 
+                    END 
+                    WHERE id = :id";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute([':id' => $id]);
+
+            return ['success' => true, 'message' => 'Usuario actualizado exitosamente'];
+        }
+
     }

@@ -202,13 +202,12 @@ export class UserModalComponent implements OnInit {
       telefono_user: this.userModalForm.value.phone,
       id_rol: this.userModalForm.value.role,
       nuevo_educador: this.userModalForm.value.new_educator,
-      estado: 1 // Puedes cambiar esto si tu lógica lo requiere
+      estado: 1
     };
 
     this.userService.createUser(userData).pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: (response: any) => {
         console.log('Usuario guardado:', response);
-        // Aquí puedes cerrar el modal, mostrar mensaje o refrescar la tabla
       },
       error: (error: any) => {
         console.error('Error al guardar el usuario:', error);

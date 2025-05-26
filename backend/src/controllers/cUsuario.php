@@ -88,4 +88,18 @@
             }
         }
 
+        public function changeStatus() {
+            try {
+                $id = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT);
+                if (!$id) {
+                    throw new Exception("ID inválido");
+                }
+
+                $response = $this->mUsuario->changeStatus($id);
+                return $response;
+            } catch (Exception $e) {
+                return ['success' => false, 'message' => $e->getMessage()];
+            }
+        }
+
     }
