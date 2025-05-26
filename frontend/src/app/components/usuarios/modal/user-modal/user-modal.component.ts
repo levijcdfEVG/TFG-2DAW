@@ -1,13 +1,6 @@
-import {
-  Component,
-  OnInit,
-  NgZone,
-  ViewChild,
-  ElementRef,
-  Input,
-  Output,
-  EventEmitter,
-  AfterContentInit, AfterViewInit
+import { ProvinciaService } from './../../../../services/province.service';
+import { LocalidadService } from './../../../../services/locality.service';
+import {Component, OnInit, NgZone, ViewChild, ElementRef, AfterViewInit
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UsuarioService } from '../../../../services/usuario.service';
@@ -16,32 +9,22 @@ import {Province} from "../../../../interfaces/province.interface";
 import {Locality} from "../../../../interfaces/locality.interface";
 import {Role} from "../../../../interfaces/role.interface";
 import {Center} from "../../../../interfaces/center.interface";
-import {User} from "../../../../interfaces/user.interface";
+import {RoleService} from "../../../../services/role.service";
 
 @Component({
   selector: 'app-new-user',
   templateUrl: './user-modal.component.html',
   styleUrls: ['./user-modal.component.css']
 })
-export class UserModalComponent implements OnInit, AfterViewInit {
+export class UserModalComponent implements OnInit {
   @ViewChild('closeModalBtn') closeModalBtn!: ElementRef;
 
   userModalForm!: FormGroup;
-  provinceData: Province[] = [
-    { id: 1, name: 'Álava' },
-    { id: 2, name: 'Albacete' },
-  ];
+  provinceData: Province[] = [];
 
-  localityData: Locality[] = [
-    { id: 1, name: 'Vitoria-Gasteiz' },
-    { id: 2, name: 'Almansa' },
-  ];
+  localityData: Locality[] = [];
 
-  roleData: Role[] = [
-    { id: 1, name: 'Educador' },
-    { id: 2, name: 'Director' },
-    { id: 3, name: 'Administrador' },
-  ];
+  roleData: Role[] = [];
 
   centerData: Center[] = [
     { id: 1, name: 'Centro Loyola Madrid' },
@@ -52,22 +35,23 @@ export class UserModalComponent implements OnInit, AfterViewInit {
 
   constructor(private fb: FormBuilder,
               private userService: UsuarioService,
-              private ngZone: NgZone
+              private roleService: RoleService,
+              private localityService: LocalidadService,
+              private provinceService: ProvinciaService
   ) {}
 
   ngOnInit(): void {
     this.crearFormulario();
-    this.cargarFormulario()
+    this.cargarFormulario();
 
     this.loadProvinces();
     this.loadLocalities();
     this.loadRoles();
-    this.loadCenters();
-
+    // this.loadCenters();
 
     this.userModalForm.get('role')?.valueChanges.subscribe(roleId => {
       const educadorControl = this.userModalForm.get('new_educator');
-      if (roleId === 1) {
+      if (roleId === 2) {
         educadorControl?.enable();
       } else {
         educadorControl?.disable();
@@ -76,26 +60,60 @@ export class UserModalComponent implements OnInit, AfterViewInit {
     });
 
     // Asegura que el control esté deshabilitado por defecto si el rol no es educador
-    if (this.userModalForm.get('role')?.value !== 1) {
+    if (this.userModalForm.get('role')?.value !== 2) {
       this.userModalForm.get('new_educator')?.disable();
     }
   }
 
-  ngAfterViewInit() {
+
+// Carga de datos adicionales
+  loadProvinces() {
+    this.provinceService.getAllProvinces().pipe(takeUntil(this.unsubscribe$)).subscribe({
+      next: (response: Province[]) => {
+        this.provinceData = response;
+        // console.log(this.provinceData);
+      },
+      error: (error: any) => {
+        console.error('Error al obtener las localidades:', error);
+      }
+
+    });
 
   }
 
-// Carga de datos adicionales
-  loadProvinces() {}
-  loadLocalities() {}
-  loadRoles() {}
+  loadLocalities() {
+    this.localityService.getAllLocalities().pipe(takeUntil(this.unsubscribe$)).subscribe({
+      next: (response: Locality[]) => {
+        this.localityData = response;
+        // console.log(this.localityData);
+      },
+      error: (error: any) => {
+        console.error('Error al obtener las localidades:', error);
+      }
+
+    });
+  }
+
+  loadRoles() {
+
+    this.roleService.getAllRoles().pipe(takeUntil(this.unsubscribe$)).subscribe({
+      next: (response: Role[]) => {
+        this.roleData = response;
+        // console.log(this.roleData);
+      },
+      error: (error: any) => {
+        console.error('Error al obtener roles:', error);
+      }
+
+    });
+  }
   loadCenters() {}
 
   crearFormulario() {
     this.userModalForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(10)]],
-      surname: ['', [Validators.required, Validators.minLength(10)]],
-      email: ['', [Validators.required, Validators.email]],
+      name: ['', [Validators.required, Validators.minLength(3)]],
+      surname: ['', [Validators.required, Validators.minLength(5)]],
+      email: ['', [Validators.required, Validators.pattern(/^[_A-Za-z0-9\-+]+(\.[_A-Za-z0-9-]+)*@fundacionloyola\.net$/)]],
       phone: ['', [Validators.required, Validators.pattern('^[0-9]{9}$')]],
       province: ['', [Validators.required]],
       locality: ['', [Validators.required]],
@@ -178,28 +196,30 @@ export class UserModalComponent implements OnInit, AfterViewInit {
 
   guardarUsuario() {
     const userData = {
-      nombre: this.userModalForm.value.name,
-      apellidos: this.userModalForm.value.surname,
-      email: this.userModalForm.value.email,
-      telefono: this.userModalForm.value.phone,
-      provincia: this.userModalForm.value.province,
-      localidad: this.userModalForm.value.locality,
-      rol: this.userModalForm.value.role,
-      centro: this.userModalForm.value.center,
-      nuevo_educador: this.userModalForm.value.new_educator
+      nombre_user: this.userModalForm.value.name,
+      apellido_user: this.userModalForm.value.surname,
+      correo_user: this.userModalForm.value.email,
+      telefono_user: this.userModalForm.value.phone,
+      id_rol: this.userModalForm.value.role,
+      nuevo_educador: this.userModalForm.value.new_educator,
+      estado: 1 // Puedes cambiar esto si tu lógica lo requiere
     };
 
-    // this.userService.createUser(userData).pipe(takeUntil(this.unsubscribe$)).subscribe({
-    //   next: (response: any) => {
-    //     console.log('Usuario guardado:', response);
-    //   },
-    //   error: (error: any) => {
-    //     console.error('Error al guardar el usuario:', error);
-    //   }
-    // });
+    this.userService.createUser(userData).pipe(takeUntil(this.unsubscribe$)).subscribe({
+      next: (response: any) => {
+        console.log('Usuario guardado:', response);
+        // Aquí puedes cerrar el modal, mostrar mensaje o refrescar la tabla
+      },
+      error: (error: any) => {
+        console.error('Error al guardar el usuario:', error);
+      }
+    });
   }
 
+
   closeModal() {
-    this.closeModalBtn.nativeElement.click();
+    if (this.closeModalBtn) {
+      this.closeModalBtn.nativeElement.click();
+    }
   }
 }

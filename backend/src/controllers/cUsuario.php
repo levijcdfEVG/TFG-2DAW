@@ -10,10 +10,6 @@
         }
 
         public function getUsersByParams() {
-//             if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-//                 $this->methodNotAllowed(['GET']);
-//                 return;
-//             }
 
             try {
                 // Validación y sanitización de parámetros
@@ -33,4 +29,63 @@
                 return ['success' => false, 'message' => $e->getMessage()];
             }
         }
+
+        public function getUserById() {
+            try {
+                $id = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT);
+                if (!$id) {
+                    throw new Exception('ID de usuario no válido');
+                }
+
+                $response = $this->mUsuario->getUserById($id);
+                return $response;
+            } catch (Exception $e) {
+                return ['success' => false, 'message' => $e->getMessage()];
+            }
+        }
+
+        public function createUser() {
+            try {
+                $data = json_decode(file_get_contents("php://input"), true);
+
+                if (!$data) {
+                    throw new Exception("Datos inválidos");
+                }
+
+                $response = $this->mUsuario->createUser($data);
+                return $response;
+            } catch (Exception $e) {
+                return ['success' => false, 'message' => $e->getMessage()];
+            }
+        }
+
+        public function updateUser() {
+            try {
+                $data = json_decode(file_get_contents("php://input"), true);
+
+                if (!isset($data['id'])) {
+                    throw new Exception("ID requerido para actualizar");
+                }
+
+                $response = $this->mUsuario->updateUser($data);
+                return $response;
+            } catch (Exception $e) {
+                return ['success' => false, 'message' => $e->getMessage()];
+            }
+        }
+
+        public function deleteUser() {
+            try {
+                $id = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT);
+                if (!$id) {
+                    throw new Exception("ID inválido");
+                }
+
+                $response = $this->mUsuario->deleteUser($id);
+                return $response;
+            } catch (Exception $e) {
+                return ['success' => false, 'message' => $e->getMessage()];
+            }
+        }
+
     }

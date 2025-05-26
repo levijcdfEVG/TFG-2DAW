@@ -1,3 +1,4 @@
+-- Carga de provincias
 INSERT INTO provincia (id, nombre) VALUES
 ('01', 'Álava'),
 ('02', 'Albacete'),
@@ -5,7 +6,7 @@ INSERT INTO provincia (id, nombre) VALUES
 ('04', 'Almería'),
 ('05', 'Ávila'),
 ('06', 'Badajoz'),
-('07', 'Islas Baleares'),
+('07', 'Baleares'),
 ('08', 'Barcelona'),
 ('09', 'Burgos'),
 ('10', 'Cáceres'),
@@ -15,22 +16,22 @@ INSERT INTO provincia (id, nombre) VALUES
 ('14', 'Córdoba'),
 ('15', 'La Coruña'),
 ('16', 'Cuenca'),
-('17', 'Girona'),
+('17', 'Gerona'),
 ('18', 'Granada'),
 ('19', 'Guadalajara'),
-('20', 'Gipuzkoa'),
+('20', 'Guipúzcoa'),
 ('21', 'Huelva'),
 ('22', 'Huesca'),
 ('23', 'Jaén'),
 ('24', 'León'),
-('25', 'Lleida'),
+('25', 'Lérida'),
 ('26', 'La Rioja'),
 ('27', 'Lugo'),
 ('28', 'Madrid'),
 ('29', 'Málaga'),
 ('30', 'Murcia'),
 ('31', 'Navarra'),
-('32', 'Ourense'),
+('32', 'Orense'),
 ('33', 'Asturias'),
 ('34', 'Palencia'),
 ('35', 'Las Palmas'),
@@ -46,6 +47,48 @@ INSERT INTO provincia (id, nombre) VALUES
 ('45', 'Toledo'),
 ('46', 'Valencia'),
 ('47', 'Valladolid'),
-('48', 'Bizkaia'),
+('48', 'Vizcaya'),
 ('49', 'Zamora'),
-('50', 'Zaragoza');
+('50', 'Zaragoza'),
+('51', 'Ceuta'),
+('52', 'Melilla');
+
+-- Carga de localidades (ejemplo para algunas provincias)
+-- Madrid
+INSERT INTO localidad (nombre_localidad, provincia_id) VALUES
+('Madrid', '28'),
+('Alcalá de Henares', '28'),
+('Móstoles', '28'),
+('Fuenlabrada', '28'),
+('Leganés', '28'),
+('Getafe', '28'),
+('Alcorcón', '28'),
+('Torrejón de Ardoz', '28'),
+('Parla', '28'),
+('Alcobendas', '28');
+
+-- Barcelona
+INSERT INTO localidad (nombre_localidad, provincia_id) VALUES
+('Barcelona', '08'),
+('Hospitalet de Llobregat', '08'),
+('Terrassa', '08'),
+('Badalona', '08'),
+('Sabadell', '08'),
+('Mataró', '08'),
+('Santa Coloma de Gramenet', '08'),
+('Sant Cugat del Vallès', '08'),
+('Cornellà de Llobregat', '08'),
+('Sant Boi de Llobregat', '08');
+
+-- Sevilla
+INSERT INTO localidad (nombre_localidad, provincia_id) VALUES
+('Sevilla', '41'),
+('Dos Hermanas', '41'),
+('Alcalá de Guadaíra', '41'),
+('Utrera', '41'),
+('Écija', '41'),
+('Mairena del Aljarafe', '41'),
+('Alcalá del Río', '41'),
+('Camas', '41'),
+('Coria del Río', '41'),
+('Mairena del Alcor', '41'); 

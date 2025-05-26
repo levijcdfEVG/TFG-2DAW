@@ -123,7 +123,7 @@ export class UsuariosComponent implements OnInit {
         data: 'telefono_user',
         className: 'text-end',
       }, {
-        data: null,
+        data: 'id',
         render: (data: any, row: any) => {
           return `<div class="dropdown text-end pe-3">
                     <button class="btn btn-sm" type="button" id="dropdownMenuButton${data}" data-bs-toggle="dropdown" aria-expanded="false">
@@ -131,7 +131,7 @@ export class UsuariosComponent implements OnInit {
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${data}">
                       <li>
-                        <a class="dropdown-item" href="/usuarios/${row.id}">
+                        <a class="dropdown-item" href="/usuarios/${data}">
                           <i class="fas fa-eye text-theme"></i> Ver ficha
                         </a>
                       </li>
