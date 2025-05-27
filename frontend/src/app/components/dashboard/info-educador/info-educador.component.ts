@@ -79,7 +79,6 @@ export class InfoEducadorComponent implements OnInit  {
     this.userService.changeStatus(userId)
         .pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: (response: any) => {
-        console.log('Estado del usuario cambiado', response);
         this.userService.notificarCambio();
       },
       error: (error: any) => {
@@ -205,9 +204,9 @@ export class InfoEducadorComponent implements OnInit  {
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${data}">
                       <li>
-                        <a class="dropdown-item" href="/info-educador/${data}">
+                        <button class="dropdown-item view-user-btn" data-id="${data}">
                           <i class="fas fa-eye text-theme"></i> Ver ficha
-                        </a>
+                        </button>
                       </li>
                       <li>
                         <button class="dropdown-item status-change-btn" data-id="${data}" data-status="${row.estado}">
@@ -220,6 +219,11 @@ export class InfoEducadorComponent implements OnInit  {
         }]
       });
     }, 100);
+
+    $('#usersTable').on('click', '.view-user-btn', (event: any) => {
+      const id = $(event.currentTarget).data('id');
+      this.router.navigate(['/info-educadores', id]);
+    });
 
     $('#usersTable').on('click', '.status-change-btn', (event: any) => {
       const id = $(event.currentTarget).data('id');

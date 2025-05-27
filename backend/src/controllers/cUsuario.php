@@ -124,7 +124,7 @@
          * @param array $params Array que contiene el ID del usuario a buscar.
          * @return array Información del usuario o mensaje de error si no existe.
          */
-        public function getUserById() {
+        public function getUserById($params) {
             $modelo = new mUsuario();
 
             try {

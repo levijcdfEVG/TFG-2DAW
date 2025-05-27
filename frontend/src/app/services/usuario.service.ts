@@ -37,7 +37,7 @@ export class UsuarioService {
   // Obtener un usuario por su id
   getUserById(userId: number): Observable<User> {
     const params = new HttpParams().set('id', userId.toString());
-    console.log(this.userPath + `getUserById&${userId}`);
+    console.log(this.userPath + 'getUserById', { params });
     return this.http.get<any>(this.userPath + 'getUserById', { params })
       .pipe(
         map(res => res.data),
