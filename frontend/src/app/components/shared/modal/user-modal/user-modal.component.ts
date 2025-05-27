@@ -43,7 +43,7 @@ export class UserModalComponent implements OnInit {
 
     // this.loadProvinces();
     // this.loadLocalities();
-    this.loadRoles();
+    // this.loadRoles();
     // this.loadCenters();
 
     this.userModalForm.get('role')?.valueChanges.subscribe(roleId => {
