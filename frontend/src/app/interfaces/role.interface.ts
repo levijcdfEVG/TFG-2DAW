@@ -1,5 +1,5 @@
 export interface Role {
     id: number;
-    name: string;
-    active?: boolean;
+    nombre_rol: string;
+    activo: boolean;
 }
