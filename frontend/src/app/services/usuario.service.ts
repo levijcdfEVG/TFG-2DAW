@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, Subject } from 'rxjs';
 import { User } from '../interfaces/user.interface';
 import { map, catchError } from 'rxjs/operators';
 
@@ -10,6 +10,16 @@ import { map, catchError } from 'rxjs/operators';
 export class UsuarioService {
 
   userPath = 'http://localhost:8000/index.php?controlador=cUsuario&accion=';
+  
+  private usuariosActualizados = new Subject<void>();
+
+  get usuariosActualizados$() {
+    return this.usuariosActualizados.asObservable();
+  }
+
+  notificarCambio(): void {
+    this.usuariosActualizados.next();
+  }
 
   constructor(private http: HttpClient) {}
 
@@ -56,8 +66,8 @@ export class UsuarioService {
 
   // Cambiar el estado del usuario
   changeStatus(userId: number): Observable<any> {
-    console.log(this.userPath + `changeStatus$id=${userId}`);
-    return this.http.put<any>(this.userPath + 'changeStatus', { id: userId })
+    const params = new HttpParams().set('id', userId.toString());
+    return this.http.put<any>(this.userPath + 'changeStatus', null, { params })
       .pipe(catchError(this.handleError));
   }
 
