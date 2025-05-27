@@ -1,15 +1,12 @@
-import { ProvinciaService } from '../../../../services/province.service';
-import { LocalidadService } from '../../../../services/locality.service';
-import {Component, OnInit, NgZone, ViewChild, ElementRef, AfterViewInit
-} from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { UsuarioService } from '../../../../services/usuario.service';
+import { CentrosService } from 'src/app/services/centros.service';
+import { RoleService } from "../../../../services/role.service";
+import { Role } from "../../../../interfaces/role.interface";
+import { Center } from "../../../../interfaces/center.interface";
 import { Subject, takeUntil } from 'rxjs';
-import {Province} from "../../../../interfaces/province.interface";
-import {Locality} from "../../../../interfaces/locality.interface";
-import {Role} from "../../../../interfaces/role.interface";
-import {Center} from "../../../../interfaces/center.interface";
-import {RoleService} from "../../../../services/role.service";
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-new-user',
@@ -20,12 +17,8 @@ export class UserModalComponent implements OnInit {
   @ViewChild('closeModalBtn') closeModalBtn!: ElementRef;
 
   userModalForm!: FormGroup;
-  provinceData: Province[] = [];
-
-  localityData: Locality[] = [];
-
+  
   roleData: Role[] = [];
-
   centerData: Center[] = [];
 
   private unsubscribe$ = new Subject<void>();
@@ -33,22 +26,21 @@ export class UserModalComponent implements OnInit {
   constructor(private fb: FormBuilder,
               private userService: UsuarioService,
               private roleService: RoleService,
-              private localityService: LocalidadService,
-              private provinceService: ProvinciaService
+              private centerService: CentrosService,
+              private toastr: ToastrService,
   ) {}
 
   ngOnInit(): void {
     this.crearFormulario();
     this.cargarFormulario();
 
-    // this.loadProvinces();
-    // this.loadLocalities();
-    // this.loadRoles();
-    // this.loadCenters();
+    this.loadRoles();
+    this.loadCenters();
 
-    this.userModalForm.get('role')?.valueChanges.subscribe(roleId => {
+    // Suscripción al cambio de rol para habilitar/deshabilitar el checkbox de nuevo educador
+    this.userModalForm.get('role')?.valueChanges.subscribe(roleId => { 
       const educadorControl = this.userModalForm.get('new_educator');
-      if (roleId === 2) {
+      if (roleId === 1) {
         educadorControl?.enable();
       } else {
         educadorControl?.disable();
@@ -57,92 +49,80 @@ export class UserModalComponent implements OnInit {
     });
 
     // Asegura que el control esté deshabilitado por defecto si el rol no es educador
-    if (this.userModalForm.get('role')?.value !== 2) {
+    if (this.userModalForm.get('role')?.value !== 1) {
       this.userModalForm.get('new_educator')?.disable();
     }
   }
 
-
-// Carga de datos adicionales
-  loadProvinces() {
-    this.provinceService.getAllProvinces().pipe(takeUntil(this.unsubscribe$)).subscribe({
-      next: (response: Province[]) => {
-        this.provinceData = response;
-        // console.log(this.provinceData);
-      },
-      error: (error: any) => {
-        console.error('Error al obtener las localidades:', error);
-      }
-
-    });
-
-  }
-
-  loadLocalities() {
-    this.localityService.getAllLocalities().pipe(takeUntil(this.unsubscribe$)).subscribe({
-      next: (response: Locality[]) => {
-        this.localityData = response;
-        // console.log(this.localityData);
-      },
-      error: (error: any) => {
-        console.error('Error al obtener las localidades:', error);
-      }
-
-    });
-  }
-
+// CARGA DE DATOS ---------------------------------------
+  /**
+   * Carga los roles desde el servicio y los almacena en roleData
+   */
   loadRoles() {
-
     this.roleService.getAllRoles().pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: (response: Role[]) => {
         this.roleData = response;
-        // console.log(this.roleData);
       },
       error: (error: any) => {
         console.error('Error al obtener roles:', error);
       }
-
     });
   }
-  loadCenters() {}
 
+  /**
+   * Carga los centros desde el servicio y los almacena en centerData
+   */
+  loadCenters() {
+    this.centerService.getCentros().pipe(takeUntil(this.unsubscribe$)).subscribe({
+      next: (response) => {
+        this.centerData = response.data;
+      },
+      error: (error: any) => {
+        console.error('Error al obtener roles:', error);
+      }
+    });
+  }
+  
+// METODOS DEL FORMULARIO ---------------------------------------
+  /**
+   * Crea el formulario con sus validaciones
+   */
   crearFormulario() {
     this.userModalForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]],
-      surname: ['', [Validators.required, Validators.minLength(5)]],
-      email: ['', [Validators.required, Validators.pattern(/^[_A-Za-z0-9\-+]+(\.[_A-Za-z0-9-]+)*@fundacionloyola\.es$/)]],
-      phone: ['', [Validators.required, Validators.pattern('^[0-9]{9}$')]],
-      province: ['', [Validators.required]],
-      locality: ['', [Validators.required]],
+      name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(40), UserModalComponent.onlyCharactersValidator]],
+      surname: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50), UserModalComponent.onlyCharactersValidator]],
+      email: ['', [Validators.required, Validators.pattern(/^[_A-Za-z0-9\-+]+(\.[_A-Za-z0-9-]+)*@fundacionloyola\.net$/), Validators.maxLength(70), UserModalComponent.emailFundacionLoyolaValidator]],
+      phone: ['', [Validators.required, Validators.pattern('^[0-9]{9}$'), Validators.minLength(9), Validators.maxLength(9), UserModalComponent.onlyNumberValidator]],
       role: ['', [Validators.required]],
       center: ['', [Validators.required]],
       new_educator: [{value: false, disabled: true}, [Validators.required]]
     });
   }
 
+  /**
+   * Inicializa el formulario con valores vacíos
+   */
   cargarFormulario() {
-
     this.userModalForm.reset({
       name: '',
       surname: '',
       email: '',
       phone: '',
-      province: null,
-      locality: null,
       role: null,
       center: null,
       new_educator: false,
     });
   }
 
+  /**
+   * Resetea el formulario a sus valores iniciales
+   */
   resetForm() {
     this.userModalForm.reset({
       name: '',
       surname: '',
       email: '',
       phone: '',
-      province: null,
-      locality: null,
       role: null,
       center: null,
       new_educator: false
@@ -151,68 +131,119 @@ export class UserModalComponent implements OnInit {
     this.userModalForm.get('new_educator')?.disable();
   }
 
+  /**
+   * Valida los campos del formulario y retorna mensajes de error
+   * @param field - Nombre del campo a validar
+   * @returns Mensaje de error o false si no hay errores
+   */
   validarCampos(field: string): any {
     const control = this.userModalForm.get(field);
-
+  
     if (control?.touched && control?.errors) {
       const errors = Object.keys(control.errors);
-
+  
       if (control.errors['required']) {
-        return 'Campo obligatorio.';
+        return 'Este campo es obligatorio';
       }
-
+  
       if (control.errors['minlength']) {
         return `El campo debe tener al menos ${control.errors['minlength'].requiredLength} caracteres`;
       }
-
-      if (control.errors['email']) {
-        return 'Este campo no cumple con el formato de correo';
+  
+      if (control.errors['maxlength']) {
+        return `El campo no puede tener más de ${control.errors['maxlength'].requiredLength} caracteres`;
       }
-
+  
+      if (control.errors['hasNumbers']) {
+        return 'Este campo no puede contener números';
+      }
+  
+      if (control.errors['hasCharacters']) {
+        return 'Este campo solo puede contener números';
+      }
+  
+      if (control.errors['invalidDomain']) {
+        return 'El correo electrónico debe ser de dominio @fundacionloyola.net';
+      }
+  
       if (control.errors['pattern']) {
+        if (field === 'phone') {
+          return 'El teléfono debe contener exactamente 9 dígitos';
+        }
         return 'Formato inválido';
       }
     }
-
     return false;
   }
 
+  // Validador de campos sin números
+  static onlyCharactersValidator(control: AbstractControl): ValidationErrors | null {
+    const regex = /^[a-zA-Z\sáéíóúÁÉÍÓÚüÜñÑ.,-]+$/;
+    return control.value && !regex.test(control.value) ? { hasNumbers: true } : null;
+  }
+
+  // Validador de campos con solo números
+  static onlyNumberValidator(control: AbstractControl): ValidationErrors | null {
+    const regex = /^[0-9]+$/;
+    return control.value && !regex.test(control.value) ? { hasCharacters: true } : null;
+  }
+
+  // Validador de correo electrónico
+  static emailFundacionLoyolaValidator(control: AbstractControl): ValidationErrors | null {
+    const regex = /^[a-zA-Z0-9._%+-]+@fundacionloyola\.net$/;
+    return control.value && !regex.test(control.value) ? { invalidDomain: true } : null;
+  }
+
+  /**
+   * Guarda el formulario si es válido
+   * Marca todos los campos como touched si el formulario es inválido
+   */
   saveForm() {
+
     if (this.userModalForm.invalid) {
       Object.values(this.userModalForm.controls).forEach(control => {
         control.markAsTouched();
       });
       return;
     }
-
-    this.guardarUsuario();
-
-    this.closeModal();
-    this.resetForm();
+    this.createUser();
   }
 
-  guardarUsuario() {
+  /**
+   * Guarda los datos del usuario en el backend
+   */
+  createUser() {
+
     const userData = {
       nombre_user: this.userModalForm.value.name,
       apellido_user: this.userModalForm.value.surname,
       correo_user: this.userModalForm.value.email,
       telefono_user: this.userModalForm.value.phone,
       id_rol: this.userModalForm.value.role,
+      id_centro: this.userModalForm.value.center,
       nuevo_educador: this.userModalForm.value.new_educator,
       estado: 1
     };
 
     this.userService.createUser(userData).pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: (response: any) => {
-        console.log('Usuario guardado:', response);
+        this.toastr.success('Usuario creado con éxito', 'Éxito');
+        this.userService.notificarCambio();
+        setTimeout(() => {
+          this.closeModal();
+          this.resetForm();
+        }, 100);
       },
       error: (error: any) => {
         console.error('Error al guardar el usuario:', error);
+        this.toastr.error('Error al crear el usuario', 'Error');
       }
     });
   }
 
-
+  /**
+   * Cierra el modal usando el botón de cierre
+   */
   closeModal() {
     if (this.closeModalBtn) {
       this.closeModalBtn.nativeElement.click();

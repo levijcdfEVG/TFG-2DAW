@@ -46,6 +46,13 @@ export class InfoEducadorComponent implements OnInit  {
 
     this.loadRoles();
     this.setDefaultValuesForm();
+
+    // Suscribirse a los cambios en los usuarios
+    this.userService.usuariosActualizados$.pipe(
+      takeUntil(this.unsubscribe$)
+    ).subscribe(() => {
+      this.searchByFilter(); // Recargar la tabla cuando hay cambios
+    });
   }
 
   /**
@@ -66,12 +73,14 @@ export class InfoEducadorComponent implements OnInit  {
    * Cambia el estado de un usuario (activo/inactivo)
    * @param id - ID del usuario a modificar
    */
-  changeStatus(id: number) {
-    this.userService.changeStatus(id)
+  changeStatus(userId: number) {
+    console.log(userId);
+
+    this.userService.changeStatus(userId)
         .pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: (response: any) => {
         console.log('Estado del usuario cambiado', response);
-        this.cdr.detectChanges();
+        this.userService.notificarCambio();
       },
       error: (error: any) => {
         console.error('Error al modificar el estado del usuario:', error);
@@ -112,6 +121,12 @@ export class InfoEducadorComponent implements OnInit  {
       );
   }
 // CARGA DE DATOS ---------------------------------------
+  /**
+   * Carga los usuarios según los parámetros de filtrado especificados
+   * @param params - Objeto con los parámetros de filtrado (nombre, apellidos, email, etc.)
+   * Realiza una llamada al servicio para obtener los usuarios filtrados
+   * Actualiza la tabla y marca que se ha realizado una búsqueda
+   */
   loadUsers(params: any) {
     this.userService.getUsersByParams(params)
         .pipe(takeUntil(this.unsubscribe$)).subscribe({
@@ -126,6 +141,7 @@ export class InfoEducadorComponent implements OnInit  {
       }
     });
   }
+
   /**
    * Carga los roles desde el servicio y los almacena en roleData
    * Se utiliza para poblar el selector de roles en el formulario de filtros
@@ -189,13 +205,13 @@ export class InfoEducadorComponent implements OnInit  {
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${data}">
                       <li>
-                        <a class="dropdown-item" href="/info-educadores/${data}">
+                        <a class="dropdown-item" href="/info-educador/${data}">
                           <i class="fas fa-eye text-theme"></i> Ver ficha
                         </a>
                       </li>
                       <li>
-                        <button class="dropdown-item status-change-btn" data-id="${data}" data-status="${row.activo}">
-                          <i class="fas fa-${row.activo ? 'check' : 'ban'} text-theme"></i> ${row.activo ? 'Habilitar' : 'Deshabilitar'}
+                        <button class="dropdown-item status-change-btn" data-id="${data}" data-status="${row.estado}">
+                          Cambiar estado
                         </button>
                       </li>
                     </ul>
