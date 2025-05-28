@@ -1,22 +1,48 @@
-import {Component, EventEmitter, Output, ViewChild} from '@angular/core';
+import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { FormacionFormComponent } from '../formacion-form/formacion-form.component';
-import {FormacionService} from "../../../../../services/formacion.service";
-import {ToastrService} from "ngx-toastr";
+import { FormacionService } from "../../../../../services/formacion.service";
+import { ToastrService } from "ngx-toastr";
 import Swal2 from "sweetalert2";
 
-
+/**
+ * Componente modal para crear una nueva formación.
+ * Muestra un formulario reutilizable y gestiona la confirmación y envío al backend.
+ * @author Levi Josué Candeias de Figueiredo
+ * @email levijosuecandeiasdefigueiredo.guadalupe@alumnado.fundacionloyola.net
+ */
 @Component({
   selector: 'app-crear-formacion-modal',
   templateUrl: './crear-formacion-modal.component.html',
 })
 export class CrearFormacionModalComponent {
+
+  /**
+   * Referencia al componente del formulario de formación.
+   */
   @ViewChild(FormacionFormComponent) formComponent!: FormacionFormComponent;
+
+  /**
+   * Evento emitido al crear exitosamente una formación.
+   */
   @Output() formSubmit = new EventEmitter<any>();
 
-  constructor(private formacionService: FormacionService,
-              private toastr: ToastrService ) {}
+  /**
+   * Constructor del componente.
+   * @param formacionService Servicio para realizar operaciones CRUD sobre formaciones.
+   * @param toastr Servicio para mostrar notificaciones al usuario.
+   */
+  constructor(
+      private formacionService: FormacionService,
+      private toastr: ToastrService
+  ) {}
 
-  onFormSubmit(data: any) {
+  /**
+   * Maneja el envío del formulario tras confirmar con el usuario.
+   * Llama al servicio para insertar la nueva formación.
+   *
+   * @param data Datos de la formación a guardar.
+   */
+  onFormSubmit(data: any): void {
     Swal2.fire({
       title: '¿Estás seguro?',
       text: "La formación será guardada en la base de datos",
@@ -50,8 +76,10 @@ export class CrearFormacionModalComponent {
     });
   }
 
-
-    protected clearForm() {
-        this.formComponent.clearForm();
-    }
+  /**
+   * Limpia manualmente el formulario del componente hijo.
+   */
+  protected clearForm(): void {
+    this.formComponent.clearForm();
+  }
 }

@@ -8,6 +8,13 @@
             $this->conexion = $objetoBD->conexion; //Llamamos al metodo que realiza la conexion a la BBDD
         }
 
+        /**
+         * Obtiene un usuario por su correo electronico
+         *
+         * @param string $correo Correo electronico del usuario
+         * @return array|null Retorna un array con los datos del usuario si existe, null en caso contrario
+         * @author Levi Josué Candeias de Figueiredo <levijosuecandeiasdefigueiredo.guadalupe@alumnado.fundacionloyola.net>
+         */
         public function getUsuarioPorCorreo($correo) {
                 $this->conectar(); //Llamo al metodo conectar de arriba
 
@@ -16,7 +23,7 @@
                 $stmt->bindValue(1, $correo, PDO::PARAM_STR);
                 $stmt->execute();
                 return $stmt->fetch(PDO::FETCH_ASSOC);
-            }
+        }
 
         public function getUsersByParams($params): array {
             try {

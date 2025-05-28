@@ -1,14 +1,39 @@
-<?php 
+<?php
 
 require_once MODELS.'mFormacion.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once 'config/config.php';
 
-Class cFormaciones {
-    public function __construct(){
+/**
+ * Controlador para gestionar las operaciones CRUD de formaciones.
+ *
+ * @author Levi Josué Candeias de Figueiredo <levijosuecandeiasdefigueiredo.guadalupe@alumnado.fundacionloyola.net>
+ */
+class cFormaciones {
+    /**
+     * Instancia del modelo MFormacion.
+     *
+     * @var MFormacion
+     * @author Levi Josué Candeias de Figueiredo <levijosuecandeiasdefigueiredo.guadalupe@alumnado.fundacionloyola.net>
+     */
+    private $mFormacion;
+
+    /**
+     * Constructor que inicializa el modelo.
+     *
+     * @author Levi Josué Candeias de Figueiredo <levijosuecandeiasdefigueiredo.guadalupe@alumnado.fundacionloyola.net>
+     */
+    public function __construct() {
         $this->mFormacion = new MFormacion();
     }
 
+    /**
+     * Devuelve todas las formaciones en formato JSON.
+     * Solo permite método GET.
+     *
+     * @return void
+     * @author Levi Josué Candeias de Figueiredo <levijosuecandeiasdefigueiredo.guadalupe@alumnado.fundacionloyola.net>
+     */
     public function getAllFormaciones() {
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             $this->methodNotAllowed(['GET']);
@@ -16,24 +41,27 @@ Class cFormaciones {
         }
 
         try {
-            // Esto ya devuelve un array con success, message y data
             $response = $this->mFormacion->listarAllFormaciones();
-
             echo json_encode($response);
         } catch (Exception $e) {
             $this->sendResponse(false, $e->getMessage(), null, 500);
         }
     }
 
-
+    /**
+     * Crea una nueva formación a partir de datos JSON enviados.
+     * Comenta validación método HTTP por si quieres usar otros métodos.
+     *
+     * @return void
+     * @author Levi Josué Candeias de Figueiredo <levijosuecandeiasdefigueiredo.guadalupe@alumnado.fundacionloyola.net>
+     */
     public function crearFormacion() {
         // if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         //     $this->methodNotAllowed(['POST']);
         //     return;
         // }
-        
+
         try {
-            // Obtener los datos JSON enviados desde el frontend
             $json = file_get_contents("php://input");
             $data = json_decode($json, true);
 
@@ -43,30 +71,32 @@ Class cFormaciones {
             }
 
             $validatedData = $this->validateForm($data);
-
-            // Llamar al modelo
             $resultado = $this->mFormacion->insertarFormacion($validatedData);
 
-            // Respuesta según resultado
             if ($resultado['success']) {
                 $this->sendResponse(true, 'Formación creada correctamente', $resultado, 201);
             } else {
                 $this->sendResponse(false, 'Error al crear formación', $resultado, 400);
             }
-
         } catch (Exception $e) {
             $this->sendResponse(false, 'Error inesperado: ' . $e->getMessage(), null, 500);
         }
     }
 
+    /**
+     * Actualiza una formación existente con datos JSON recibidos.
+     * Comenta validación método HTTP PUT.
+     *
+     * @return void
+     * @author Levi Josué Candeias de Figueiredo <levijosuecandeiasdefigueiredo.guadalupe@alumnado.fundacionloyola.net>
+     */
     public function updateFormacion() {
         // if ($_SERVER['REQUEST_METHOD'] !== 'PUT') {
         //     $this->methodNotAllowed(['PUT']);
         //     return;
         // }
-        
+
         try {
-            // Recibimos JSON del body
             $input = json_decode(file_get_contents('php://input'), true);
 
             if (!isset($input['id']) || empty($input['id'])) {
@@ -75,39 +105,42 @@ Class cFormaciones {
             }
 
             $idFormacion = (int)$input['id'];
-
-            //Validaciones
             $validatedData = $this->validateForm($input);
-
 
             $response = $this->mFormacion->updateFormacion($idFormacion, $validatedData);
 
             if ($response['success']) {
                 $this->sendResponse(true);
             } else {
-               $this->sendResponse(false, $response['message'], null, 500);
+                $this->sendResponse(false, $response['message'], null, 500);
             }
-
         } catch (Exception $e) {
             $this->sendResponse(false, $e->getMessage(), null, 500);
         }
     }
 
+    /**
+     * Desactiva una formación según su ID enviado en JSON.
+     * Comenta validación método HTTP PUT.
+     *
+     * @return void
+     * @author Levi Josué Candeias de Figueiredo <levijosuecandeiasdefigueiredo.guadalupe@alumnado.fundacionloyola.net>
+     */
     public function desactivarFormacion() {
         // if ($_SERVER['REQUEST_METHOD'] !== 'PUT') {
         //     $this->methodNotAllowed(['PUT']);
         //     return;
         // }
-        
-        
+
         try {
             $input = json_decode(file_get_contents('php://input'), true);
+
             if (!isset($input['id']) || empty($input['id'])) {
                 $this->sendResponse(false, 'Falta el ID de la formación', null, 400);
                 return;
             }
-            $idFormacion = (int)$input['id'];
 
+            $idFormacion = (int)$input['id'];
             $response = $this->mFormacion->desactivarFormacionPorId($idFormacion);
 
             if ($response['success']) {
@@ -115,40 +148,56 @@ Class cFormaciones {
             } else {
                 $this->sendResponse(false, $response['message'], null, 404);
             }
-
-        } catch (Exception $e) {
-           $this->sendResponse(false, $e->getMessage(), null, 500);
-        }
-    }
-
-    public function borrarFormacion() {
-        if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
-            $this->methodNotAllowed(['DELETE']);
-            return;
-        }
-        
-        try {
-            $input = json_decode(file_get_contents('php://input'), true);
-            if (!isset($input['id']) || empty($input['id'])) {
-                $this->sendResponse(false, 'Falta el ID de la formación', null, 400);
-                return;
-            }
-            $idFormacion = (int)$input['id'];
-
-            $response = $this->mFormacion->borrarFormacionPorId($idFormacion);
-
-            if ($response['success']) {
-                $this->sendResponse(true, $response['message']);
-            } else {
-              $this->sendResponse(false, $response['message'], null, 404);
-            }
-
         } catch (Exception $e) {
             $this->sendResponse(false, $e->getMessage(), null, 500);
         }
     }
 
-    private function sendResponse($success, $message = '', $data = null, $statusCode = 200) {
+    /**
+     * Borra una formación según su ID recibido en JSON.
+     * Permite solo método DELETE.
+     *
+     * @return void
+     * @author Levi Josué Candeias de Figueiredo <levijosuecandeiasdefigueiredo.guadalupe@alumnado.fundacionloyola.net>
+     */
+    public function borrarFormacion() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
+            $this->methodNotAllowed(['DELETE']);
+            return;
+        }
+
+        try {
+            $input = json_decode(file_get_contents('php://input'), true);
+
+            if (!isset($input['id']) || empty($input['id'])) {
+                $this->sendResponse(false, 'Falta el ID de la formación', null, 400);
+                return;
+            }
+
+            $idFormacion = (int)$input['id'];
+            $response = $this->mFormacion->borrarFormacionPorId($idFormacion);
+
+            if ($response['success']) {
+                $this->sendResponse(true, $response['message']);
+            } else {
+                $this->sendResponse(false, $response['message'], null, 404);
+            }
+        } catch (Exception $e) {
+            $this->sendResponse(false, $e->getMessage(), null, 500);
+        }
+    }
+
+    /**
+     * Envía la respuesta JSON al cliente con cabeceras HTTP y código de estado.
+     *
+     * @param bool $success Indica éxito o fallo.
+     * @param string $message Mensaje de la respuesta.
+     * @param mixed|null $data Datos adicionales (opcional).
+     * @param int $statusCode Código HTTP (por defecto 200).
+     * @return void
+     * @author Levi Josué Candeias de Figueiredo <levijosuecandeiasdefigueiredo.guadalupe@alumnado.fundacionloyola.net>
+     */
+    private function sendResponse(bool $success, string $message = '', $data = null, int $statusCode = 200) {
         header('Content-Type: application/json');
         http_response_code($statusCode);
 
@@ -164,16 +213,31 @@ Class cFormaciones {
         echo json_encode($response);
     }
 
-
-     private function methodNotAllowed(array $allowed) {
+    /**
+     * Envía respuesta HTTP 405 con métodos permitidos.
+     *
+     * @param array $allowed Array de métodos HTTP permitidos.
+     * @return void
+     * @author Levi Josué Candeias de Figueiredo <levijosuecandeiasdefigueiredo.guadalupe@alumnado.fundacionloyola.net>
+     */
+    private function methodNotAllowed(array $allowed) {
         header('Allow: ' . implode(', ', $allowed));
         http_response_code(405);
-        echo json_encode(['error' => 'Metodo no permitido. Usa: ' . implode(', ', $allowed)]);
+        echo json_encode(['error' => 'Método no permitido. Usa: ' . implode(', ', $allowed)]);
         exit;
     }
 
-    private function validateForm($data) {
-        // Validar bloque formacion
+    /**
+     * Valida los datos de formación recibidos.
+     * Verifica campos obligatorios, tipos y tamaños máximos.
+     *
+     * @param array $data Datos recibidos para validar.
+     * @return array Datos validados (si pasan las comprobaciones).
+     * @throws void Termina la ejecución y envía respuesta si falla validación.
+     *
+     * @author Levi Josué Candeias de Figueiredo <levijosuecandeiasdefigueiredo.guadalupe@alumnado.fundacionloyola.net>
+     */
+    private function validateForm(array $data): array {
         if (!isset($data['formacion']) || !is_array($data['formacion'])) {
             $this->sendResponse(false, 'Falta el bloque "formacion" en los datos', null, 422);
             exit;
@@ -203,26 +267,16 @@ Class cFormaciones {
             }
         }
 
-        // Validar duracion si debe ser numérica (lo decides tú)
         if (!is_numeric($formacion['duracion'])) {
             $this->sendResponse(false, "La duración debe ser un número", null, 422);
             exit;
         }
 
-        // Validar cursos
         if (empty($data['cursos']) || !is_array($data['cursos'])) {
             $this->sendResponse(false, "Debes seleccionar al menos un curso académico", null, 422);
             exit;
         }
 
-        // foreach ($data['cursos'] as $curso) {
-        //     if (!is_array($curso) || !isset($curso[0]) || !preg_match('/^[0-9]{4}\/[0-9]{2}$/', $curso[0])) {
-        //         $this->sendResponse(false, "Formato de curso académico inválido", null, 422);
-        //         exit;
-        //     }
-        // }
-
-        // Validar módulos
         if (!empty($data['modulos']) && is_array($data['modulos'])) {
             foreach ($data['modulos'] as $i => $modulo) {
                 if (empty($modulo['nombre_modulo']) || strlen($modulo['nombre_modulo']) > 50) {
@@ -232,7 +286,6 @@ Class cFormaciones {
             }
         }
 
-        // Validar objetivos
         if (!empty($data['objetivos']) && is_array($data['objetivos'])) {
             foreach ($data['objetivos'] as $i => $objetivo) {
                 if (empty($objetivo['descripcion']) || strlen($objetivo['descripcion']) > 150) {
@@ -242,16 +295,11 @@ Class cFormaciones {
             }
         }
 
-        // Validar centros
         if (!isset($data['centros']) || !is_numeric($data['centros'])) {
             $this->sendResponse(false, "Centro no válido o no seleccionado", null, 422);
             exit;
         }
 
-        //Válido
         return $data;
     }
-
-    
-
 }

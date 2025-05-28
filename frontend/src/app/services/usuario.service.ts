@@ -18,7 +18,7 @@ export class UsuarioService {
   getUsersByParams(params: any): Observable<any> {
     // Convertir los parámetros a HttpParams
     const httpParams = new HttpParams({ fromObject: params });
-    // console.log(this.userPath + 'getUsersByParams', { params: httpParams });
+    console.log(this.userPath + 'getUsersByParams', { params: httpParams });
     return this.http.get<any>(this.userPath + 'getUsersByParams', { params: httpParams })
       .pipe(
         map(res => res.data), catchError(this.handleError)
