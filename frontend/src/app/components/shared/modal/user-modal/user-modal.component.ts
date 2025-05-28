@@ -103,7 +103,7 @@ export class UserModalComponent implements OnInit {
    * Inicializa el formulario con valores vacíos
    */
   cargarFormulario() {
-    this.userModalForm.reset({
+    this.userModalForm.setValue({
       name: '',
       surname: '',
       email: '',

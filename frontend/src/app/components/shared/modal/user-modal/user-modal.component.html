@@ -9,7 +9,7 @@
           <button #closeModalBtn type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form [formGroup]="userModalForm" (ngSubmit)="saveForm()">
+        <form [formGroup]="userModalForm" (ngSubmit)="saveForm()" *ngIf="userModalForm">
             <div class="row mb-3">
                 <div class="col-md-6">
                     <label for="name" class="form-label"><strong>Nombre</strong></label>

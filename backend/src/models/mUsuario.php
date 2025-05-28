@@ -94,7 +94,7 @@
                     $values[':id_rol'] = $params['id_rol'];
                 }
 
-                if (isset($params['nuevo_educador']) && $params['nuevo_educador'] !== '0' && $params['nuevo_educador'] !== 0) {
+                if (isset($params['nuevo_educador']) && $params['nuevo_educador'] !== '2' && $params['nuevo_educador'] !== 2) {
                     $conditions[] = "u.nuevo_educador = :nuevo_educador";
                     $values[':nuevo_educador'] = $params['nuevo_educador'];
                 }
@@ -213,7 +213,7 @@
                 ':correo_user' => $data['correo_user'],
                 ':telefono_user' => $data['telefono_user'],
                 ':id_rol' => $data['id_rol'],
-                ':nuevo_educador' => $data['nuevo_educador'] ?? 0,
+                ':nuevo_educador' => $data['nuevo_educador'] ?? 2,
                 ':estado' => $data['estado']
             ]);
 
