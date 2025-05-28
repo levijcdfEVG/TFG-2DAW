@@ -2,12 +2,13 @@ import { Locality } from './../interfaces/locality.interface';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { catchError, map, Observable, throwError } from 'rxjs';
+import { environment } from "../../environments/environment.prod";
 
 @Injectable({
   providedIn: 'root'
 })
 export class LocalidadService {
-  private localityPath = 'http://localhost:8000/index.php?controlador=cLocalidad&accion=';
+  private localityPath = environment.apiUrl + '?controlador=cLocalidad&accion=';
 
   constructor(private http: HttpClient) { }
 

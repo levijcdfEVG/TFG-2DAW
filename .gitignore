@@ -3,6 +3,7 @@
 /frontend/src/app/config/
 /nbproject/private/
 /frontend/.angular/
+/frontend/src/environments/
 /backend/.phpdoc/
 /backend/vendor/
 .idea/git_toolbox_prj.xml

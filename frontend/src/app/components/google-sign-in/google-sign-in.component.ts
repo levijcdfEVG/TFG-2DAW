@@ -7,6 +7,7 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 import Swal2 from "sweetalert2";
 import {CookieService} from "ngx-cookie-service";
 import {ToastrService} from "ngx-toastr";
+import { environment } from "../../../environments/environment.prod";
 
 declare const google: any;
 
@@ -64,7 +65,7 @@ export class GoogleSignInComponent implements OnInit {
    */
   initializeGoogleSignIn() {
     google.accounts.id.initialize({
-      client_id: googleID,
+      client_id: environment.googleId,
       callback: (response: any) => this.handleCredentialResponse(response)
     });
 

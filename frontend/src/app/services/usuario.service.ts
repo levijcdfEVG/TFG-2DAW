@@ -3,13 +3,14 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 import { Observable, throwError } from 'rxjs';
 import { User } from '../interfaces/user.interface';
 import { map, catchError } from 'rxjs/operators';
+import { environment } from "../../environments/environment.prod";
 
 @Injectable({
   providedIn: 'root'
 })
 export class UsuarioService {
 
-  userPath = 'http://localhost:8000/index.php?controlador=cUsuario&accion=';
+  userPath = environment.apiUrl+'?controlador=cUsuario&accion=';
 
   constructor(private http: HttpClient) {}
 
