@@ -133,7 +133,15 @@
          */
         public function getUserById($id): array {
             $this->conectar();
-            $stmt = $this->conexion->prepare("SELECT u.*, r.nombre_rol FROM usuario u LEFT JOIN roles r ON u.id_rol = r.id WHERE u.id = :id");
+
+            $sql = "SELECT u.*, r.nombre_rol, cf.nombre_centro, l.nombre_localidad FROM usuario u 
+                    JOIN roles r ON u.id_rol = r.id 
+                    JOIN centro_fundacion cf ON u.id_centro = cf.id
+                    JOIN localidad l ON cf.id_local = l.id
+                    WHERE u.id = :id;";
+            
+
+            $stmt = $this->conexion->prepare($sql);
             $stmt->execute([':id' => $id]);
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 

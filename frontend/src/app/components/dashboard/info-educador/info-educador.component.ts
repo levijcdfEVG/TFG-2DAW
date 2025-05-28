@@ -51,7 +51,9 @@ export class InfoEducadorComponent implements OnInit  {
     this.userService.usuariosActualizados$.pipe(
       takeUntil(this.unsubscribe$)
     ).subscribe(() => {
-      this.searchByFilter(); // Recargar la tabla cuando hay cambios
+      setTimeout(() => {
+        this.searchByFilter();
+      }, 200); // Recargar la tabla cuando hay cambios
     });
   }
 

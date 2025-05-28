@@ -116,6 +116,34 @@
         }
 
         /**
+         * Actualiza los datos de un usuario existente.
+         * 
+         * Este método recibe los datos actualizados del usuario en formato JSON y los
+         * valida antes de proceder con la actualización en la base de datos.
+         * 
+         * @return array Resultado de la operación de actualización.
+         */
+        public function updateUser() {
+            try {
+                $data = json_decode(file_get_contents("php://input"), true);
+                $modelo = new mUsuario();
+
+                if (!$data) {
+                    throw new Exception("Datos inválidos");
+                }
+
+                if (!isset($data['id'])) {
+                    throw new Exception("ID de usuario requerido para actualizar");
+                }
+
+                $response = $modelo->updateUser($data);
+                echo json_encode($response);
+            } catch (Exception $e) {
+                echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+            }
+        }
+
+        /**
          * Obtiene la información de un usuario específico por su ID.
          *
          * Este método recibe el ID del usuario y devuelve toda su información

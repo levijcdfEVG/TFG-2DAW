@@ -1,19 +1,22 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+declare const bootstrap: any;
+
+import { Component, OnInit } from '@angular/core';
 import { UsuarioService } from '../../../../services/usuario.service';
 import { ActivatedRoute } from "@angular/router";
-import { User } from "../../../../interfaces/user.interface";
 import { Subject, takeUntil } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-user-file',
   templateUrl: './user-file.component.html',
   styleUrls: ['./user-file.component.css']
 })
-export class UserFileComponent implements OnInit, OnDestroy {
+export class UserFileComponent implements OnInit {
   imgPath = 'assets/avatar.png';
 
+  selectedUser: any;
   userId!: number;
-  userData: User | null = null;
+  userData: any | null = null;
   formaciones: any[] = [];
   formacionesPendientes: any[] = [];
   formacionesFinalizadas: any[] = [];
@@ -24,7 +27,8 @@ export class UserFileComponent implements OnInit, OnDestroy {
 
   constructor(
     private userService: UsuarioService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit() {
@@ -38,10 +42,9 @@ export class UserFileComponent implements OnInit, OnDestroy {
 
   loadUser() {
     this.userService.getUserById(this.userId).pipe(takeUntil(this.unsubscribe$)).subscribe({
-      next: (response: User) => {
+      next: (response: any) => {
         if (response) {
           this.userData = response;
-          console.log('User data loaded:', response);
         } else {
           console.error('No user data received');
         }
@@ -53,8 +56,32 @@ export class UserFileComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
+  changeStatus() {
+    const newStatus = this.userData.estado_user === 1 ? 'deshabilitar' : 'habilitar';
+    if (confirm(`¿Estás seguro de que deseas ${newStatus} este usuario?`)) {
+      this.userService.changeStatus(this.userId).pipe(takeUntil(this.unsubscribe$)).subscribe({
+        next: (response: any) => {
+          if (response.success) {
+            this.toastr.success(`Usuario ${newStatus}do correctamente`);
+            this.loadUser(); // Recargar los datos del usuario
+          } else {
+            this.toastr.error(response.error || 'Error al cambiar el estado del usuario');
+          }
+        },
+        error: (error) => {
+          console.error('Error al cambiar el estado del usuario:', error);
+          this.toastr.error('Error al cambiar el estado del usuario');
+        }
+      });
+    }
+  }
+
+  openEditModal() {
+    this.selectedUser = this.userData;
+    // Espera a que Angular pase los datos, luego abre el modal con JS (Bootstrap)
+    setTimeout(() => {
+      const modal = new bootstrap.Modal(document.getElementById('editUserModal')!);
+      modal.show();
+    }, 100);
   }
 }
