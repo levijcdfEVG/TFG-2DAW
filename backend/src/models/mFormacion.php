@@ -1,14 +1,27 @@
 <?php 
-
+/**
+ * Clase que maneja las operaciones relacionadas con las formaciones.
+ * Incluye funciones para insertar, editar, eliminar y obtener formaciones.
+ * @author Levi Josué Candeias de Figueiredo <levijosuecandeiasdefigueiredo.guadalupe@alumnado.fundacionloyola.net>
+ */
 class MFormacion {
     private $conexion;
 
+    /**
+     * Conecta a la base de datos.
+     * @return void
+     */
     public function conectar():void {
         $objetoBD = new bbdd(); //Conectamos a la base de datos. Creamos objeto $objetoBD
         $this->conexion = $objetoBD->conexion; //Llamamos al metodo que realiza la conexion a la BBDD
     }
 
-
+    /**
+     * Lista todas las formaciones activas.
+     *
+     * @return array Un array asociativo con los datos de las formaciones activas.
+     * @throws Exception Si ocurre un error al realizar la consulta.
+     */
     public function listarAllFormaciones(): array {
         try {
             $this->conectar();
@@ -105,6 +118,16 @@ class MFormacion {
         }
     }
 
+
+
+    /**
+     * Desactiva la formación por su id en la base de datos.
+     *
+     * @param int $id Identificador único de la formación a desactivar.
+     * @return array Un array asociativo con la siguiente estructura:
+     *               - success: booleano que indica si la operación se realizó correctamente.
+     *               - message: string opcional que contiene un mensaje adicional en caso de error.
+     */
     public function desactivarFormacionPorId(int $id): array {
         try {
             $this->conectar();
@@ -127,6 +150,14 @@ class MFormacion {
         }
     }
 
+    /**
+     * Borra la formación por su id en la base de datos.
+     *
+     * @param int $id Identificador único de la formación a borrar.
+     * @return array Un array asociativo con la siguiente estructura:
+     *               - success: booleano que indica si la operación se realizó correctamente.
+     *               - message: string opcional que contiene un mensaje adicional en caso de error.
+     */
     public function borrarFormacionPorId(int $id): array {
         try {
             $this->conectar();
@@ -149,6 +180,28 @@ class MFormacion {
         }
     }
 
+        }
+
+        /**
+         * Inserta una formación en la base de datos.
+         *
+         * @param array $data Un array asociativo con la siguiente estructura:
+         *                     - formacion: array asociativo con los siguientes campos:
+         *                       - lugar_imparticion: string que contiene el lugar de impartición de la formación.
+         *                       - duracion: string que contiene la duración de la formación en horas.
+         *                       - modalidad: string que contiene la modalidad de la formación.
+         *                       - justificacion: string que contiene la justificación de la formación.
+         *                       - metodologia: string que contiene la metodología de la formación.
+         *                       - docentes: string que contiene los docentes de la formación.
+         *                       - dirigido_a: string que contiene el público al que se dirige la formación.
+         *                       - activo: booleano que indica si la formación está activa o no.
+         *                     - objetivos: array de strings que contiene los objetivos de la formación.
+         *
+         * @return array Un array asociativo con la siguiente estructura:
+         *               - success: booleano que indica si la operación se realizó correctamente.
+         *               - message: string opcional que contiene un mensaje adicional en caso de error.
+         *               - id: int opcional que contiene el id de la formación insertada, en caso de éxito.
+         */
    public function insertarFormacion(array $data): array {
         try {
             $this->conectar();
@@ -259,7 +312,29 @@ class MFormacion {
         }
     }
 
-
+            /**
+             * Inserta una formación en la base de datos.
+             *
+             * @param array $data Un array asociativo con la siguiente estructura:
+             *                     - formacion: array asociativo con los siguientes campos:
+             *                       - lugar_imparticion: string que contiene el lugar de impartición de la formación.
+             *                       - duracion: string que contiene la duración de la formación en horas.
+             *                       - modalidad: string que contiene la modalidad de la formación.
+             *                       - justificacion: string que contiene la justificación de la formación.
+             *                       - metodologia: string que contiene la metodología de la formación.
+             *                       - docentes: string que contiene los docentes de la formación.
+             *                       - dirigido_a: string que contiene el público al que se dirige la formación.
+             *                       - activo: booleano que indica si la formación está activa o no.
+             *                     - objetivos: array de strings que contiene los objetivos de la formación.
+             *                     - modulos: array de strings que contiene los módulos de la formación.
+             *                     - cursos: array de strings que contiene los cursos académicos de inicio y fin de la formación.
+             *                     - centros: int opcional que contiene el id del centro educativo al que se asocia la formación, en caso de proporcionarse.
+             *
+             * @return array Un array asociativo con la siguiente estructura:
+             *               - success: booleano que indica si la operación se realizó correctamente.
+             *               - message: string opcional que contiene un mensaje adicional en caso de error.
+             *               - id: int opcional que contiene el id de la formación insertada, en caso de éxito.
+             */
     public function updateFormacion(int $idFormacion, array $data): array {
         try {
             $this->conectar();

@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { Province } from '../interfaces/province.interface';
+import { environment } from "../../environments/environment.prod";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProvinciaService {
-  private provincePath = 'http://localhost:8000/index.php?controlador=cProvincia&accion=';
+  private provincePath = +environment.apiUrl + '?controlador=cProvincia&accion=';
 
   constructor(private http: HttpClient) {}
 

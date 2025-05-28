@@ -18,19 +18,21 @@
      */
     class cUsuario {
 
-        /**
-         * Realiza el login de un usuario mediante autenticación con Google.
-         *
-         * Este método recibe un token de Google, lo verifica y comprueba si el correo
-         * asociado está autorizado en el sistema. Si todo es correcto, devuelve el token
-         * para mantener la sesión.
-         *
-         * @return array Respuesta con el resultado de la autenticación.
-         */
-        public function loginGoogle(): array {
-            try {
-                $data = json_decode(file_get_contents("php://input"), true);
-                $modelo = new mUsuario();
+    /**
+     * Método de login con Google
+     *
+     * Este método verifica un token de Google y si es válido, intenta loguear al usuario asociado.
+     * Si el usuario no existe, lo crea en la base de datos.
+     *
+     * @return array - Devuelve un array asociativo con dos claves: "success" y "error".
+     *                  - "success" es booleano y indica si la operación fue exitosa o no.
+     *                  - "error" es un string que contiene el mensaje de error si "success" es false.
+     * @author Levi Josué Candeias de Figueiredo <levijosuecandeiasdefigueiredo.guadalupe@alumnado.fundacionloyola.net>
+     */
+    public function loginGoogle(): array {
+        try {
+            $data = json_decode(file_get_contents("php://input"), true);
+            $modelo = new mUsuario();
 
                 $token = $data["token"] ?? null;
                 if (!$token) {

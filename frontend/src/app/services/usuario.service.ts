@@ -3,23 +3,14 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 import { Observable, throwError, Subject } from 'rxjs';
 import { User } from '../interfaces/user.interface';
 import { map, catchError } from 'rxjs/operators';
+import { environment } from "../../environments/environment.prod";
 
 @Injectable({
   providedIn: 'root'
 })
 export class UsuarioService {
 
-  userPath = 'http://localhost:8000/index.php?controlador=cUsuario&accion=';
-  
-  private usuariosActualizados = new Subject<void>();
-
-  get usuariosActualizados$() {
-    return this.usuariosActualizados.asObservable();
-  }
-
-  notificarCambio(): void {
-    this.usuariosActualizados.next();
-  }
+  userPath = environment.apiUrl+'?controlador=cUsuario&accion=';
 
   constructor(private http: HttpClient) {}
 
@@ -27,7 +18,7 @@ export class UsuarioService {
   getUsersByParams(params: any): Observable<any> {
     // Convertir los parámetros a HttpParams
     const httpParams = new HttpParams({ fromObject: params });
-    // console.log(this.userPath + 'getUsersByParams', { params: httpParams });
+    console.log(this.userPath + 'getUsersByParams', { params: httpParams });
     return this.http.get<any>(this.userPath + 'getUsersByParams', { params: httpParams })
       .pipe(
         map(res => res.data), catchError(this.handleError)

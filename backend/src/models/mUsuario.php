@@ -29,22 +29,20 @@
         }
 
         /**
-         * Obtiene un usuario por su correo electrónico.
+         * Obtiene un usuario por su correo electronico
          *
-         * Este método busca en la base de datos un usuario que coincida con el correo
-         * electrónico proporcionado.
-         *
-         * @param string $correo Correo electrónico del usuario a buscar.
-         * @return array|false Datos del usuario si existe, false en caso contrario.
+         * @param string $correo Correo electronico del usuario
+         * @return array|null Retorna un array con los datos del usuario si existe, null en caso contrario
+         * @author Levi Josué Candeias de Figueiredo <levijosuecandeiasdefigueiredo.guadalupe@alumnado.fundacionloyola.net>
          */
         public function getUsuarioPorCorreo($correo) {
             $this->conectar(); //Llamo al metodo conectar de arriba
 
-            $sql = "SELECT * FROM usuario WHERE correo_user = ?";
-            $stmt = $this->conexion->prepare($sql);
-            $stmt->bindValue(1, $correo, PDO::PARAM_STR);
-            $stmt->execute();
-            return $stmt->fetch(PDO::FETCH_ASSOC);
+                $sql = "SELECT * FROM usuario WHERE correo_user = ?";
+                $stmt = $this->conexion->prepare($sql);
+                $stmt->bindValue(1, $correo, PDO::PARAM_STR);
+                $stmt->execute();
+                return $stmt->fetch(PDO::FETCH_ASSOC);
         }
 
         /**

@@ -6,30 +6,49 @@ import {
   OnChanges,
   OnInit,
   Output,
-  SimpleChanges, ViewChild
+  SimpleChanges,
+  ViewChild
 } from '@angular/core';
-import {FormacionService} from "../../../../../services/formacion.service";
-import {ToastrService} from "ngx-toastr";
+import { FormacionService } from "../../../../../services/formacion.service";
+import { ToastrService } from "ngx-toastr";
 import Swal2 from "sweetalert2";
-import {error} from "@angular/compiler-cli/src/transformers/util";
-import {FormacionFormComponent} from "../formacion-form/formacion-form.component";
+import { FormacionFormComponent } from "../formacion-form/formacion-form.component";
 
+/**
+ * Componente modal para editar una formación existente.
+ * Utiliza el formulario de formaciones y maneja la confirmación y actualización en base de datos.
+ * @author Levi Josué Candeias de Figueiredo
+ * @email levijosuecandeiasdefigueiredo.guadalupe@alumnado.fundacionloyola.net
+ */
 @Component({
   selector: 'app-editar-formacion-modal',
   templateUrl: './editar-formacion-modal.component.html',
 })
-export class EditarFormacionModalComponent{
+export class EditarFormacionModalComponent {
 
+  /**
+   * Referencia al componente del formulario de formación hijo.
+   */
   @ViewChild(FormacionFormComponent) formComponent!: FormacionFormComponent;
+
+  /**
+   * Evento emitido cuando se ha editado correctamente la formación.
+   */
   @Output() formSubmit = new EventEmitter<any>();
-  constructor(private formacionService: FormacionService,
-              private cdr: ChangeDetectorRef,
-              private toastr: ToastrService) {
-  }
 
+  constructor(
+      private formacionService: FormacionService,
+      private cdr: ChangeDetectorRef,
+      private toastr: ToastrService
+  ) {}
 
-
-  onFormSubmit(data: any) {
+  /**
+   * Maneja el envío del formulario tras confirmar con el usuario.
+   * Realiza la petición al servicio para actualizar la formación.
+   *
+   * @param data Datos de la formación enviados desde el formulario.
+   */
+  onFormSubmit(data: any): void {
     Swal2.fire({
       title: '¿Estás seguro?',
       text: "La formación será actualizada en la base de datos",
@@ -51,21 +70,24 @@ export class EditarFormacionModalComponent{
               this.toastr.error("Error al editar la formación", "CRUD Formaciones", {
                 positionClass: "toast-bottom-right"
               });
-              console.error(response)
+              console.error(response);
             }
           },
           error: (error) => {
             this.toastr.error("Error al editar la formación", "CRUD Formaciones", {
               positionClass: "toast-bottom-right"
             });
-            console.error(error)
+            console.error(error);
           }
-        })
+        });
       }
-    })
+    });
   }
 
-  protected clearForm() {
+  /**
+   * Limpia manualmente el formulario del componente hijo.
+   */
+  protected clearForm(): void {
     this.formComponent.clearForm();
   }
 }

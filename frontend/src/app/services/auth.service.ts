@@ -4,6 +4,7 @@ import { HttpClient } from "@angular/common/http";
 import { jwtDecode } from "jwt-decode";
 import { CookieService } from "ngx-cookie-service";
 import { Router } from "@angular/router";
+import { environment } from "../../environments/environment.prod";
 
 declare const google: any;
 
@@ -14,7 +15,7 @@ export class AuthService {
 
   private authState: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   authState$: Observable<boolean> = this.authState.asObservable();
-  private backendUrl = 'http://localhost:8000/index.php';
+  private backendUrl = environment.apiUrl
 
   constructor(
       private http: HttpClient,

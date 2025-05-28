@@ -3,13 +3,14 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 import { Observable, throwError } from 'rxjs';
 import { User } from '../interfaces/user.interface';
 import { map, catchError } from 'rxjs/operators';
+import { environment } from "../../environments/environment.prod";
 
 @Injectable({
     providedIn: 'root'
 })
 export class FormacionesService {
 
-    private formationPath = 'http://localhost:8000/index.php?controlador=CFormaciones&accion=';
+    private formationPath = environment.apiUrl;
 
     constructor(private http: HttpClient) {}
 
