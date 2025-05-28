@@ -115,6 +115,8 @@ decodeToken(): any | null {
     const payload = { token: googleToken };
     const urlParams = '?controlador=cUsuario&accion=loginGoogle';
 
+    console.log('Solicitud POST:', payload);
+
     return this.http.post<any>(this.backendUrl + urlParams, payload).pipe(
         catchError(error => {
           this.logout();

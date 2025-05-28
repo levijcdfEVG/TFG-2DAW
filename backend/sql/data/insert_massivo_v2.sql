@@ -101,6 +101,7 @@ INSERT INTO objetivo_formacion (id_formacion, id_objetivo) VALUES
     (2, 2),
     (3, 3),
     (4, 4);
+    
 -- Formaciones Curso
 INSERT INTO formacion_curso (id_curso, id_formacion) VALUES
     (1, 1), (1, 2), (1, 3),

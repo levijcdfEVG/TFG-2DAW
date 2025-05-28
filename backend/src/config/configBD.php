@@ -32,5 +32,5 @@ define("PASSWORD", "");
 /**
  * Nombre de la base de datos a la que se conectará el sistema.
  */
-define("BBDD", "tfg_2daw");
+define("BBDD", "TFG-DEMO");
 ?>

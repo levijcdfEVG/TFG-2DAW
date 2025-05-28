@@ -13,3 +13,4 @@
 backend/.idea/git_toolbox_prj.xml
 nbproject/project.properties
 nbproject/project.xml
+/backend/src/config/
