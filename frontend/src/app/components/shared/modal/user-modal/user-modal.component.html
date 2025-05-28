@@ -1,7 +1,7 @@
-<div class="modal fade" id="newUserModal" data-backdrop="static" tabindex="-1" aria-labelledby="newUserModalLabel">
+<div class="modal fade" id="newUserModal" data-backdrop="static" tabindex="-1" aria-labelledby="newUserModalLabel" >
   <div class="modal-dialog modal-xl modal-dialog-centered">
     <div class="modal-content">
-      <div class="modal-header p-2 px-3 bg-theme">
+      <div class="modal-header p-2 px-3">
         <div>
             <h5 class="w-100 modal-title text-white" id="newUserModalLabel">Nuevo Usuario</h5>
             <p class="mb-0 text-white-50">Añade un usuario a la lista</p>
@@ -51,37 +51,10 @@
                            type="tel"
                            id="phone"
                            formControlName="phone"
+                           placeholder="(9 dígitos)"
                            [class.is-invalid]="validarCampos('phone')"
                     />
                     <small *ngIf="validarCampos('phone')" class="form-text text-danger">{{validarCampos('phone')}}</small>
-                </div>
-            </div>
-<!--        PROVINCIA Y LOCALIDAD-->
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <label for="province" class="form-label"><strong>Provincia</strong></label>
-                    <ng-select class="ng-select"
-                               [items]="provinceData"
-                               bindLabel="nombre"
-                               bindValue="id"
-                               placeholder="Seleccione una provincia"
-                               formControlName="province"
-                               [class.is-invalid]="validarCampos('province')">
-                    </ng-select>
-                    <small *ngIf="validarCampos('province')" class="form-text text-danger">{{validarCampos('province')}}</small>
-                </div>
-                <div class="col-md-6">
-                    <label for="locality" class="form-label"><strong>Localidad</strong></label>
-                    <ng-select class="ng-select"
-                               [items]="localityData"
-                               [groupBy]="'provincia_nombre'"
-                               bindLabel="nombre_localidad"
-                               bindValue="id"
-                               placeholder="Seleccione una localidad"
-                               formControlName="locality"
-                               [class.is-invalid]="validarCampos('locality')">
-                    </ng-select>
-                    <small *ngIf="validarCampos('locality')" class="form-text text-danger">{{validarCampos('locality')}}</small>
                 </div>
             </div>
 
@@ -102,7 +75,7 @@
                     <label for="center" class="form-label"><strong>Centro</strong></label>
                     <ng-select class="ng-select"
                                [items]="centerData"
-                               bindLabel="name"
+                               bindLabel="nombre_centro"
                                bindValue="id"
                                placeholder="Seleccione una localidad"
                                formControlName="center"

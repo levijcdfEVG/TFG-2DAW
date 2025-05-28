@@ -26,6 +26,8 @@ import { InfoCursoComponent } from './components/dashboard/info-curso/info-curso
 import { InfoEducadorComponent } from './components/dashboard/info-educador/info-educador.component';
 import { UserFileComponent } from './components/dashboard/info-educador/user-file/user-file.component';
 import { UserModalComponent } from './components/shared/modal/user-modal/user-modal.component';
+import { EditUserComponent } from './components/shared/modal/edit-user/edit-user.component';
+
 
 /* Componentes */
 import { HttpClientModule } from '@angular/common/http';
@@ -38,6 +40,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { GoogleSignInComponent } from './components/google-sign-in/google-sign-in.component';
 import { CookieService } from "ngx-cookie-service";
 import {NgSelectModule} from "@ng-select/ng-select";
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -58,7 +61,8 @@ import {NgSelectModule} from "@ng-select/ng-select";
     FormacionFormComponent,
     CrearFormacionModalComponent,
     EditarFormacionModalComponent,
-    MenuComponent
+    MenuComponent,
+    EditUserComponent
   ],
   imports: [
     BrowserModule,

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, SimpleChanges } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { UsuarioService } from '../../../../services/usuario.service';
 import { CentrosService } from 'src/app/services/centros.service';
@@ -9,12 +9,13 @@ import { Subject, takeUntil } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
-  selector: 'app-new-user',
-  templateUrl: './user-modal.component.html',
-  styleUrls: ['./user-modal.component.css']
+  selector: 'app-edit-user',
+  templateUrl: './edit-user.component.html',
+  styleUrls: ['./edit-user.component.css']
 })
-export class UserModalComponent implements OnInit {
+export class EditUserComponent implements OnInit {
   @ViewChild('closeModalBtn') closeModalBtn!: ElementRef;
+  @Input() userData: any;
 
   userModalForm!: FormGroup;
   
@@ -31,9 +32,6 @@ export class UserModalComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.crearFormulario();
-    this.cargarFormulario();
-
     this.loadRoles();
     this.loadCenters();
 
@@ -44,13 +42,20 @@ export class UserModalComponent implements OnInit {
         educadorControl?.enable();
       } else {
         educadorControl?.disable();
-        educadorControl?.setValue(false); // Limpia el checkbox si se deshabilita
+        educadorControl?.setValue(false);
       }
     });
 
     // Asegura que el control esté deshabilitado por defecto si el rol no es educador
     if (this.userModalForm.get('role')?.value !== 1) {
       this.userModalForm.get('new_educator')?.disable();
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['userData'] && changes['userData'].currentValue) {
+      this.crearFormulario();
+      this.cargarFormulario();
     }
   }
 
@@ -78,7 +83,7 @@ export class UserModalComponent implements OnInit {
         this.centerData = response.data;
       },
       error: (error: any) => {
-        console.error('Error al obtener roles:', error);
+        console.error('Error al obtener centros:', error);
       }
     });
   }
@@ -89,29 +94,29 @@ export class UserModalComponent implements OnInit {
    */
   crearFormulario() {
     this.userModalForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3), Validators.maxlength(40), UserModalComponent.onlyCharactersValidator]],
-      surname: ['', [Validators.required, Validators.minLength(3), Validators.maxlength(50), UserModalComponent.onlyCharactersValidator]],
-      email: ['', [Validators.required, Validators.pattern(/^[_A-Za-z0-9\-+]+(\.[_A-Za-z0-9-]+)*@fundacionloyola\.net$/), Validators.maxlength(70), UserModalComponent.emailFundacionLoyolaValidator]],
-      phone: ['', [Validators.required, Validators.pattern('^[0-9]{9}$'), Validators.minLength(9), Validators.maxlength(9), UserModalComponent.onlyNumberValidator]],
+      name: ['', [Validators.required, Validators.minLength(3), Validators.maxlength(40), EditUserComponent.onlyCharactersValidator]],
+      surname: ['', [Validators.required, Validators.minLength(3), Validators.maxlength(50), EditUserComponent.onlyCharactersValidator]],
+      email: ['', [Validators.required, Validators.pattern(/^[_A-Za-z0-9\-+]+(\.[_A-Za-z0-9-]+)*@fundacionloyola\.net$/), Validators.maxlength(70), EditUserComponent.emailFundacionLoyolaValidator]],
+      phone: ['', [Validators.required, Validators.pattern('^[0-9]{9}$'), Validators.minLength(9), Validators.maxlength(9), EditUserComponent.onlyNumberValidator]],
       role: ['', [Validators.required]],
       center: ['', [Validators.required]],
       new_educator: [{value: false, disabled: true}, [Validators.required]]
     });
   }
 
-  /**
-   * Inicializa el formulario con valores vacíos
-   */
   cargarFormulario() {
-    this.userModalForm.reset({
-      name: '',
-      surname: '',
-      email: '',
-      phone: '',
-      role: null,
-      center: null,
-      new_educator: false,
-    });
+    // Si tenemos datos del usuario, los cargamos en el formulario
+    if (this.userData) {
+      this.userModalForm.setValue({
+        name: this.userData.nombre_user,
+        surname: this.userData.apellido_user,
+        email: this.userData.correo_user,
+        phone: this.userData.telefono_user,
+        role: this.userData.id_rol,
+        center: this.userData.id_centro,
+        new_educator: this.userData.nuevo_educador
+      });
+    }
   }
 
   /**
@@ -199,22 +204,22 @@ export class UserModalComponent implements OnInit {
    * Marca todos los campos como touched si el formulario es inválido
    */
   saveForm() {
-
     if (this.userModalForm.invalid) {
       Object.values(this.userModalForm.controls).forEach(control => {
         control.markAsTouched();
       });
       return;
     }
-    this.createUser();
+    this.updateUser();
   }
-
   /**
-   * Guarda los datos del usuario en el backend
+   * Actualiza los datos del usuario en el backend
+   * Envía los datos del formulario al servicio para actualizar el usuario
+   * Muestra mensajes de éxito o error según corresponda
    */
-  createUser() {
-
+  updateUser() {
     const userData = {
+      id: this.userData.id,
       nombre_user: this.userModalForm.value.name,
       apellido_user: this.userModalForm.value.surname,
       correo_user: this.userModalForm.value.email,
@@ -222,21 +227,21 @@ export class UserModalComponent implements OnInit {
       id_rol: this.userModalForm.value.role,
       id_centro: this.userModalForm.value.center,
       nuevo_educador: this.userModalForm.value.new_educator,
-      estado: 1
+      estado: this.userData.estado
     };
 
-    this.userService.createUser(userData).pipe(takeUntil(this.unsubscribe$)).subscribe({
+
+    this.userService.updateUser(userData).pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: (response: any) => {
-        this.toastr.success('Usuario creado con éxito', 'Éxito');
-        this.userService.notificarCambio();
+        this.toastr.success('Usuario actualizado con éxito', 'Éxito');
+        this.closeModal(); // Cerramos primero el modal
         setTimeout(() => {
-          this.closeModal();
-          this.resetForm();
+          this.userService.notificarCambio(); // Y luego notificamos el cambio
         }, 100);
       },
       error: (error: any) => {
-        console.error('Error al guardar el usuario:', error);
-        this.toastr.error('Error al crear el usuario', 'Error');
+        console.error('Error al actualizar el usuario:', error);
+        this.toastr.error('Error al actualizar el usuario', 'Error');
       }
     });
   }
