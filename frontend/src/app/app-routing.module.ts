@@ -7,6 +7,9 @@ import {GoogleSignInComponent} from "./components/google-sign-in/google-sign-in.
 import {AuthGuard} from "./guards/auth.guard";
 import { UserFileComponent} from "./components/dashboard/info-educador/user-file/user-file.component";
 import {InfoEducadorComponent} from "./components/dashboard/info-educador/info-educador.component";
+import {
+  AsignarUsuarioFormacionComponent
+} from "./components/dashboard/info-formacion/asignar-usuario-formacion/asignar-usuario-formacion.component";
 
 
 const routes: Routes = [
@@ -16,8 +19,9 @@ const routes: Routes = [
   { path: "info-educadores", component: InfoEducadorComponent, canActivate: [AuthGuard] },
   { path: "login", component: GoogleSignInComponent },
   { path: "menu", component: MenuComponent, canActivate: [AuthGuard] },
-  { path: '**', redirectTo: '/menu', pathMatch: 'full' },
-  { path: 'usuarios/:id', component: UserFileComponent },
+  { path: 'usuarios/:id', component: UserFileComponent,  canActivate: [AuthGuard] },
+  { path: 'inscribir-usuarios/formacion/:id', component: AsignarUsuarioFormacionComponent,  canActivate: [AuthGuard] },
+  { path: '**', redirectTo: '/menu', pathMatch: 'full' }
 ];
 
 @NgModule({

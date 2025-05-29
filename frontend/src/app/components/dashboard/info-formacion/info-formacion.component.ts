@@ -13,6 +13,7 @@ import Swal2 from "sweetalert2";
 import * as $ from 'jquery';
 import 'datatables.net';
 import 'datatables.net-bs5';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-info-sdsda',
@@ -30,7 +31,8 @@ export class InfoFormacionComponent implements OnInit {
   constructor(
       private formacionService: FormacionService,
       private cdr: ChangeDetectorRef,
-      private toastr: ToastrService
+      private toastr: ToastrService,
+      private router: Router
   ) { }
 
   /**
@@ -214,6 +216,7 @@ export class InfoFormacionComponent implements OnInit {
           <td class="text-center align-middle">
             <button class="btn btn-sm btn-outline-primary me-2 btn-editar" title="Editar" data-bs-toggle="modal" data-bs-target="#editarFormacionModal"><i class="fa-solid fa-pencil"></i></button>
             <button class="btn btn-sm btn-outline-danger btn-borrar" title="Borrar"><i class="fa-solid fa-trash-can"></i></button>
+            <button class="btn btn-primary btn-inscribir">+ Inscribir Usuarios</button>
           </td>
         </tr>
       `;
@@ -250,5 +253,18 @@ export class InfoFormacionComponent implements OnInit {
         self.borrarFormacion(f);
       }
     });
+
+    $(document).off('click', '.btn-inscribir').on('click', '.btn-inscribir', function () {
+      const id = $(this).closest('tr').data('id');
+      const f = self.formaciones.find(x => x.id === id);
+      if (f) {
+        self.inscribirUsuarios(f);
+      }
+    });
+  }
+
+  protected inscribirUsuarios(f: Formacion) {
+    console.log(f);
+    this.router.navigate(['inscribir-usuarios/formacion', f.id]);
   }
 }
