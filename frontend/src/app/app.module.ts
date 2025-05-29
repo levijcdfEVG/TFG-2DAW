@@ -38,6 +38,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { GoogleSignInComponent } from './components/google-sign-in/google-sign-in.component';
 import { CookieService } from "ngx-cookie-service";
 import {NgSelectModule} from "@ng-select/ng-select";
+import { AsignarUsuarioFormacionComponent } from './components/dashboard/info-formacion/asignar-usuario-formacion/asignar-usuario-formacion.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -58,7 +59,8 @@ import {NgSelectModule} from "@ng-select/ng-select";
     FormacionFormComponent,
     CrearFormacionModalComponent,
     EditarFormacionModalComponent,
-    MenuComponent
+    MenuComponent,
+    AsignarUsuarioFormacionComponent
   ],
   imports: [
     BrowserModule,
