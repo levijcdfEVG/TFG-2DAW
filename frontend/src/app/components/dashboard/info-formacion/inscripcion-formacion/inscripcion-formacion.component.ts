@@ -40,6 +40,7 @@ export class InscripcionFormacionComponent implements OnInit {
         const id = this.route.snapshot.paramMap.get('id');
         if (id) {
             this.formacionId = parseInt(id);
+            this.formacionService.setIdFormacion(this.formacionId);
             this.toasts.info('Registros de la formación de id: ' + this.formacionId, 'Asignar Usuarios', {
                 positionClass: 'toast-bottom-right'
             });

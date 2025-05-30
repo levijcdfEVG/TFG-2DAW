@@ -12,7 +12,8 @@ import { localEnvironment } from "../../environments/environment";
 })
 export class FormacionService {
   private backendUrl = environment.apiUrl;
-  private formacionAEditar = new BehaviorSubject<any>(null)
+  private formacionAEditar = new BehaviorSubject<any>(null);
+  public idFormacion = new BehaviorSubject<number>(0);
 
   constructor(private http: HttpClient,
               private toastr: ToastrService) { }
@@ -98,6 +99,14 @@ export class FormacionService {
 
   public setFormacionAEditar(formacion: any) {
     this.formacionAEditar.next(formacion);
+  }
+
+  public getIdFormacion(): Observable<any> {
+   return this.idFormacion.asObservable();
+  }
+
+  public setIdFormacion(idFormacion: number) {
+    this.idFormacion.next(idFormacion);
   }
 
 
