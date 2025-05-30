@@ -1,8 +1,10 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { FormacionService } from '../../../../../services/formacion.service';
 import {FormControl} from "@angular/forms";
 import {UsuarioService} from "../../../../../services/usuario.service";
+import Swal2 from "sweetalert2";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-asignar-usuarios',
@@ -14,13 +16,16 @@ export class AsignarUsuariosFormacionModalComponent implements OnInit {
   @Output() updateTable = new EventEmitter<void>();
   protected usuarios: any[] = [];
   protected idFormacion: number = 0;
-  usuariosFiltrados = [...this.usuarios];
-  filtro: string = '';
+  protected usuariosFiltrados = [...this.usuarios];
+  protected filtro: string = '';
+  protected usuariosNoSeleccionables: any[] = [];
   protected usuariosSeleccionados: any[] = [];
 
   constructor(
       private formacionService: FormacionService,
-      private usuariosService: UsuarioService) {}
+      private usuariosService: UsuarioService,
+      private toastr: ToastrService,
+      private cdr: ChangeDetectorRef ) {}
 
   ngOnInit(): void {
     this.formacionService.getIdFormacion().subscribe(
@@ -54,9 +59,37 @@ export class AsignarUsuariosFormacionModalComponent implements OnInit {
   }
 
   guardar() {
-    console.log('Usuarios asignados:', this.usuariosSeleccionados);
-    // Aquí emites evento o haces lo que necesites
+    Swal2.fire({
+      title: '¿Desea guardar los cambios?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Guardar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const idsUsuarios = this.usuariosSeleccionados.map(u => u.id);
+
+        this.formacionService.asignUserFormacion(this.idFormacion, idsUsuarios).subscribe(
+            response => {
+              if (response.success) {
+                this.updateTable.emit();
+                this.loadUsers();
+                this.cdr.detectChanges();
+                this.toastr.success('Los cambios se guardaron correctamente', 'Guardado', {
+                  positionClass: 'toast-bottom-right'
+                });
+              } else {
+                this.toastr.error('Error al guardar los cambios', 'Error');
+              }
+            },
+            error => {
+              this.toastr.error('Error al guardar los cambios', 'Error');
+            }
+        );
+      }
+    });
   }
+
 
   private loadUsers() {
     this.usuariosService.getUsersByParams(
@@ -70,19 +103,25 @@ export class AsignarUsuariosFormacionModalComponent implements OnInit {
           "status": 1
         }
     ).subscribe(response => {
-      console.log(response);
       if (response.length > 0) {
         this.usuarios = response;
+
         this.formacionService.getUsersByFormacion(this.idFormacion).subscribe(response => {
           if (response.success) {
-            this.usuariosSeleccionados = response.data;
-            console.log(this.usuariosSeleccionados);
+            this.usuariosNoSeleccionables = response.data;
+
+            // Ahora que ya tienes usuariosNoSeleccionables, haces el filtro correctamente
+            this.usuarios = this.usuarios.filter(u =>
+                !this.usuariosNoSeleccionables.some(us => us.id === u.id)
+            );
+
+            this.usuariosFiltrados = [...this.usuarios];
           } else {
             console.error('Error al obtener los usuarios de la formación');
+            this.usuariosFiltrados = [...this.usuarios]; // aunque no tengas no seleccionables, muestra todos
           }
         });
-        this.usuarios = this.usuarios.filter(u => !this.usuariosSeleccionados.some(us => us.id === u.id));
-        this.usuariosFiltrados = [...this.usuarios];
+
       } else {
         console.error('Error al obtener los usuarios');
       }

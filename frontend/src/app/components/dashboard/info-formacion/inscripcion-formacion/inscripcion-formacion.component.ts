@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import { UsuarioService } from 'src/app/services/usuario.service';
 import { FormacionService } from 'src/app/services/formacion.service';
 import {ToastrService} from "ngx-toastr";
@@ -20,6 +20,8 @@ import 'datatables.net-bs5';
 })
 export class InscripcionFormacionComponent implements OnInit {
 
+    // @ts-ignore
+    @ViewChild(InscripcionFormacionComponent) modalAsignar: InscripcionFormacionComponent;
     protected users: any[] = [];
     protected formacionId: number = 0;
     public usuariosABorrar: number[] = [];
@@ -153,6 +155,8 @@ export class InscripcionFormacionComponent implements OnInit {
                             positionClass: 'toast-bottom-right'
                         });
                         this.loadUsers();
+                        this.usuariosABorrar = [];
+                        this.modalAsignar.loadUsers();
                     } else {
                         this.toasts.error('Error al desasignar los usuarios', 'Desasignar Usuarios', {
                             positionClass: 'toast-bottom-right'
