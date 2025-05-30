@@ -436,6 +436,20 @@ class MFormacion {
         }
     }
 
+    
+    /**
+     * Asigna uno o varios usuarios a una formación específica.
+     *
+     * Inserta registros en la tabla 'inscripciones' para cada usuario proporcionado,
+     * evitando duplicados mediante 'INSERT IGNORE'. Utiliza una transacción para asegurar
+     * la integridad de los datos.
+     *
+     * @param int   $idFormacion   El ID de la formación a la que se asignarán los usuarios.
+     * @param array $idsUsuarios   Array de IDs de usuarios que serán asignados a la formación.
+     *
+     * @return array Devuelve un array asociativo con la clave 'success' (bool) indicando si la operación fue exitosa,
+     *               y 'message' (string) con un mensaje descriptivo o de error.
+     */
     public function asignarUsuarioAFormacion(int $idFormacion, array $idsUsuarios):array{
         try {
             $this->conectar();
@@ -460,6 +474,13 @@ class MFormacion {
         }
     }
 
+    /**
+     * Obtiene los usuarios inscritos en una formación específica.
+     *
+     * @param int $idFormacion El ID de la formación para la que se desean obtener los usuarios.
+     * @return array Un array asociativo con la clave 'success' (bool) y, si es exitoso, la clave 'usuarios' (array de usuarios).
+     *               En caso de error, incluye la clave 'message' con la descripción del error.
+     */
     public function getUsuariosPorFormacion (int $idFormacion) : array{
         try {
             $this->conectar();
@@ -478,6 +499,17 @@ class MFormacion {
         }
     }
 
+    /**
+     * Desasigna una lista de usuarios de una formación específica.
+     *
+     * Elimina los registros de la tabla 'inscripciones' que correspondan a la formación y a los usuarios indicados.
+     * Utiliza una transacción para asegurar la integridad de los datos.
+     *
+     * @param int   $idFormacion  ID de la formación de la que se desasignarán los usuarios.
+     * @param array $idsUsuarios  Array de IDs de usuarios a desasignar de la formación.
+     *
+     * @return array Devuelve un array asociativo con la clave 'success' (bool) y 'message' (string) indicando el resultado de la operación.
+     */
     public function desasignarUsuariosFormacion(int $idFormacion, array $idsUsuarios):array{
         try {
             $this->conectar();
