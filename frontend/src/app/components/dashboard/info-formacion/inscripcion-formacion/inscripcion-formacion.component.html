@@ -1,6 +1,9 @@
 <div class="container mt-4">
-    <table id="usuariosFormacion" class="display" style="width:100%">
-        <thead>
+    <div *ngIf="usuariosABorrar.length > 0">
+        <button class="btn btn-danger" (click)="borrarUsuarios()">Confirmar Desasignación</button>
+    </div>
+    <table id="usuariosFormacion" class="table table-bordered table-hover">
+        <thead class="table-light">
         <tr>
             <th>Nombre completo</th>
             <th>Correo electrónico</th>

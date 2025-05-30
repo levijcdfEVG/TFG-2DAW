@@ -22,6 +22,7 @@ export class InscripcionFormacionComponent implements OnInit {
 
     protected users: any[] = [];
     protected formacionId: number = 0;
+    public usuariosABorrar: number[] = [];
 
     constructor(
         private usuarioService: UsuarioService,
@@ -52,10 +53,8 @@ export class InscripcionFormacionComponent implements OnInit {
 
     private loadUsers(): void {
         this.formacionService.getUsersByFormacion(this.formacionId).subscribe(response => {
-            console.log(response);
             if (response.success) {
-                this.users = response.data.usuarios;
-                console.log(this.users);
+                this.users = response.data;
                 this.loadDataTable();
             } else {
                 this.toasts.error('No se pudo obtener los usuarios de la formación', 'Asignar Usuarios', {
@@ -84,8 +83,8 @@ export class InscripcionFormacionComponent implements OnInit {
             ${u.id_rol === 1 ? 'Educador' : (u.id_rol === 2 ? 'Administrador' : (u.id_rol === 3 ? 'Responsable de centro' : '-'))}
           </td>
           <td>
-            <button class="btn btn-sm btn-outline-primary btn-asignar" title="Asignar usuario">
-              <i class="fa fa-user-plus"></i>
+            <button class="btn btn-sm btn-outline-danger btn-desasignar" title="Desasignar usuario">
+              <i class="fa fa-user-minus"></i>
             </button>
           </td>
         </tr>
@@ -116,40 +115,26 @@ export class InscripcionFormacionComponent implements OnInit {
     }
 
     private bindEvents() {
-        const self = this;
+        $(document).off('click', '.btn-desasignar').on('click', '.btn-desasignar', (event) => {
+            const button = $(event.currentTarget);
+            const idUsuario = button.closest('tr').data('id');
 
-        $(document).off('click', '.btn-asignar').on('click', '.btn-asignar', function () {
-            const idUsuario = $(this).closest('tr').data('id');
+            // Alternar selección
+            const index = this.usuariosABorrar.indexOf(idUsuario);
+            if (index === -1) {
+                this.usuariosABorrar.push(idUsuario);
+                button.addClass('btn-danger').removeClass('btn-outline-danger');
+            } else {
+                this.usuariosABorrar.splice(index, 1);
+                button.removeClass('btn-danger').addClass('btn-outline-danger');
+            }
 
-            Swal2.fire({
-                title: '¿Asignar usuario a la formación?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Sí, asignar',
-                cancelButtonText: 'Cancelar'
-            }).then(result => {
-                if (result.isConfirmed) {
-                    self.asignarUsuario(idUsuario);
-                }
-            });
+            this.cdr.detectChanges();
         });
     }
 
-    private asignarUsuario(idUsuario: number) {
 
-        console.log(this.formacionId);
-        console.log(idUsuario);
-        // this.formacionService.assignUsersToFormacion(this.formacionId, [idUsuario]).subscribe({
-        //     next: (response) => {
-        //         if (response.success) {
-        //             this.toasts.success('Usuario asignado correctamente', 'Asignación');
-        //         } else {
-        //             this.toasts.error('Error al asignar usuario', 'Asignación');
-        //         }
-        //     },
-        //     error: (error) => {
-        //         this.toasts.error('Error en la petición', 'Asignación');
-        //     }
-        // });
+    public borrarUsuarios() {
+        console.log(this.usuariosABorrar);
     }
 }

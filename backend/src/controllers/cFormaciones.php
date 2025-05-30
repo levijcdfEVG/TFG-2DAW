@@ -262,9 +262,14 @@ class cFormaciones {
             }
 
             $idFormacion = (int)$data['idFormacion'];
-            $usuarios = $this->mFormacion->getUsuariosPorFormacion($idFormacion);
+            $resultado = $this->mFormacion->getUsuariosPorFormacion($idFormacion);
 
-            $this->sendResponse(true, 'Usuarios obtenidos correctamente', $usuarios);
+            if (!$resultado['success']) {
+                $this->sendResponse(false, $resultado['message'] ?? 'Error desconocido', null, 500);
+                return;
+            }
+
+            $this->sendResponse(true, 'Usuarios obtenidos correctamente', $resultado['usuarios']);
         } catch (Exception $e) {
             $this->sendResponse(false, $e->getMessage(), null, 500);
         }
