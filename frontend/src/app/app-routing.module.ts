@@ -8,8 +8,9 @@ import {AuthGuard} from "./guards/auth.guard";
 import { UserFileComponent} from "./components/dashboard/info-educador/user-file/user-file.component";
 import {InfoEducadorComponent} from "./components/dashboard/info-educador/info-educador.component";
 import {
-  AsignarUsuarioFormacionComponent
-} from "./components/dashboard/info-formacion/asignar-usuario-formacion/asignar-usuario-formacion.component";
+  InscripcionFormacionComponent
+} from "./components/dashboard/info-formacion/inscripcion-formacion/inscripcion-formacion.component";
+
 
 
 const routes: Routes = [
@@ -20,7 +21,7 @@ const routes: Routes = [
   { path: "login", component: GoogleSignInComponent },
   { path: "menu", component: MenuComponent, canActivate: [AuthGuard] },
   { path: 'usuarios/:id', component: UserFileComponent,  canActivate: [AuthGuard] },
-  { path: 'inscribir-usuarios/formacion/:id', component: AsignarUsuarioFormacionComponent,  canActivate: [AuthGuard] },
+  { path: 'inscribir-usuarios/formacion/:id', component: InscripcionFormacionComponent,  canActivate: [AuthGuard] },
   { path: '**', redirectTo: '/menu', pathMatch: 'full' }
 ];
 

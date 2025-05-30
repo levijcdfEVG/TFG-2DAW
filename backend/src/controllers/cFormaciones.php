@@ -187,6 +187,134 @@ class cFormaciones {
         }
     }
 
+    //Metodos para manejo de inscripciones
+
+    /**
+     * Asigna uno o varios usuarios a una formación específica.
+     *
+     * Procesa una solicitud JSON que debe contener el ID de la formación y un array de IDs de usuarios.
+     * Valida los datos recibidos y llama al modelo para realizar la asignación.
+     * Devuelve una respuesta JSON indicando el resultado de la operación.
+     *
+     * @return void
+     *
+     * @throws Exception Si ocurre un error inesperado durante el proceso.
+     *
+     * Ejemplo de entrada JSON:
+     * {
+     *   "idFormacion": 1,
+     *   "idsUsuarios": [2, 3, 4]
+     * }
+     */
+    public function asignUserFormacion(){
+        // if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        // $this->methodNotAllowed(['POST']);
+        // return;
+        // }
+
+        try {
+            $input = json_decode(file_get_contents('php://input'), true);
+
+            if (!isset($input['idFormacion']) || !isset($input['idsUsuarios']) || !is_array($input['idsUsuarios']) || empty($input['idsUsuarios'])) {
+                $this->sendResponse(false, 'Faltan datos obligatorios (idFormacion o idsUsuarios)', null, 400);
+                return;
+            }
+
+            $idFormacion = (int)$input['idFormacion'];
+            $idsUsuarios = array_map('intval', $input['idsUsuarios']);
+
+            $response = $this->mFormacion->asignarUsuarioAFormacion($idFormacion, $idsUsuarios);
+
+            if ($response['success']) {
+                $this->sendResponse(true, $response['message'] ?? 'Usuarios asignados correctamente.');
+            } else {
+                $this->sendResponse(false, $response['message'] ?? 'No se pudo asignar a los usuarios.', null, 500);
+            }
+
+        } catch (Exception $e) {
+            $this->sendResponse(false, $e->getMessage(), null, 500);
+        }
+    }
+
+    /**
+     * Obtiene los usuarios inscritos en una formación específica.
+     *
+     * Este método espera una petición GET con el parámetro `idFormacion` en la URL.
+     * Llama al modelo para recuperar los usuarios asociados a la formación y devuelve
+     * una respuesta JSON con los resultados.
+     *
+     * @return void
+     *
+     * @throws Exception Si ocurre un error inesperado durante el proceso.
+     *
+     */
+    public function getUsersByFormacion(){
+        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+            $this->methodNotAllowed(['GET']);
+            return;
+        }
+
+        try {
+            if (!isset($_GET['idFormacion']) || empty($_GET['idFormacion'])) {
+                $this->sendResponse(false, 'Falta el parámetro idFormacion', null, 400);
+                return;
+            }
+
+            $idFormacion = (int)$_GET['idFormacion'];
+            $usuarios = $this->mFormacion->getUsuariosPorFormacion($idFormacion);
+
+            $this->sendResponse(true, 'Usuarios obtenidos correctamente', $usuarios);
+        } catch (Exception $e) {
+            $this->sendResponse(false, $e->getMessage(), null, 500);
+        }
+    }
+
+    /**
+     * Desasigna uno o varios usuarios de una formación específica.
+     *
+     * Procesa una solicitud JSON que debe contener el ID de la formación y un array de IDs de usuarios.
+     * Valida los datos recibidos y llama al modelo para realizar la eliminación de las inscripciones.
+     * Devuelve una respuesta JSON indicando el resultado de la operación.
+     *
+     * @return void
+     *
+     * @throws Exception Si ocurre un error inesperado durante el proceso.
+     *
+     * Ejemplo de entrada JSON:
+     * {
+     *   "idFormacion": 1,
+     *   "idsUsuarios": [2, 3]
+     * }
+     */
+    public function unasignUsersByFormacion() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->methodNotAllowed(['POST']);
+            return;
+        }
+
+        try {
+            $input = json_decode(file_get_contents('php://input'), true);
+
+            if (!isset($input['idFormacion']) || !isset($input['idsUsuarios']) || !is_array($input['idsUsuarios']) || empty($input['idsUsuarios'])) {
+                $this->sendResponse(false, 'Faltan datos obligatorios (idFormacion o idsUsuarios)', null, 400);
+                return;
+            }
+
+            $idFormacion = (int)$input['idFormacion'];
+            $idsUsuarios = array_map('intval', $input['idsUsuarios']);
+
+            $response = $this->mFormacion->desasignarUsuariosFormacion($idFormacion, $idsUsuarios);
+
+            if ($response['success']) {
+                $this->sendResponse(true, $response['message'] ?? 'Usuarios desasignados correctamente.');
+            } else {
+                $this->sendResponse(false, $response['message'] ?? 'No se pudo desasignar a los usuarios.', null, 500);
+            }
+        } catch (Exception $e) {
+            $this->sendResponse(false, $e->getMessage(), null, 500);
+        }
+    }
+
     /**
      * Envía la respuesta JSON al cliente con cabeceras HTTP y código de estado.
      *
@@ -302,4 +430,6 @@ class cFormaciones {
 
         return $data;
     }
+
+    
 }

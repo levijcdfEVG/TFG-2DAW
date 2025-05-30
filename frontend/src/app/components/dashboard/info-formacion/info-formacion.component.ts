@@ -216,7 +216,7 @@ export class InfoFormacionComponent implements OnInit {
           <td class="text-center align-middle">
             <button class="btn btn-sm btn-outline-primary me-2 btn-editar" title="Editar" data-bs-toggle="modal" data-bs-target="#editarFormacionModal"><i class="fa-solid fa-pencil"></i></button>
             <button class="btn btn-sm btn-outline-danger btn-borrar" title="Borrar"><i class="fa-solid fa-trash-can"></i></button>
-            <button class="btn btn-primary btn-inscribir">+ Inscribir Usuarios</button>
+            <button class="btn btn-sm btn-outline-success btn-inscribir" title="Inscribir"><i class="fa-solid fa-list"></i></button>
           </td>
         </tr>
       `;
