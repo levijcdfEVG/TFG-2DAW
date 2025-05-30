@@ -180,7 +180,6 @@ class MFormacion {
         }
     }
 
-        }
 
         /**
          * Inserta una formación en la base de datos.
@@ -437,7 +436,68 @@ class MFormacion {
         }
     }
 
+    public function asignarUsuarioAFormacion(int $idFormacion, array $idsUsuarios):array{
+        try {
+            $this->conectar();
+            $this->conexion->beginTransaction();
 
 
+
+            // Insertar nuevas inscripciones
+            $stmtInsert = $this->conexion->prepare(
+                "INSERT IGNORE INTO inscripciones (id_formacion, id_usu) VALUES (?, ?)"
+            );
+
+            foreach ($idsUsuarios as $idUsuario) {
+                $stmtInsert->execute([$idFormacion, $idUsuario]);
+            }
+
+            $this->conexion->commit();
+            return ['success' => true, 'message' => 'Usuarios asignados correctamente a la formación.'];
+        } catch (PDOException $e) {
+             $this->conexion->rollBack();
+            return ['success' => false, 'message' => $e->getMessage()];
+        }
+    }
+
+    public function getUsuariosPorFormacion (int $idFormacion) : array{
+        try {
+            $this->conectar();
+            $stmt = $this->conexion->prepare("
+                SELECT u.id, u.nombre_user, u.apellido_user, u.correo_user, u.telefono_user, u.id_rol, u.id_centro
+                FROM usuario u
+                INNER JOIN inscripciones i ON u.id = i.id_usu
+                WHERE i.id_formacion = ?
+            ");
+            $stmt->execute([$idFormacion]);
+            $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return ['success' => true, 'usuarios' => $usuarios];
+        } catch (PDOException $e) {
+            return ['success' => false, 'message' => 'Error al obtener usuarios: ' . $e->getMessage()];
+        }
+    }
+
+    public function desasignarUsuariosFormacion(int $idFormacion, array $idsUsuarios):array{
+        try {
+            $this->conectar();
+            $this->conexion->beginTransaction();
+
+            $stmt = $this->conexion->prepare("
+                DELETE FROM inscripciones 
+                WHERE id_formacion = ? AND id_usu = ?
+            ");
+
+            foreach ($idsUsuarios as $idUsuario) {
+                $stmt->execute([$idFormacion, $idUsuario]);
+            }
+
+            $this->conexion->commit();
+            return ['success' => true, 'message' => 'Usuarios desasignados correctamente.'];
+        } catch (PDOException $e) {
+            $this->conexion->rollBack();
+            return ['success' => false, 'message' => 'Error al desasignar usuarios: ' . $e->getMessage()];
+        }
+    }
 
 }
