@@ -51,24 +51,16 @@ export class InscripcionFormacionComponent implements OnInit {
     }
 
     private loadUsers(): void {
-        this.usuarioService.getUsersByParams({
-            name: "",
-            surname: "",
-            email: "",
-            phone: "",
-            role: "1",
-            new_educator: 0,
-            status: 1
-        }).subscribe({
-            next: (next) => {
-                this.users = next;
+        this.formacionService.getUsersByFormacion(this.formacionId).subscribe(response => {
+            console.log(response);
+            if (response.success) {
+                this.users = response.data.usuarios;
                 console.log(this.users);
-                this.cdr.detectChanges();
                 this.loadDataTable();
-            },
-            error: (error) => {
-                console.error('Error al obtener usuarios:', error);
-                this.cdr.detectChanges();
+            } else {
+                this.toasts.error('No se pudo obtener los usuarios de la formación', 'Asignar Usuarios', {
+                    positionClass: 'toast-bottom-right'
+                });
             }
         });
     }
@@ -88,7 +80,9 @@ export class InscripcionFormacionComponent implements OnInit {
           <td>${u.nombre_user} ${u.apellido_user}</td>
           <td>${u.correo_user}</td>
           <td>${u.telefono_user || '-'}</td>
-          <td>${u.nombre_rol}</td>
+          <td>
+            ${u.id_rol === 1 ? 'Educador' : (u.id_rol === 2 ? 'Administrador' : (u.id_rol === 3 ? 'Responsable de centro' : '-'))}
+          </td>
           <td>
             <button class="btn btn-sm btn-outline-primary btn-asignar" title="Asignar usuario">
               <i class="fa fa-user-plus"></i>

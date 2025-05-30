@@ -5,6 +5,7 @@ import {AddCentroPayload, FormacionResponse} from '../services/interfaces/formac
 import { ToastrService } from 'ngx-toastr';
 import {error} from "@angular/compiler-cli/src/transformers/util";
 import { environment } from "../../environments/environment.prod";
+import { localEnvironment } from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -71,6 +72,13 @@ export class FormacionService {
     const url = `${this.backendUrl}?controlador=cFormaciones&accion=desactivarFormacion`;
 
     return this.http.post<any>(url, { id });
+  }
+
+  public getUsersByFormacion(idFormacion: number): Observable<any> {
+    const url = `${this.backendUrl}?controlador=cFormaciones&accion=getUsersByFormacion`;
+    console.log(idFormacion);
+
+    return this.http.post<any>(url, {idFormacion});
   }
 
   public getFormacionAEditar(): Observable<any> {

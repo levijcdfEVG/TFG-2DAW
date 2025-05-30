@@ -249,18 +249,19 @@ class cFormaciones {
      *
      */
     public function getUsersByFormacion(){
-        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-            $this->methodNotAllowed(['GET']);
-            return;
-        }
+        // if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+        //     $this->methodNotAllowed(['GET']);
+        //     return;
+        // }
 
         try {
-            if (!isset($_GET['idFormacion']) || empty($_GET['idFormacion'])) {
+            $data = json_decode(file_get_contents("php://input"), true);
+            if (!isset($data['idFormacion']) || empty($data['idFormacion'])) {
                 $this->sendResponse(false, 'Falta el parámetro idFormacion', null, 400);
                 return;
             }
 
-            $idFormacion = (int)$_GET['idFormacion'];
+            $idFormacion = (int)$data['idFormacion'];
             $usuarios = $this->mFormacion->getUsuariosPorFormacion($idFormacion);
 
             $this->sendResponse(true, 'Usuarios obtenidos correctamente', $usuarios);
