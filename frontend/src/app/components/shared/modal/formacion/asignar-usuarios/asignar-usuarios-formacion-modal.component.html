@@ -1,0 +1,43 @@
+<!-- Modal Bootstrap -->
+<div class="modal fade" id="inscripcionFormacionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Asignar usuarios</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+
+                <input
+                        type="text"
+                        class="form-control mb-2"
+                        placeholder="Buscar usuario..."
+                        [(ngModel)]="filtro"
+                        (input)="filtrarUsuarios()"
+                />
+
+                <div style="max-height: 200px; overflow-y: auto;">
+                    <div *ngFor="let usuario of usuariosFiltrados">
+                        <div class="form-check">
+                            <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    [id]="'usuario' + usuario.id"
+                                    [checked]="isSeleccionado(usuario)"
+                                    (change)="toggleSeleccion(usuario)"
+                            />
+                            <label class="form-check-label" [for]="'usuario' + usuario.id">
+                                {{ usuario.nombre }}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button class="btn btn-primary" (click)="guardar()">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>

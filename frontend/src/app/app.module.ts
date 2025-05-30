@@ -41,7 +41,14 @@ import {NgSelectModule} from "@ng-select/ng-select";
 import {
   InscripcionFormacionComponent
 } from "./components/dashboard/info-formacion/inscripcion-formacion/inscripcion-formacion.component";
-import { AsignarUsuariosComponent } from './components/shared/modal/formacion/asignar-usuarios/asignar-usuarios.component';
+import { AsignarUsuariosFormacionModalComponent } from './components/shared/modal/formacion/asignar-usuarios/asignar-usuarios-formacion-modal.component';
+import {NgMultiSelectDropDownModule} from "ng-multiselect-dropdown";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatSelectModule} from "@angular/material/select";
+import {MatOptionModule} from "@angular/material/core";
+
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -54,36 +61,30 @@ import { AsignarUsuariosComponent } from './components/shared/modal/formacion/as
     FooterComponent,
     UserFileComponent,
     UserModalComponent,
-    FooterComponent,
     AltaCentroComponent,
     ModificarCentroComponent,
-    FooterComponent,
     GoogleSignInComponent,
     FormacionFormComponent,
     CrearFormacionModalComponent,
     EditarFormacionModalComponent,
     MenuComponent,
     InscripcionFormacionComponent,
-    AsignarUsuariosComponent
+    AsignarUsuariosFormacionModalComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     MatTableModule,
-    FormsModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot(),
-    CommonModule,
-    ReactiveFormsModule,
     FormsModule,
-    AppRoutingModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
     ReactiveFormsModule,
-    HttpClientModule,
-    AppRoutingModule,
-    ReactiveFormsModule,
-    HttpClientModule,
     NgSelectModule,
+    NgMultiSelectDropDownModule.forRoot()
   ],
   providers: [
     CookieService
