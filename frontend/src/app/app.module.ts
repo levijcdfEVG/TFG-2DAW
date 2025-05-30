@@ -41,6 +41,7 @@ import {NgSelectModule} from "@ng-select/ng-select";
 import {
   InscripcionFormacionComponent
 } from "./components/dashboard/info-formacion/inscripcion-formacion/inscripcion-formacion.component";
+import { AsignarUsuariosComponent } from './components/shared/modal/formacion/asignar-usuarios/asignar-usuarios.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -62,7 +63,8 @@ import {
     CrearFormacionModalComponent,
     EditarFormacionModalComponent,
     MenuComponent,
-    InscripcionFormacionComponent
+    InscripcionFormacionComponent,
+    AsignarUsuariosComponent
   ],
   imports: [
     BrowserModule,

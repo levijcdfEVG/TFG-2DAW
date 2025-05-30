@@ -255,13 +255,12 @@ class cFormaciones {
         // }
 
         try {
-            $data = json_decode(file_get_contents("php://input"), true);
-            if (!isset($data['idFormacion']) || empty($data['idFormacion'])) {
+            if (!isset($_GET['idFormacion']) || empty($_GET['idFormacion'])) {
                 $this->sendResponse(false, 'Falta el parámetro idFormacion', null, 400);
                 return;
             }
 
-            $idFormacion = (int)$data['idFormacion'];
+            $idFormacion = (int)$_GET['idFormacion'];
             $resultado = $this->mFormacion->getUsuariosPorFormacion($idFormacion);
 
             if (!$resultado['success']) {

@@ -75,10 +75,21 @@ export class FormacionService {
   }
 
   public getUsersByFormacion(idFormacion: number): Observable<any> {
-    const url = `${this.backendUrl}?controlador=cFormaciones&accion=getUsersByFormacion`;
+    const url = `${this.backendUrl}?controlador=cFormaciones&accion=getUsersByFormacion&idFormacion=${idFormacion}`;
+    return this.http.get<any>(url);
+  }
+
+
+  public unasignUsersByFormacion(idFormacion: number, idsUsuarios: number[]): Observable<any> {
+    const url = `${this.backendUrl}?controlador=cFormaciones&accion=unasignUsersByFormacion`;
     console.log(idFormacion);
 
-    return this.http.post<any>(url, {idFormacion});
+    return this.http.post<any>(url, {idFormacion, idsUsuarios});
+  }
+
+  public asignUserFormacion(idFormacion: number, idsUsuarios: number[]): Observable<any> {
+    const url = `${this.backendUrl}?controlador=cFormaciones&accion=asignUserFormacion`;
+    return this.http.post<any>(url, {idFormacion, idsUsuarios});
   }
 
   public getFormacionAEditar(): Observable<any> {

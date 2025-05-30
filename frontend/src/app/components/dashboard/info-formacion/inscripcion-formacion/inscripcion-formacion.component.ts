@@ -135,6 +135,31 @@ export class InscripcionFormacionComponent implements OnInit {
 
 
     public borrarUsuarios() {
-        console.log(this.usuariosABorrar);
+        Swal2.fire({
+            title: 'Confirmar desasignación',
+            text: 'Estas seguro que deseas desasignar esto(s) usuario(s) de la formación?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, desasignar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.formacionService.unasignUsersByFormacion(this.formacionId, this.usuariosABorrar).subscribe(response => {
+                    if (response.success) {
+                        this.toasts.success('Usuarios desasignados correctamente', 'Desasignar Usuarios', {
+                            positionClass: 'toast-bottom-right'
+                        });
+                        this.loadUsers();
+                    } else {
+                        this.toasts.error('Error al desasignar los usuarios', 'Desasignar Usuarios', {
+                            positionClass: 'toast-bottom-right'
+                        });
+                    }
+                });
+            }
+        });
+
     }
 }
