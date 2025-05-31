@@ -180,4 +180,23 @@
             return ['success' => true, 'message' => 'Usuario actualizado exitosamente'];
         }
 
+        /**
+         * Obtiene los datos de un usuario por su ID.
+         *
+         * Este método conecta a la base de datos y recupera el nombre de usuario y el correo electrónico
+         * del usuario correspondiente al ID proporcionado.
+         *
+         * @param int $idUsuario El ID del usuario a buscar.
+         * @return array|null Un array asociativo con las claves 'nombre_user' y 'correo_user' si se encuentra el usuario, o null si no existe.
+         *
+         * @author Levi Josué Candeias de Figueiredo
+         */
+        public function obtenerUsuarioPorId(int $idUsuario): ?array {
+            $this->conectar();
+            $stmt = $this->conexion->prepare("SELECT nombre_user, correo_user FROM usuario WHERE id = ?");
+            $stmt->execute([$idUsuario]);
+            return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+        }
+
+
     }

@@ -56,7 +56,7 @@ class CRol {
             }
 
             $response = $this->mRol->updateRole($data);
-            echo json_encode($response)
+            echo json_encode($response);
         } catch (Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }

@@ -1,5 +1,6 @@
 <?php
 
+require_once MODELS . 'mUsuario.php';
 require_once MODELS.'mFormacion.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once 'config/config.php';
@@ -19,12 +20,21 @@ class cFormaciones {
     private $mFormacion;
 
     /**
+     * Instancia del modelo MUsuarios.
+     *
+     * @var mUsuario
+     * @author Levi Josué Candeias de Figueiredo <levijosuecandeiasdefigueiredo.guadalupe@alumnado.fundacionloyola.net>
+     */
+    private $mUsuarios;
+
+    /**
      * Constructor que inicializa el modelo.
      *
      * @author Levi Josué Candeias de Figueiredo <levijosuecandeiasdefigueiredo.guadalupe@alumnado.fundacionloyola.net>
      */
     public function __construct() {
         $this->mFormacion = new MFormacion();
+        $this->mUsuarios = new mUsuario();
     }
 
     /**
@@ -206,12 +216,7 @@ class cFormaciones {
      *   "idsUsuarios": [2, 3, 4]
      * }
      */
-    public function asignUserFormacion(){
-        // if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        // $this->methodNotAllowed(['POST']);
-        // return;
-        // }
-
+    public function asignUserFormacion() {
         try {
             $input = json_decode(file_get_contents('php://input'), true);
 
@@ -226,6 +231,42 @@ class cFormaciones {
             $response = $this->mFormacion->asignarUsuarioAFormacion($idFormacion, $idsUsuarios);
 
             if ($response['success']) {
+                // Enviar correos usando Google Apps Script
+                foreach ($idsUsuarios as $idUsuario) {
+                    $usuario = $this->mUsuarios->obtenerUsuarioPorId($idUsuario);
+                    if ($usuario && isset($usuario['correo_user'])) {
+                        $email = $usuario['correo_user'];
+                        $nombre = $usuario['nombre_user'] ?? 'Usuario';
+
+                        $asunto = "Asignación a formación";
+                        $mensaje = "Hola {$nombre},\n\nHas sido asignado a la formación con ID {$idFormacion}.\n\n¡Gracias!";
+
+                        $data = [
+                            'to' => $email,
+                            'subject' => $asunto,
+                            'body' => $mensaje
+                        ];
+
+                        $options = [
+                            'http' => [
+                                'header'  => "Content-type: application/json",
+                                'method'  => 'POST',
+                                'content' => json_encode($data)
+                            ]
+                        ];
+
+                        $context = stream_context_create($options);
+                        $url = GOOGLEMAILER;
+                        $result = file_get_contents($url, false, $context);
+
+                        if ($result === FALSE) {
+                            error_log("No se pudo enviar email al usuario ID {$idUsuario} ({$email})");
+                        }
+                    } else {
+                        error_log("No se encontró email para usuario ID {$idUsuario}");
+                    }
+                }
+
                 $this->sendResponse(true, $response['message'] ?? 'Usuarios asignados correctamente.');
             } else {
                 $this->sendResponse(false, $response['message'] ?? 'No se pudo asignar a los usuarios.', null, 500);
@@ -235,6 +276,7 @@ class cFormaciones {
             $this->sendResponse(false, $e->getMessage(), null, 500);
         }
     }
+
 
     /**
      * Obtiene los usuarios inscritos en una formación específica.

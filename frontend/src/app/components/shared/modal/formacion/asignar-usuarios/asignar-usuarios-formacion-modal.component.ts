@@ -42,9 +42,7 @@ export class AsignarUsuariosFormacionModalComponent implements OnInit {
   public filtrarUsuarios() {
     const term = this.filtro.toLowerCase();
     this.usuariosFiltrados = this.usuarios.filter(u =>
-        u.nombre_user.toLowerCase().includes(term)
-    );
-    this.usuariosFiltrados = this.usuarios.filter(u =>
+        u.nombre_user.toLowerCase().includes(term) ||
         u.apellido_user.toLowerCase().includes(term)
     );
   }
@@ -76,12 +74,13 @@ export class AsignarUsuariosFormacionModalComponent implements OnInit {
             response => {
               if (response.success) {
                 this.updateTable.emit();
+                this.usuariosSeleccionados = [];
+                this.filtro = '';
                 this.loadUsers();
                 this.cdr.detectChanges();
                 this.toastr.success('Los cambios se guardaron correctamente', 'Guardado', {
                   positionClass: 'toast-bottom-right'
                 });
-                this.usuariosFiltrados = [];
               } else {
                 this.toastr.error('Error al guardar los cambios', 'Error');
               }
