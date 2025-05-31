@@ -120,6 +120,82 @@
             }
         }
 
+        public function getUsersByCentro($params): array {
+            try {
+                $this->conectar();
+
+                $sql = "SELECT u.*, r.nombre_rol
+                        FROM usuario u
+                        LEFT JOIN roles r ON u.id_rol = r.id
+                        WHERE u.id_centro = :id_centro";
+
+                $values = [':id_centro' => $params['id_centro']];
+
+                $conditions = [];
+                
+                
+                if (!empty($params['nombre_user'])) {
+                    $conditions[] = "u.nombre_user LIKE :nombre_user";
+                    $values[':nombre_user'] = "%" . $params['nombre_user'] . "%";
+                }
+
+                if (!empty($params['apellido_user'])) {
+                    $conditions[] = "u.apellido_user LIKE :apellido_user";
+                    $values[':apellido_user'] = "%" . $params['apellido_user'] . "%";
+                }
+
+                if (!empty($params['correo_user'])) {
+                    $conditions[] = "u.correo_user LIKE :correo_user";
+                    $values[':correo_user'] = "%" . $params['correo_user'] . "%";
+                }
+
+                if (!empty($params['telefono_user'])) {
+                    $conditions[] = "u.telefono_user LIKE :telefono_user";
+                    $values[':telefono_user'] = "%" . $params['telefono_user'] . "%";
+                }
+
+                if (isset($params['id_rol']) && $params['id_rol'] !== '0' && $params['id_rol'] !== 0) {
+                    $conditions[] = "u.id_rol = :id_rol";
+                    $values[':id_rol'] = $params['id_rol'];
+                }
+
+                if (isset($params['nuevo_educador']) && $params['nuevo_educador'] !== '0' && $params['nuevo_educador'] !== 0) {
+                    $conditions[] = "u.nuevo_educador = :nuevo_educador";
+                    $values[':nuevo_educador'] = $params['nuevo_educador'];
+                }
+
+                if (isset($params['estado']) && $params['estado'] !== '2' && $params['estado'] !== 2) {
+                    $conditions[] = "u.estado = :estado";
+                    $values[':estado'] = $params['estado'];
+                }
+
+                if (!empty($conditions)) {
+                    $sql .= " AND " . implode(" AND ", $conditions);
+                }
+
+                $sql .= " ORDER BY u.nombre_user ASC";
+
+                $stmt = $this->conexion->prepare($sql);
+                $stmt->execute($values);
+
+                $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                return [
+                    'success' => true,
+                    'message' => count($results) . ' usuario(s) encontrado(s)',
+                    'data' => $results
+                ];
+            } catch (PDOException $e) {
+                error_log('Database Error: ' . $e->getMessage());
+                return [
+                    'success' => false,
+                    'message' => 'Error al ejecutar la consulta: ' . $e->getMessage(),
+                    'data' => [] // ← Evita errores en el frontend
+                ];
+            }
+}
+
+
         /**
          * Obtiene un usuario específico por su ID.
          *
@@ -258,30 +334,5 @@
             return ['success' => true, 'message' => 'Usuario actualizado exitosamente'];
         }
 
-        public function getUsersByCentro($idCentro) {
-            $this->conectar();
-
-
-            try {
-                $stmt = $this->conexion->prepare("SELECT * FROM usuario WHERE id_centro = :idCentro");
-                $stmt->bindParam(':idCentro', $idCentro, PDO::PARAM_INT);
-                $stmt->execute();
-
-                $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-                return [
-                    'success' => true,
-                    'data' => $usuarios
-                ];
-            } catch (PDOException $e) {
-                return [
-                    'success' => false,
-                    'message' => 'Error al obtener usuarios por centro: ' . $e->getMessage()
-                ];
-            }
-        }
-
-
-        
     }
 ?>

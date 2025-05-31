@@ -73,13 +73,22 @@ export class InfoEducadorComponent implements OnInit  {
    */
   searchByFilter() {
     const params = this.filterForm.value;
+
     const table: any = $('#usersTable');
+
     if ($.fn.dataTable.isDataTable(table)) {
       table.DataTable().destroy();
     }
 
-    this.loadUsers(params);
+    if (this.idRol === 3) {
+      // Añadimos idCentro a params para la búsqueda por centro
+      params.idCentro = this.idCentro;
+      this.loadUsersByCentro(params);
+    } else {
+      this.loadUsers(params);
+    }
   }
+  
 
   /**
    * Cambia el estado de un usuario (activo/inactivo)
@@ -152,6 +161,22 @@ export class InfoEducadorComponent implements OnInit  {
       }
     });
   }
+
+  loadUsersByCentro(params: any) {
+  this.userService.getUsersByCentro(params)
+    .pipe(takeUntil(this.unsubscribe$))
+    .subscribe({
+      next: (response: any) => {
+        this.dataUsers = response;
+        this.hasSearched = true;
+        this.cdr.detectChanges();
+        this.loadDataTable();
+      },
+      error: (error) => {
+        console.error('Error al obtener usuarios por centro:', error);
+      }
+    });
+}
 
   /**
    * Carga los roles desde el servicio y los almacena en roleData

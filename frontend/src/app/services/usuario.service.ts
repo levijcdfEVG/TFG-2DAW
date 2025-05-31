@@ -29,6 +29,31 @@ export class UsuarioService {
       );
   }
 
+   //Obtener lista de usuarios según el centro
+  getUsersByCentro(params: any): Observable<any> {
+    // Convertimos el objeto params a HttpParams para la consulta GET
+    const httpParams = new HttpParams({ fromObject: params });
+    console.log(this.userPath + 'getUsersByCentro', { params: httpParams });
+
+    return this.http.get<any>(this.userPath + 'getUsersByCentro', { params: httpParams })
+    .pipe(
+      map(res => {
+        // El backend devuelve un objeto { success, message, data }
+        if (res && res.success) {
+          return res.data;  // Aquí devuelves directamente el array de usuarios
+        } else {
+          // Aquí puedes lanzar error para que el subscribe lo capture
+         throw new Error(res?.message || 'Error al obtener usuarios por centro');
+        }
+      }),
+      catchError((err) => {
+        // 👇 Para capturar errores inesperados del servidor (status 500, etc.)
+        console.error('Error en servicio getUsersByCentro:', err);
+        return throwError(() => err);
+      })
+    );
+  }
+
   // Obtener un usuario por su id
   getUserById(userId: number): Observable<User> {
     const params = new HttpParams().set('id', userId.toString());
@@ -65,16 +90,7 @@ export class UsuarioService {
       .pipe(catchError(this.handleError));
   }
 
-  //Obtener lista de usuarios según el centro
-  getUsersByCentro(idCentro: number): Observable<any> {
-  const params = new HttpParams()
-    .set('idCentro', idCentro.toString());
-
-  return this.http.get<any>(this.userPath + 'getUsersByCentro', { params })
-    .pipe(catchError(this.handleError));
-}
-
-  // Handle HTTP errors
+   // Handle HTTP errors
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'Ha ocurrido un error';
     

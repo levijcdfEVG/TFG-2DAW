@@ -93,6 +93,49 @@
             }
         }
 
+       public function getUsersByCentro() {
+            $modelo = new mUsuario();
+
+            try {
+                // Validar y sanitizar idCentro (es lo único que realmente necesitamos desde el frontend)
+                $idCentro = filter_var($_GET['idCentro'] ?? null, FILTER_VALIDATE_INT);
+
+                // Validación de seguridad: debe existir idCentro
+                if (!$idCentro) {
+                    return $this->sendResponse([
+                        'success' => false,
+                        'message' => 'idCentro no proporcionado o inválido'
+                    ]);
+                }
+
+                // Aquí podrías validar el rol usando sesión, JWT, etc. Si lo recibes como parámetro, úsalo solo si es seguro.
+                // Por ahora asumimos que si se llama este endpoint, es porque ya se comprobó que el usuario tiene idRol === 3
+
+                // Recolectar los parámetros del filtro
+                $params = [
+                    'id_centro' => $idCentro,
+                    'nombre_user' => filter_var($_GET['name'] ?? '', FILTER_SANITIZE_STRING),
+                    'apellido_user' => filter_var($_GET['surname'] ?? '', FILTER_SANITIZE_STRING),
+                    'correo_user' => filter_var($_GET['email'] ?? '', FILTER_SANITIZE_EMAIL),
+                    'telefono_user' => filter_var($_GET['phone'] ?? '', FILTER_SANITIZE_STRING),
+                    'id_rol' => filter_var($_GET['role'] ?? '', FILTER_SANITIZE_STRING),
+                    'nuevo_educador' => filter_var($_GET['new_educator'] ?? 0, FILTER_VALIDATE_INT),
+                    'estado' => filter_var($_GET['status'] ?? 2, FILTER_VALIDATE_INT)
+                ];
+
+                $response = $modelo->getUsersByCentro($params);
+                // El modelo debe devolver ya el array con: success, message y data
+                return $this->sendResponse($response);
+
+            } catch (Exception $e) {
+                return $this->sendResponse([
+                    'success' => false,
+                    'message' => 'Error del servidor: ' . $e->getMessage()
+                ]);
+            }
+        }
+
+
         /**
          * Crea un nuevo usuario en el sistema.
          *
@@ -255,34 +298,5 @@
             echo json_encode($data);
             exit;
         }
-    
-
-    public function getUsersByCentro() {
-        $modelo = new mUsuario();
-
-        try {
-                       
-            $idCentro = $_GET['idCentro'] ?? null;
-            $idRol = $_GET['idRol'] ?? null;
-
-            if (!$idRol) {
-            return $this->sendResponse(["success" => false, "error" => "idRol no proporcionado"]);
-            }
-
-            // Solo permitir filtrar por centro si es Responsable de Centro (rol 3)
-            if ($idRol == 3 && $idCentro) {
-                $response = $modelo->getUsersByCentro($idCentro);
-                return $this->sendResponse($response);
-            } else {
-                return $this->sendResponse(["success" => false, "error" => "No tienes permiso para ver usuarios"]);
-            }
-
-        return $this->sendResponse(["success" => true, "data" => $usuarios]);
-
-        } catch (Exception $e) {
-            return ['success' => false, 'message' => $e->getMessage()];
-        }
-
-    }
 }
 ?>
