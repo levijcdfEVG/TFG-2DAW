@@ -532,4 +532,26 @@ class MFormacion {
         }
     }
 
+
+    public function getFormacionById(int $idFormacion) {
+        try {
+            $this->conectar();
+
+            $stmt = $this->conexion->prepare("SELECT justificacion FROM formacion WHERE id = ?");
+            $stmt->execute([$idFormacion]);
+            $nombre = $stmt->fetchColumn();
+
+            if (!$nombre) {
+                return ['success' => false, 'message' => 'No se encontró la formación.'];
+            }
+
+            return [
+                'success' => true,
+                'nombre' => $nombre
+            ];
+        } catch (PDOException $e) {
+            return ['success' => false, 'message' => 'Error al obtener la formación: ' . $e->getMessage()];
+        }
+    }
+
 }

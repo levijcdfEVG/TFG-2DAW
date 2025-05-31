@@ -216,7 +216,7 @@ class cFormaciones {
      *   "idsUsuarios": [2, 3, 4]
      * }
      */
-    public function asignUserFormacion() {
+   public function asignUserFormacion() {
         try {
             $input = json_decode(file_get_contents('php://input'), true);
 
@@ -231,6 +231,10 @@ class cFormaciones {
             $response = $this->mFormacion->asignarUsuarioAFormacion($idFormacion, $idsUsuarios);
 
             if ($response['success']) {
+                // Obtener nombre de la formación
+                $nombreFormacionResponse = $this->mFormacion->getFormacionById($idFormacion);
+                $nombreFormacion = $nombreFormacionResponse['success'] ? $nombreFormacionResponse['nombre'] : 'una formación';
+
                 // Enviar correos usando Google Apps Script
                 foreach ($idsUsuarios as $idUsuario) {
                     $usuario = $this->mUsuarios->obtenerUsuarioPorId($idUsuario);
@@ -239,26 +243,28 @@ class cFormaciones {
                         $nombre = $usuario['nombre_user'] ?? 'Usuario';
 
                         $asunto = "Asignación a formación";
-                        $mensaje = "Hola {$nombre},\n\nHas sido asignado a la formación con ID {$idFormacion}.\n\n¡Gracias!";
-
                         $data = [
                             'to' => $email,
                             'subject' => $asunto,
-                            'body' => $mensaje
+                            'nombre' => $nombre,
+                            'formacion' => $nombreFormacion,
+                            'tipo' => 'alta'
                         ];
 
-                        $options = [
+                       $content = json_encode($data, JSON_UNESCAPED_UNICODE);
+                       $options = [
                             'http' => [
-                                'header'  => "Content-type: application/json",
                                 'method'  => 'POST',
-                                'content' => json_encode($data)
+                                'header'  => "Content-type: application/json\r\n". 
+                                            "Content-Length: " . strlen($content) . "\r\n",
+                                'content' => $content
                             ]
                         ];
 
                         $context = stream_context_create($options);
                         $url = GOOGLEMAILER;
                         $result = file_get_contents($url, false, $context);
-
+                        
                         if ($result === FALSE) {
                             error_log("No se pudo enviar email al usuario ID {$idUsuario} ({$email})");
                         }
@@ -276,6 +282,7 @@ class cFormaciones {
             $this->sendResponse(false, $e->getMessage(), null, 500);
         }
     }
+
 
 
     /**
@@ -353,6 +360,43 @@ class cFormaciones {
             $response = $this->mFormacion->desasignarUsuariosFormacion($idFormacion, $idsUsuarios);
 
             if ($response['success']) {
+                $nombreFormacionResponse = $this->mFormacion->getFormacionById($idFormacion);
+                $nombreFormacion = $nombreFormacionResponse['success'] ? $nombreFormacionResponse['nombre'] : 'una formación';
+
+                foreach ($idsUsuarios as $idUsuario) {
+                    $usuario = $this->mUsuarios->obtenerUsuarioPorId($idUsuario);
+                    if ($usuario && isset($usuario['correo_user'])) {
+                        $email = $usuario['correo_user'];
+                        $nombre = $usuario['nombre_user'] ?? 'Usuario';
+
+                        $asunto = "Asignación a formación";
+                        $data = [
+                            'to' => $email,
+                            'subject' => $asunto,
+                            'nombre' => $nombre,
+                            'formacion' => $nombreFormacion,
+                            'tipo' => 'baja'
+                        ];
+
+                        $content = json_encode($data, JSON_UNESCAPED_UNICODE);
+                        $options = [
+                            'http' => [
+                                'method'  => 'POST',
+                                'header'  => "Content-type: application/json\r\n" . 
+                                            "Content-Length: " . strlen($content) . "\r\n",
+                                'content' => $content
+                            ]
+                        ];
+
+                        $context = stream_context_create($options);
+                        $result = file_get_contents(GOOGLEMAILER, false, $context);
+
+                        if ($result === FALSE) {
+                            error_log("No se pudo enviar email al usuario ID {$idUsuario} ({$email})");
+                        }
+                    }
+                }
+                // Respuesta ÚNICA tras finalizar el bucle
                 $this->sendResponse(true, $response['message'] ?? 'Usuarios desasignados correctamente.');
             } else {
                 $this->sendResponse(false, $response['message'] ?? 'No se pudo desasignar a los usuarios.', null, 500);
@@ -361,6 +405,7 @@ class cFormaciones {
             $this->sendResponse(false, $e->getMessage(), null, 500);
         }
     }
+
 
     /**
      * Envía la respuesta JSON al cliente con cabeceras HTTP y código de estado.
