@@ -65,6 +65,15 @@ export class UsuarioService {
       .pipe(catchError(this.handleError));
   }
 
+  //Obtener lista de usuarios según el centro
+  getUsersByCentro(idCentro: number): Observable<any> {
+  const params = new HttpParams()
+    .set('idCentro', idCentro.toString());
+
+  return this.http.get<any>(this.userPath + 'getUsersByCentro', { params })
+    .pipe(catchError(this.handleError));
+}
+
   // Handle HTTP errors
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'Ha ocurrido un error';

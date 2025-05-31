@@ -13,6 +13,7 @@ export class MenuComponent implements OnInit {
   userInfo: any = {};
   userEmail: string = '';
   datosUsuario: any = {};
+  userPicture: string = '';
 
   idRol: number  = 0;
   idCentro: number  = 0;
@@ -25,7 +26,9 @@ export class MenuComponent implements OnInit {
   if (tokenPayload) {
     this.userInfo = tokenPayload;
     this.userEmail = this.userInfo.email || '';
+    this.userPicture = this.userInfo.picture || '';
     console.log('email:', this.userEmail);
+    console.log('picture:', this.userPicture);
 
     // Llamamos al servicio para obtener más datos del usuario desde MySQL
     this.menuService.getUserInfo(this.userEmail).subscribe({
@@ -52,6 +55,7 @@ export class MenuComponent implements OnInit {
 
         console.log('Datos del usuario:', this.datosUsuario);
         console.log('idRol:', this.idRol);
+        console.log('Rol:', this.rol);
         console.log('idCentro:', this.idCentro);
       },
       error: (error) => {
@@ -66,7 +70,20 @@ export class MenuComponent implements OnInit {
 
   cambiarRol(nuevoRol: 'admin' | 'responsable' | 'educador'): void {
     this.rol = nuevoRol;
+    switch (nuevoRol) {
+      case 'educador':
+        this.idRol = 1;
+        this.sharedService.setIdRol(this.idRol);
+        break;
+      case 'admin':
+        this.idRol = 2;
+        this.sharedService.setIdRol(this.idRol); 
+        break;
+      case 'responsable':
+        this.idRol = 3;
+        this.sharedService.setIdRol(this.idRol); 
+        break;
+    }
+    console.log('idRol cambiado a:', this.sharedService.getIdRol());
   }
-
-  
 }

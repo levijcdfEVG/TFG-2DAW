@@ -6,6 +6,7 @@ import { UsuarioService } from "../../../services/usuario.service";
 import { RoleService } from './../../../services/role.service';
 import { Role } from 'src/app/interfaces/role.interface';
 import * as $ from "jquery";
+import { SharedService } from 'src/app/services/shared.service';
 
 @Component({
   selector: 'app-info-educador',
@@ -16,6 +17,9 @@ export class InfoEducadorComponent implements OnInit  {
 
   dataUsers: any[] = [];
   roleData: Role[] = [];
+
+  idRol: number  = this.sharedService.getIdRol() || 0;
+  idCentro: number  = this.sharedService.getIdCentro() || 0;
   
   filterForm!: FormGroup;
 
@@ -32,16 +36,22 @@ export class InfoEducadorComponent implements OnInit  {
     new_educator: 0,
     status: 1
   } as const;
+  
 
   constructor(
       private userService: UsuarioService,
       private roleService: RoleService,
       private fb: FormBuilder,
       private router: Router,
-      private cdr: ChangeDetectorRef
+      private cdr: ChangeDetectorRef,
+      private sharedService: SharedService
   ) {}
 
   ngOnInit(): void {
+
+    console.log('ID Rol:', this.idRol);
+    console.log('ID Centro:', this.idCentro);
+    
     this.createFilterForm();
 
     this.loadRoles();

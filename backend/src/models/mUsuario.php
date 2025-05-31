@@ -257,5 +257,31 @@
 
             return ['success' => true, 'message' => 'Usuario actualizado exitosamente'];
         }
+
+        public function getUsersByCentro($idCentro) {
+            $this->conectar();
+
+
+            try {
+                $stmt = $this->conexion->prepare("SELECT * FROM usuario WHERE id_centro = :idCentro");
+                $stmt->bindParam(':idCentro', $idCentro, PDO::PARAM_INT);
+                $stmt->execute();
+
+                $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                return [
+                    'success' => true,
+                    'data' => $usuarios
+                ];
+            } catch (PDOException $e) {
+                return [
+                    'success' => false,
+                    'message' => 'Error al obtener usuarios por centro: ' . $e->getMessage()
+                ];
+            }
+        }
+
+
+        
     }
 ?>

@@ -255,5 +255,34 @@
             echo json_encode($data);
             exit;
         }
+    
+
+    public function getUsersByCentro() {
+        $modelo = new mUsuario();
+
+        try {
+                       
+            $idCentro = $_GET['idCentro'] ?? null;
+            $idRol = $_GET['idRol'] ?? null;
+
+            if (!$idRol) {
+            return $this->sendResponse(["success" => false, "error" => "idRol no proporcionado"]);
+            }
+
+            // Solo permitir filtrar por centro si es Responsable de Centro (rol 3)
+            if ($idRol == 3 && $idCentro) {
+                $response = $modelo->getUsersByCentro($idCentro);
+                return $this->sendResponse($response);
+            } else {
+                return $this->sendResponse(["success" => false, "error" => "No tienes permiso para ver usuarios"]);
+            }
+
+        return $this->sendResponse(["success" => true, "data" => $usuarios]);
+
+        } catch (Exception $e) {
+            return ['success' => false, 'message' => $e->getMessage()];
+        }
+
     }
+}
 ?>
