@@ -96,7 +96,6 @@ export class UserModalComponent implements OnInit {
     this.roleService.getAllRoles().pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: (response: Role[]) => {
         this.roleData = response;
-        // console.log(this.roleData);
       },
       error: (error: any) => {
         console.error('Error al obtener roles:', error);

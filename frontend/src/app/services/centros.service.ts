@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 import { CentroModificado } from '../interfaces/centroModificado.model';
+import {environment} from "../../environments/environment.prod";
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ export class CentrosService {
 
   constructor(private http: HttpClient) {}
 
-  urlBase = 'http://localhost:8000/index.php?controlador=cCentros&accion=';
+  urlBase = environment.apiUrl+'?controlador=cCentros&accion=';
 
   // Método para obtener la lista de centros
   getCentros(): Observable<any> {

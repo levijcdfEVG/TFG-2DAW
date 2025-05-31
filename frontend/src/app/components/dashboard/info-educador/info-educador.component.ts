@@ -78,7 +78,7 @@ export class InfoEducadorComponent implements OnInit  {
       email: [''],
       phone: [''],
       role: [0],
-      new_educator: [0],
+      new_educator: [2],
       status: [1],
     });
   }
@@ -90,7 +90,7 @@ export class InfoEducadorComponent implements OnInit  {
       email: '',
       phone: '',
       role: 0,
-      new_educator: 0,
+      new_educator: 2,
       status: 1,
     });
   }
@@ -102,7 +102,7 @@ export class InfoEducadorComponent implements OnInit  {
       email: '',
       phone: '',
       role: 0,
-      new_educator: 0,
+      new_educator: 2,
       status: 1,
     });
   }
@@ -114,17 +114,20 @@ export class InfoEducadorComponent implements OnInit  {
       $('#usersTable').DataTable({
         data: this.dataUsers,
         autoWidth: true,
-        pageLength: 5,
         searching: false,
         ordering: false,
+        pagingType: 'simple_numbers',
+        pageLength: 5,
         lengthChange: false,
         language: {
           lengthMenu: "Mostrar _MENU_ entradas",
           info: "Mostrando _START_ a _END_ de _TOTAL_ entradas",
-          infoEmpty: "Mostrando 0 a 0 de 0 entradas",
+          infoEmpty: 'Mostrando 0 a 0 de 0 entradas',
           paginate: {
+            first: '',
             previous: " <i class='fas fa-chevron-left'></i> Anterior",
-            next: "Siguiente <i class='fas fa-chevron-right'></i>"
+            next: "Siguiente <i class='fas fa-chevron-right'></i>",
+            last: '',
           }
         },
         columns: [{

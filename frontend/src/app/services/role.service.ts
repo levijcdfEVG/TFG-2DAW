@@ -3,13 +3,14 @@ import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {Observable, throwError} from "rxjs";
 import { Role } from '../interfaces/role.interface';
 import {map, catchError} from "rxjs/operators";
+import {environment} from "../../environments/environment.prod";
 
 @Injectable({
   providedIn: 'root'
 })
 export class RoleService {
 
-  private rolePath = 'http://localhost:8000/index.php?controlador=cRol&accion=';
+  private rolePath = environment.apiUrl+'?controlador=cRol&accion=';
 
   constructor(private http: HttpClient) { }
 
@@ -31,8 +32,6 @@ export class RoleService {
       // Server-side error
       errorMessage = `Código de error: ${error.status}\nMensaje: ${error.message}`;
     }
-
-    console.error(errorMessage);
     return throwError(() => errorMessage);
   }
 }

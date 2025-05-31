@@ -4,12 +4,13 @@ import {BehaviorSubject, Observable, tap} from 'rxjs';
 import {AddCentroPayload, FormacionResponse} from '../services/interfaces/formacionesResponse';
 import { ToastrService } from 'ngx-toastr';
 import {error} from "@angular/compiler-cli/src/transformers/util";
+import {environment} from "../../environments/environment.prod";
 
 @Injectable({
   providedIn: 'root'
 })
 export class FormacionService {
-  private backendUrl = 'http://localhost:8000/index.php';
+  private backendUrl = environment.apiUrl;
   private formacionAEditar = new BehaviorSubject<any>(null)
 
   constructor(private http: HttpClient,

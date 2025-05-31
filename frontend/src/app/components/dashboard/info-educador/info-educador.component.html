@@ -43,7 +43,7 @@
                                        type="radio"
                                        id="newEducatorAll"
                                        formControlName="new_educator"
-                                       [value]="0"
+                                       [value]="2"
                                 >
                                 <label class="form-check-label" for="newEducatorAll">Todos</label>
                             </div>
@@ -52,7 +52,7 @@
                                        type="radio"
                                        id="newEducatorYes"
                                        formControlName="new_educator"
-                                       [value]="true">
+                                       [value]="1">
                                 <label class="form-check-label" for="newEducatorYes">Sí</label>
                             </div>
                             <div class="form-check form-check-inline">
@@ -60,7 +60,7 @@
                                        type="radio"
                                        id="newEducatorNo"
                                        formControlName="new_educator"
-                                       [value]="false">
+                                       [value]="0">
                                 <label class="form-check-label" for="newEducatorNo">No</label>
                             </div>
                         </div>
@@ -130,8 +130,8 @@
                 </div>
                 <div class="row">
                     <div class="col-12 text-end">
-                        <button type="submit" class="btn btn-theme me-2">Filtrar</button>
-                        <button type="button" class="btn btn-secondary" (click)="resetFilter()">Limpiar</button>
+                        <button type="submit" class="btn btn-outline-primary me-2">Filtrar</button>
+                        <button type="button" class="btn btn-outline-danger" (click)="resetFilter()">Limpiar</button>
                     </div>
                 </div>
             </form>
@@ -142,8 +142,8 @@
     <!-- Users Table -->
     <div class="mx-4">
         <div *ngIf="hasSearched" class="card-body">
-            <div class="table-responsive" *ngIf="dataUsers && dataUsers.length > 0">
-                <table id="usersTable" class="w-100 table table-striped table-hover row-border mb-0">
+            <div *ngIf="dataUsers && dataUsers.length > 0">
+                <table id="usersTable" class="table table-striped table-hover mb-0">
                     <thead class="table-primary">
                     <tr>
                         <th scope="col" class="py-3 ps-4">Nombre</th>

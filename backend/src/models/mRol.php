@@ -12,7 +12,7 @@ class MRol {
         try {
             $this->conectar();
 
-            $sql = "SELECT * FROM roles ORDER BY nombre_rol ASC";
+            $sql = "SELECT * FROM roles;";
 
             $stmt = $this->conexion->prepare($sql);
             $stmt->execute();

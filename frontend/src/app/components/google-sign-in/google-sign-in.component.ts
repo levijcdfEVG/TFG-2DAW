@@ -2,11 +2,10 @@ import {Component, NgZone, OnInit} from '@angular/core';
 import {jwtDecode} from "jwt-decode";
 import {AuthService} from "../../services/auth.service";
 import {Router} from "@angular/router";
-import {googleID} from "../../config/config";
-import {FormBuilder, FormGroup} from "@angular/forms";
 import Swal2 from "sweetalert2";
 import {CookieService} from "ngx-cookie-service";
 import {ToastrService} from "ngx-toastr";
+import {environment} from "../../../environments/environment.prod";
 
 declare const google: any;
 
@@ -39,7 +38,7 @@ export class GoogleSignInComponent implements OnInit {
     const token = this.authService.getToken();
     if (token && !this.authService.isTokenExpired(token)) {
       this.authService.setAuthState(true);
-      this.router.navigate(['/info-centros']);
+      this.router.navigate(['/info-educadores']);
       return;
     }
     // Mostrar botón de login si no hay token válido
@@ -64,7 +63,7 @@ export class GoogleSignInComponent implements OnInit {
    */
   initializeGoogleSignIn() {
     google.accounts.id.initialize({
-      client_id: googleID,
+      client_id: environment.googleId,
       callback: (response: any) => this.handleCredentialResponse(response)
     });
 

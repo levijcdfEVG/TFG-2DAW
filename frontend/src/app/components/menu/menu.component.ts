@@ -25,7 +25,7 @@ export class MenuComponent implements OnInit {
   if (tokenPayload) {
     this.userInfo = tokenPayload;
     this.userEmail = this.userInfo.email || '';
-    console.log('email:', this.userEmail);
+    // console.log('email:', this.userEmail);
 
     // Llamamos al servicio para obtener más datos del usuario desde MySQL
     this.menuService.getUserInfo(this.userEmail).subscribe({
@@ -50,9 +50,9 @@ export class MenuComponent implements OnInit {
     }
 
 
-        console.log('Datos del usuario:', this.datosUsuario);
-        console.log('idRol:', this.idRol);
-        console.log('idCentro:', this.idCentro);
+        // console.log('Datos del usuario:', this.datosUsuario);
+        // console.log('idRol:', this.idRol);
+        // console.log('idCentro:', this.idCentro);
       },
       error: (error) => {
         console.error('Error al obtener datos del usuario:', error);

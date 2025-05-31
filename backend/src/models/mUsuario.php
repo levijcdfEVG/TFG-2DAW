@@ -56,7 +56,7 @@
                     $values[':id_rol'] = $params['id_rol'];
                 }
 
-                if (isset($params['nuevo_educador']) && $params['nuevo_educador'] !== '0' && $params['nuevo_educador'] !== 0) {
+                if (isset($params['nuevo_educador']) && $params['nuevo_educador'] !== '2' && $params['nuevo_educador'] !== 2) {
                     $conditions[] = "u.nuevo_educador = :nuevo_educador";
                     $values[':nuevo_educador'] = $params['nuevo_educador'];
                 }
@@ -77,7 +77,6 @@
                 $stmt->execute($values);
                 $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-//                 print_r($results);
                 return [
                     'success' => true,
                     'message' => count($results) . ' usuario(s) encontrado(s)',
