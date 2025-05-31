@@ -7,7 +7,6 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-
                 <input
                         type="text"
                         class="form-control mb-2"
@@ -15,7 +14,6 @@
                         [(ngModel)]="filtro"
                         (input)="filtrarUsuarios()"
                 />
-
                 <div style="max-height: 200px; overflow-y: auto;">
                     <div *ngFor="let usuario of usuariosFiltrados">
                         <div class="form-check">
@@ -32,11 +30,9 @@
                         </div>
                     </div>
                 </div>
-
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button class="btn btn-primary" (click)="guardar()">Guardar</button>
+                <button class="btn btn-primary" data-bs-dismiss="modal" (click)="guardar()">Guardar</button>
             </div>
         </div>
     </div>

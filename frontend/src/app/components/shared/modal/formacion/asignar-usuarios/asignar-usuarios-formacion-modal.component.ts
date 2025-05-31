@@ -39,18 +39,21 @@ export class AsignarUsuariosFormacionModalComponent implements OnInit {
     this.loadUsers();
   }
 
-  filtrarUsuarios() {
+  public filtrarUsuarios() {
     const term = this.filtro.toLowerCase();
     this.usuariosFiltrados = this.usuarios.filter(u =>
-        u.nombre.toLowerCase().includes(term)
+        u.nombre_user.toLowerCase().includes(term)
+    );
+    this.usuariosFiltrados = this.usuarios.filter(u =>
+        u.apellido_user.toLowerCase().includes(term)
     );
   }
 
-  isSeleccionado(usuario: any) {
+  public isSeleccionado(usuario: any) {
     return this.usuariosSeleccionados.some(u => u.id === usuario.id);
   }
 
-  toggleSeleccion(usuario: any) {
+  public toggleSeleccion(usuario: any) {
     if (this.isSeleccionado(usuario)) {
       this.usuariosSeleccionados = this.usuariosSeleccionados.filter(u => u.id !== usuario.id);
     } else {
@@ -58,7 +61,7 @@ export class AsignarUsuariosFormacionModalComponent implements OnInit {
     }
   }
 
-  guardar() {
+  public guardar() {
     Swal2.fire({
       title: '¿Desea guardar los cambios?',
       icon: 'question',
@@ -78,6 +81,7 @@ export class AsignarUsuariosFormacionModalComponent implements OnInit {
                 this.toastr.success('Los cambios se guardaron correctamente', 'Guardado', {
                   positionClass: 'toast-bottom-right'
                 });
+                this.usuariosFiltrados = [];
               } else {
                 this.toastr.error('Error al guardar los cambios', 'Error');
               }

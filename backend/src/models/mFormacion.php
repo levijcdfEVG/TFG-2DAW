@@ -138,12 +138,12 @@ class MFormacion {
 
             if ($stmt->execute()) {
                 if ($stmt->rowCount() > 0) {
-                    return ['success' => true];
+                    return ['success' => true, 'message' => 'Se ha desactivado la formacion de id '.$id];
                 } else {
-                    return ['success' => false];
+                    return ['success' => false, 'message' => 'No se ha podido desactivar la formacion de id '.$id];
                 }
             } else {
-                return ['success' => false];
+                return ['success' => false, 'message' => 'Error desconocido de desactivacion'];
             }
         } catch (PDOException $e) {
             return ['success' => false, 'message' => 'Error:' . $e->getMessage()];

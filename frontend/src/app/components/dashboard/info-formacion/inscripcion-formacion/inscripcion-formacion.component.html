@@ -1,10 +1,14 @@
 <div class="container mt-4">
-    <div *ngIf="usuariosABorrar.length > 0">
-        <button class="btn btn-danger" (click)="borrarUsuarios()">Confirmar Desasignación</button>
-    </div>
-    <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="d-flex justify-content-between align-items-start mb-3">
         <h4>Inscripciones en la formación</h4>
-        <button class="btn btn-primary" data-bs-target="#inscripcionFormacionModal" data-bs-toggle="modal">+ Inscribir Usuarios</button>
+        <div class="d-flex flex-column align-items-end">
+            <button (click)="loadModalUsers()" class="btn btn-primary mb-2" data-bs-target="#inscripcionFormacionModal" data-bs-toggle="modal">
+                + Inscribir Usuarios
+            </button>
+            <button *ngIf="usuariosABorrar.length > 0" class="btn btn-danger" (click)="borrarUsuarios()">
+                Confirmar Desasignación
+            </button>
+        </div>
     </div>
     <table id="usuariosFormacion" class="table table-bordered table-hover">
         <thead class="table-light">

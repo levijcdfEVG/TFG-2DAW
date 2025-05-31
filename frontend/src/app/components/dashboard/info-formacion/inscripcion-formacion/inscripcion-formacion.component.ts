@@ -8,9 +8,12 @@ import {ActivatedRoute} from "@angular/router";
 import * as $ from 'jquery';
 import 'datatables.net';
 import 'datatables.net-bs5';
+import {
+    AsignarUsuariosFormacionModalComponent
+} from "../../../shared/modal/formacion/asignar-usuarios/asignar-usuarios-formacion-modal.component";
 
 /**
- * @fileoverview Componente AsignarUsuarioFormacionComponent para asignar un usuario a una formación.
+ * @fileoverview Componente InscripcionFormacionComponent para Manejar las inscripciones de usuarios
  * @author Levi Josué Candeias de Figueiredo <levijosuecandeiasdefigueiredo.guadalupe@alumnado.fundacionloyola.net>
  */
 @Component({
@@ -21,7 +24,7 @@ import 'datatables.net-bs5';
 export class InscripcionFormacionComponent implements OnInit {
 
     // @ts-ignore
-    @ViewChild(InscripcionFormacionComponent) modalAsignar: InscripcionFormacionComponent;
+    @ViewChild(AsignarUsuariosFormacionModalComponent, { static: false }) modalAsignar: AsignarUsuariosFormacionModalComponent;
     protected users: any[] = [];
     protected formacionId: number = 0;
     public usuariosABorrar: number[] = [];
@@ -100,7 +103,7 @@ export class InscripcionFormacionComponent implements OnInit {
         $('#usuariosFormacion').DataTable({
             language: {
                 lengthMenu: 'Mostrar _MENU_ registros',
-                zeroRecords: 'No se encontraron resultados',
+                emptyTable: 'No se encontraron resultados',
                 info: 'Mostrando del _START_ al _END_ de _TOTAL_ registros',
                 infoEmpty: 'Mostrando 0 registros',
                 infoFiltered: '(filtrado de _MAX_ registros totales)',
@@ -156,7 +159,7 @@ export class InscripcionFormacionComponent implements OnInit {
                         });
                         this.loadUsers();
                         this.usuariosABorrar = [];
-                        this.modalAsignar.loadUsers();
+                        this.loadUsers();
                     } else {
                         this.toasts.error('Error al desasignar los usuarios', 'Desasignar Usuarios', {
                             positionClass: 'toast-bottom-right'
@@ -166,5 +169,10 @@ export class InscripcionFormacionComponent implements OnInit {
             }
         });
 
+    }
+
+    protected loadModalUsers(){
+        console.log(this.modalAsignar);
+        this.modalAsignar.ngOnInit();
     }
 }
