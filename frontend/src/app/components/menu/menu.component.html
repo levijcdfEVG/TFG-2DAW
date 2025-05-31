@@ -59,12 +59,58 @@
         </div>
       </div>
 
-  <!-- Menú para educador -->
-  <div *ngSwitchCase="'educador'">
-    <a class="nav-link" routerLink="/mi-perfil">Mi Información</a>
+<!-- Menú para educador -->
+<div *ngSwitchCase="'educador'" class="container p-4">
+
+  <div class="row mb-4 align-items-center">
+    <div class="col-auto">
+      <!-- Foto de perfil dinámica -->
+      <img [src]="userPicture || 'https://via.placeholder.com/80'" alt="Foto de perfil" class="rounded-circle border" width="80" height="80" />
+    </div>
+
+    <div class="col">
+      <!-- Información del perfil estática -->
+      <h5 class="mb-1">Juan Pérez</h5>
+      <p class="mb-0"><strong>Email:</strong> usuario&#64;example.com</p>
+      <p class="mb-0"><strong>Teléfono:</strong> +34 600 123 456</p>
+    </div>
   </div>
 
-  
+  <div>
+    <h4>Formaciones asignadas</h4>
+    <table class="table table-striped table-bordered">
+      <thead class="table-primary">
+        <tr>
+          <th>Nombre</th>
+          <th>Fecha Inicio</th>
+          <th>Fecha Fin</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Formación en Angular</td>
+          <td>2024-01-15</td>
+          <td>2024-03-15</td>
+          <td>En curso</td>
+        </tr>
+        <tr>
+          <td>Capacitación en Seguridad</td>
+          <td>2023-11-01</td>
+          <td>2023-12-01</td>
+          <td>Finalizado</td>
+        </tr>
+        <tr>
+          <td>Taller de Comunicación</td>
+          <td>2024-04-10</td>
+          <td>2024-05-10</td>
+          <td>Pendiente</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
 
   <!-- Fallback -->
   <div *ngSwitchDefault>
