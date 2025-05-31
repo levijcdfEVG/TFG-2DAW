@@ -60,6 +60,7 @@ export class CrearFormacionModalComponent {
                 positionClass: "toast-bottom-right"
               });
               this.formSubmit.emit();
+              this.formComponent.clearForm();
             } else {
               this.toastr.error("Error al crear la formación", "CRUD Formaciones", {
                 positionClass: "toast-bottom-right"
