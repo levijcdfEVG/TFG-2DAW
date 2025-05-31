@@ -43,6 +43,9 @@ export class FormacionFormComponent implements OnInit {
   /** Estado de carga de los datos de formación en modo edición */
   public loadingFormacionAEditar: boolean = false;
 
+  /** Cursos disponibles para seleccionar */
+  protected cursosDisponibles: string[] = [];
+
   constructor(
       private fb: FormBuilder,
       private centrosService: CentrosService,
@@ -53,6 +56,7 @@ export class FormacionFormComponent implements OnInit {
    * Inicializa el formulario y carga datos si se está editando.
    */
   ngOnInit(): void {
+    this.generateCursos();
     this.loadCentros();
     this.initForm();
     this.populateModulosYObjetivos();
@@ -75,7 +79,7 @@ export class FormacionFormComponent implements OnInit {
       curso_fin: ['', [Validators.pattern(/^[0-9]{4}\/[0-9]{2}$/)]],
       modulos: this.fb.array([]),
       objetivos: this.fb.array([]),
-      centro_id: ['', [Validators.required]],
+      centro_id: [null, [Validators.required]],
     };
 
     if (this.esEditar) {
@@ -318,6 +322,24 @@ export class FormacionFormComponent implements OnInit {
     if ((finAnioCortoNum - inicioAnioCortoNum) !== (finAnioCompNum - inicioAnioCompNum)) return false;
 
     return true;
+  }
+
+  private generateCursos() {
+    const anioInicio = 2024;
+    const anios = 10; // Cambia si quieres más
+    this.cursosDisponibles = Array.from({ length: anios }, (_, i) => {
+      const inicio = anioInicio + i;
+      const final = inicio + 1;
+      return `${inicio}/${String(final).slice(-2)}`;
+    });
+  }
+
+  protected cursosFiltradosFin(): string[] {
+    const inicio = this.form.get('curso_inicio')?.value;
+    if (!inicio) return this.cursosDisponibles;
+
+    const indexInicio = this.cursosDisponibles.indexOf(inicio);
+    return this.cursosDisponibles.slice(indexInicio + 1);
   }
 
 }

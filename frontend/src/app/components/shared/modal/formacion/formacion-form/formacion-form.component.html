@@ -104,12 +104,14 @@
     <!-- Curso de Inicio -->
     <div class="mb-3">
         <label for="curso_inicio" class="form-label">Curso académico de Inicio</label>
-        <input
+        <select
                 id="curso_inicio"
                 formControlName="curso_inicio"
-                placeholder="ejemplo: 2024/25"
-                [ngClass]="{'is-invalid': form.get('curso_inicio')?.invalid && form.get('curso_inicio')?.touched}"
-                class="form-control w-100" />
+                class="form-select w-100"
+                [ngClass]="{'is-invalid': form.get('curso_inicio')?.invalid && form.get('curso_inicio')?.touched}">
+            <option value="" disabled selected>Selecciona un curso</option>
+            <option *ngFor="let curso of cursosDisponibles" [value]="curso">{{ curso }}</option>
+        </select>
         <div *ngIf="form.get('curso_inicio')?.invalid && form.get('curso_inicio')?.touched">
             <small class="text-danger">{{ getErrorMessage('curso_inicio') }}</small>
         </div>
@@ -118,18 +120,19 @@
     <!-- Curso de Final -->
     <div class="mb-3">
         <label for="curso_fin" class="form-label">Curso académico de Final (Opcional)</label>
-        <input
+        <select
                 id="curso_fin"
                 formControlName="curso_fin"
-                placeholder="ejemplo: 2025/26"
-                [ngClass]="{'is-invalid': form.get('curso_fin')?.invalid && form.get('curso_fin')?.touched}"
-                class="form-control w-100" />
-        <div *ngIf="form.get('curso_fin')?.invalid && form.get('curso_fin')?.touched">
-            <small class="text-danger">{{ getErrorMessage('curso_fin') }}</small>
-        </div>
-        <!-- Mensaje error personalizado -->
+                class="form-select w-100">
+            <option value="">-- Sin curso final --</option>
+            <option
+                    *ngFor="let curso of cursosFiltradosFin()"
+                    [value]="curso">
+                {{ curso }}
+            </option>
+        </select>
         <div *ngIf="!isCursoFinalValido() && form.get('curso_fin')?.touched" class="text-danger">
-            El curso final debe tener un formato válido y/o ser posterior al curso de inicio.
+            El curso final debe ser posterior al curso de inicio.
         </div>
     </div>
 

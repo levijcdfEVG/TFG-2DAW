@@ -28,6 +28,8 @@ export class InfoFormacionComponent implements OnInit {
   /** Formación seleccionada para editar */
   protected formacionSeleccionada: any = null;
 
+  protected noFormations: boolean = false;
+
   constructor(
       private formacionService: FormacionService,
       private cdr: ChangeDetectorRef,
@@ -77,6 +79,11 @@ export class InfoFormacionComponent implements OnInit {
             }
           });
         }, 100);
+      }else{
+        this.toastr.error("No hay formaciones registradas. Añada formaciones", "CRUD Formaciones", {
+          positionClass: "toast-bottom-right"
+        });
+        this.noFormations = true;
       }
     });
   }
@@ -130,15 +137,17 @@ export class InfoFormacionComponent implements OnInit {
   public mostrarInformacionCompleta(f: any) {
     const modulosHtml = f.modulos && f.modulos.length > 0
         // @ts-ignore
-        ? `${f.modulos.map(m => `${m}`).join('')}`
+        ? `<ul>${f.modulos.map(m => `<li>${m}</li>`).join('')}</ul>`
         : 'No hay módulos';
+
     const objetivosHtml = f.objetivos && f.objetivos.length > 0
         // @ts-ignore
-        ? `${f.objetivos.map(o => `${o}`).join('')}`
+        ? `<ul>${f.objetivos.map(o => `<li>${o}</li>`).join('')}</ul>`
         : 'No hay objetivos';
+
     const cursosHtml = f.cursos && f.cursos.length > 0
         // @ts-ignore
-        ? `${f.cursos.map(c => `${c}`).join('')}`
+        ? `${f.cursos.map(c => `${c}`).join('<br>')}`
         : 'No hay cursos';
 
     const centroHtml = f.centro
@@ -146,45 +155,45 @@ export class InfoFormacionComponent implements OnInit {
         : 'No hay centro asignado';
 
     const contenido = `
-      <style>
-        table {
-          width: 100%;
-          border-collapse: collapse;
-          font-family: Arial, sans-serif;
-          font-size: 14px;
-          margin-top: 10px;
-        }
-        th, td {
-          border: 1px solid #ddd;
-          padding: 8px;
-          vertical-align: top;
-        }
-        th {
-          background-color: #f2f2f2;
-          text-align: left;
-          width: 150px;
-        }
-        ul {
-          margin: 0;
-          padding-left: 18px;
-        }
-      </style>
+    <style>
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        margin-top: 10px;
+      }
+      th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        vertical-align: top;
+      }
+      th {
+        background-color: #f2f2f2;
+        text-align: left;
+        width: 150px;
+      }
+      ul {
+        margin: 0;
+        padding-left: 18px;
+      }
+    </style>
 
-      <table>
-        <tr><th>Id</th><td>${f.id}</td></tr>
-        <tr><th>Lugar de impartición</th><td>${f.lugar_imparticion}</td></tr>
-        <tr><th>Duración</th><td>${f.duracion} horas</td></tr>
-        <tr><th>Modalidad</th><td>${f.modalidad}</td></tr>
-        <tr><th>Justificación</th><td>${f.justificacion}</td></tr>
-        <tr><th>Metodología</th><td>${f.metodologia}</td></tr>
-        <tr><th>Docentes</th><td>${f.docentes}</td></tr>
-        <tr><th>Dirigido a</th><td>${f.dirigido_a}</td></tr>
-        <tr><th>Módulos</th><td>${modulosHtml}</td></tr>
-        <tr><th>Objetivos</th><td>${objetivosHtml}</td></tr>
-        <tr><th>Cursos</th><td>${cursosHtml}</td></tr>
-        <tr><th>Centro</th><td>${centroHtml}</td></tr>
-      </table>
-    `;
+    <table>
+      <tr><th>Id</th><td>${f.id}</td></tr>
+      <tr><th>Lugar de impartición</th><td>${f.lugar_imparticion}</td></tr>
+      <tr><th>Duración</th><td>${f.duracion} horas</td></tr>
+      <tr><th>Modalidad</th><td>${f.modalidad}</td></tr>
+      <tr><th>Justificación</th><td>${f.justificacion}</td></tr>
+      <tr><th>Metodología</th><td>${f.metodologia}</td></tr>
+      <tr><th>Docentes</th><td>${f.docentes}</td></tr>
+      <tr><th>Dirigido a</th><td>${f.dirigido_a}</td></tr>
+      <tr><th>Módulos</th><td>${modulosHtml}</td></tr>
+      <tr><th>Objetivos</th><td>${objetivosHtml}</td></tr>
+      <tr><th>Cursos</th><td>${cursosHtml}</td></tr>
+      <tr><th>Centro</th><td>${centroHtml}</td></tr>
+    </table>
+  `;
 
     Swal2.fire({
       title: 'Información completa',
@@ -193,6 +202,7 @@ export class InfoFormacionComponent implements OnInit {
       confirmButtonText: 'Cerrar'
     });
   }
+
 
   /**
    * Renderiza las filas de la tabla de formaciones con los botones de acción.
