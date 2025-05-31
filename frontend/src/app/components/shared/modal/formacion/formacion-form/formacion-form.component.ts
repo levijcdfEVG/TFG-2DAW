@@ -96,13 +96,13 @@ export class FormacionFormComponent implements OnInit {
    */
   private populateModulosYObjetivos(): void {
     if (this.formacionData?.modulos?.length) {
-      this.formacionData.modulos.forEach((m: string) => this.modulos.push(this.fb.control(m, [Validators.required, Validators.maxlength(50)])));
+      this.formacionData.modulos.forEach((m: string) => this.modulos.push(this.fb.control(m, [Validators.required, Validators.maxLength(50)])));
     } else {
       this.addModulo();
     }
 
     if (this.formacionData?.objetivos?.length) {
-      this.formacionData.objetivos.forEach((o: string) => this.objetivos.push(this.fb.control(o, [Validators.required, Validators.maxlength(150)])));
+      this.formacionData.objetivos.forEach((o: string) => this.objetivos.push(this.fb.control(o, [Validators.required, Validators.maxLength(150)])));
     } else {
       this.addObjetivo();
     }

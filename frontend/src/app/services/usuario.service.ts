@@ -9,6 +9,10 @@ import { environment } from "../../environments/environment.prod";
   providedIn: 'root'
 })
 export class UsuarioService {
+  usuariosActualizados$: any;
+  notificarCambio() {
+    throw new Error('Method not implemented.');
+  }
 
   userPath = environment.apiUrl+'?controlador=cUsuario&accion=';
 

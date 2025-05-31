@@ -94,10 +94,10 @@ export class EditUserComponent implements OnInit {
    */
   crearFormulario() {
     this.userModalForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3), Validators.maxlength(40), EditUserComponent.onlyCharactersValidator]],
-      surname: ['', [Validators.required, Validators.minLength(3), Validators.maxlength(50), EditUserComponent.onlyCharactersValidator]],
-      email: ['', [Validators.required, Validators.pattern(/^[_A-Za-z0-9\-+]+(\.[_A-Za-z0-9-]+)*@fundacionloyola\.net$/), Validators.maxlength(70), EditUserComponent.emailFundacionLoyolaValidator]],
-      phone: ['', [Validators.required, Validators.pattern('^[0-9]{9}$'), Validators.minLength(9), Validators.maxlength(9), EditUserComponent.onlyNumberValidator]],
+      name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(40), EditUserComponent.onlyCharactersValidator]],
+      surname: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50), EditUserComponent.onlyCharactersValidator]],
+      email: ['', [Validators.required, Validators.pattern(/^[_A-Za-z0-9\-+]+(\.[_A-Za-z0-9-]+)*@fundacionloyola\.net$/), Validators.maxLength(70), EditUserComponent.emailFundacionLoyolaValidator]],
+      phone: ['', [Validators.required, Validators.pattern('^[0-9]{9}$'), Validators.minLength(9), Validators.maxLength(9), EditUserComponent.onlyNumberValidator]],
       role: ['', [Validators.required]],
       center: ['', [Validators.required]],
       new_educator: [{value: false, disabled: true}, [Validators.required]]
