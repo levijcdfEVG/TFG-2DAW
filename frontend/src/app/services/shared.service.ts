@@ -6,6 +6,7 @@ import { Injectable } from '@angular/core';
 export class SharedService {
   private idCentro: number | null = null;
   private idRol: number | null = null;
+  private idUsuario: number | null = null;
 
   setIdCentro(id: number): void {
     this.idCentro = id;
@@ -22,5 +23,12 @@ export class SharedService {
   getIdRol(): number | null {
     return this.idRol;
   }
+  setIdUsuario(id: number): void {
+    this.idUsuario = id;
+  }
+  getIdUsuario(): number | null {
+    return this.idUsuario;
+  }
+
 }
 

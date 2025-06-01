@@ -93,7 +93,7 @@
           </div>
 
           <!-- Botón de Guardar -->
-          <button type="submit" class="btn btn-primary" [disabled]="formCentro.invalid">Guardar Cambios</button>
+          <button type="submit" class="btn btn-primary" [disabled]="formCentro.invalid || !formCentro.dirty">Guardar Cambios</button>
         </form>
       </div>
     </div>

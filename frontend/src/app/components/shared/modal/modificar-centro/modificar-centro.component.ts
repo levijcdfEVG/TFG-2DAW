@@ -56,9 +56,9 @@ export class ModificarCentroComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    // Detectar cambios en el centro seleccionado y actualizar el formulario
     if (changes['centroSeleccionado'] && this.centroSeleccionado) {
       this.formCentro.patchValue(this.centroSeleccionado);
+      this.formCentro.markAsPristine(); // asegúrate de que se vea como limpio inicialmente
     }
   }
 

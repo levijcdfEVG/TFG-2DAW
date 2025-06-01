@@ -121,80 +121,75 @@ class mCentros {
      * Modifica los datos de un centro educativo en la base de datos.
      *
      * Este método realiza una transacción en la base de datos para:
-     * 1. Eliminar el centro de la fundación con el correo electrónico de referencia.
-     * 2. Verificar si la localidad existe, y si no, insertarla.
-     * 3. Insertar un nuevo registro para el centro con los datos proporcionados.
+     * 1. Verificar si la localidad del centro ya existe; si no, se inserta.
+     * 2. Actualizar los datos del centro educativo cuyo correo coincide con el correo de referencia.
      * 
-     * Si ocurre algún error en el proceso, la transacción se revierte (rollback) para mantener la coherencia de los datos.
+     * La operación se ejecuta dentro de una transacción para garantizar la integridad de los datos.
+     * En caso de error, se revierte la transacción (rollback).
      *
-     * @param string $emailReferencia Correo electrónico de referencia para el centro a modificar.
-     * @param string $nombreCentro Nombre del centro educativo.
-     * @param string $direccionCentro Dirección del centro educativo.
-     * @param string $cpCentro Código postal del centro educativo.
+     * @param string $emailReferencia Correo electrónico actual del centro que se desea modificar.
+     * @param string $nombreCentro Nuevo nombre del centro educativo.
+     * @param string $direccionCentro Nueva dirección del centro educativo.
+     * @param string $cpCentro Nuevo código postal del centro.
      * @param string $localidadCentro Nombre de la localidad del centro.
-     * @param string $telefonoCentro Teléfono de contacto del centro.
+     * @param string $telefonoCentro Nuevo teléfono de contacto del centro.
      * @param string $emailCentro Nuevo correo electrónico del centro.
      *
-     * @return array Resultado de la operación, incluyendo el éxito o error de la modificación.
+     * @return array Resultado de la operación, incluyendo el éxito o mensaje de error.
      */
+
     public function modificarCentro($emailReferencia, $nombreCentro, $direccionCentro, $cpCentro, $localidadCentro, $telefonoCentro, $emailCentro) {
-        $this->conectar(); // Conectar a la base de datos
+    $this->conectar(); // Conectar a la base de datos
 
-        try{
-            // Iniciar la transacción para asegurar la coherencia de los datos
-            $this->conexion->beginTransaction();
+    try {
+        $this->conexion->beginTransaction();
 
-            // Paso 1: Eliminar el centro con el correo de referencia
-            $sql = "DELETE FROM centro_fundacion WHERE correo_centro = :emailReferencia";
-            $stmt = $this->conexion->prepare($sql); // Preparamos la consulta SQL
-            $stmt->execute([':emailReferencia' => $emailReferencia]); // Ejecutamos la consulta
-    
-            // Paso 2: Verificar si la localidad existe en la base de datos
-            $sql = 'SELECT id FROM localidad WHERE nombre_localidad = :localidadCentro';
-            $stmt = $this->conexion->prepare($sql); // Preparamos la consulta SQL
-            $stmt->execute([':localidadCentro' => $localidadCentro]); // Ejecutamos la consulta
-            $resultado = $stmt->fetch(PDO::FETCH_ASSOC); // Obtenemos el resultado como un array asociativo
-    
-            if ($resultado) {
-              // Si la localidad ya existe, obtenemos su ID
-                $localidadId = $resultado['id'];    
-            } else {
-                // Si la localidad no existe, la insertamos en la base de datos
-                $provincia = substr($cpCentro, 0, 2); // Extraemos la provincia a partir del código postal
-                $sql = 'INSERT INTO localidad (nombre_localidad, provincia_id) VALUES (:localidadCentro, :provincia)';
-                $stmt = $this->conexion->prepare($sql); // Preparamos la consulta SQL
-                $stmt->execute([':localidadCentro' => $localidadCentro, ':provincia' => $provincia]); // Ejecutamos la consulta
-    
-                // Obtenemos el ID de la nueva localidad insertada
-                $localidadId = $this->conexion->lastInsertId();
-            }
-    
-            //Paso 3: insertar el nuevo centro con los datos modificados
-            $sql = "INSERT INTO centro_fundacion 
-                    (nombre_centro, direccion_centro, cp, correo_centro, telefono_centro, id_local)
-                    VALUES (:nombreCentro, :direccionCentro, :cpCentro, :emailCentro, :telefonoCentro, :localidadId)";        
-            $stmt = $this->conexion->prepare($sql); // Preparamos la consulta SQL
-            
-            // Ejecutar la consulta con los datos proporcionados
-            $stmt->execute([
-                ':nombreCentro' => $nombreCentro, 
-                ':direccionCentro' => $direccionCentro, 
-                ':cpCentro' => $cpCentro, 
-                ':emailCentro' => $emailCentro, 
-                ':telefonoCentro' => $telefonoCentro, 
-                ':localidadId' => $localidadId
-            ]);
-            // Confirmamos la transacción si todo ha ido bien
-            $this->conexion->commit();
-            // Retornamos el resultado con éxito
-            return ['success' => true, 'message' => 'Centro modificado con éxito'];
-        } catch (PDOException $e) {
-             // En caso de error, deshacemos (rollback) todos los cambios realizados
-            $this->conexion->rollBack();
-             // Retornamos un mensaje de error
-            return ['success' => false, 'message' => 'Error al modificar el centro: ' . $e->getMessage()];
+        // Verificar o insertar la localidad
+        $sql = 'SELECT id FROM localidad WHERE nombre_localidad = :localidadCentro';
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->execute([':localidadCentro' => $localidadCentro]);
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($resultado) {
+            $localidadId = $resultado['id'];
+        } else {
+            $provincia = substr($cpCentro, 0, 2);
+            $sql = 'INSERT INTO localidad (nombre_localidad, provincia_id) VALUES (:localidadCentro, :provincia)';
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute([':localidadCentro' => $localidadCentro, ':provincia' => $provincia]);
+            $localidadId = $this->conexion->lastInsertId();
         }
+
+        // Actualizar los datos del centro donde correo_centro coincida con el original
+        $sql = "UPDATE centro_fundacion SET
+                    nombre_centro = :nombreCentro,
+                    direccion_centro = :direccionCentro,
+                    cp = :cpCentro,
+                    correo_centro = :emailCentro,
+                    telefono_centro = :telefonoCentro,
+                    id_local = :localidadId
+                WHERE correo_centro = :emailReferencia";
+
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->execute([
+            ':nombreCentro'    => $nombreCentro,
+            ':direccionCentro' => $direccionCentro,
+            ':cpCentro'        => $cpCentro,
+            ':emailCentro'     => $emailCentro,
+            ':telefonoCentro'  => $telefonoCentro,
+            ':localidadId'     => $localidadId,
+            ':emailReferencia' => $emailReferencia
+        ]);
+
+        // Confirmar transacción
+        $this->conexion->commit();
+
+        return ['success' => true, 'message' => 'Centro modificado con éxito'];
+    } catch (PDOException $e) {
+        $this->conexion->rollBack();
+        return ['success' => false, 'message' => 'Error al modificar el centro: ' . $e->getMessage()];
     }
+}
 
     /**
      * Elimina un centro educativo de la base de datos.

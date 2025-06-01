@@ -18,7 +18,8 @@ export class AppComponent implements OnInit {
     this.router.events
       .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
       .subscribe((event) => {
-        this.mostrarBotonVolver = event.url !== '/menu';
+        const rutasSinBoton = ['/menu', '/no-autorizado'];
+        this.mostrarBotonVolver = !rutasSinBoton.includes(event.url);
       });
   }
 

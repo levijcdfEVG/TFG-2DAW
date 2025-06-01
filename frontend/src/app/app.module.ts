@@ -40,6 +40,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { GoogleSignInComponent } from './components/google-sign-in/google-sign-in.component';
 import { CookieService } from "ngx-cookie-service";
 import {NgSelectModule} from "@ng-select/ng-select";
+import { NoAutorizadoComponent } from './pages/no-autorizado/no-autorizado.component';
 
 @NgModule({
   declarations: [
@@ -62,7 +63,8 @@ import {NgSelectModule} from "@ng-select/ng-select";
     CrearFormacionModalComponent,
     EditarFormacionModalComponent,
     MenuComponent,
-    EditUserComponent
+    EditUserComponent,
+    NoAutorizadoComponent
   ],
   imports: [
     BrowserModule,
