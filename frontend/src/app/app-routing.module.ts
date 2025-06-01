@@ -9,10 +9,11 @@ import { UserFileComponent} from "./components/dashboard/info-educador/user-file
 import {InfoEducadorComponent} from "./components/dashboard/info-educador/info-educador.component";
 import { NoAutorizadoComponent } from './pages/no-autorizado/no-autorizado.component';
 import { ResponsableCentroGuard } from './guards/responsable-centro.guard';
+import { RoleGuard } from './guards/role.guard';
 
 
 const routes: Routes = [
-  { path: "info-centros", component: InfoCentroComponent, canActivate: [AuthGuard] },
+  { path: "info-centros", component: InfoCentroComponent, canActivate: [RoleGuard] },
   { path: "info-formaciones", component: InfoFormacionComponent, canActivate: [AuthGuard] },
   { path: "info-cursos", component: InfoFormacionComponent, canActivate: [AuthGuard] },
   { path: "info-educadores", component: InfoEducadorComponent, canActivate: [AuthGuard] },

@@ -2,6 +2,8 @@ import { Component, Input, OnInit, OnChanges, SimpleChanges} from '@angular/core
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { CentrosService } from 'src/app/services/centros.service';
 import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
+import { SharedService } from 'src/app/services/shared.service';
 
 @Component({
   selector: 'app-modificar-centro',
@@ -16,10 +18,15 @@ export class ModificarCentroComponent implements OnInit, OnChanges {
   constructor(
     private fb: FormBuilder,
     private centrosService: CentrosService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private router: Router,
+    private sharedService: SharedService
   ) {}
 
   ngOnInit(): void {
+    const rol = this.sharedService.getIdRol();
+    console.log('Rol del usuario:', rol);
+
     this.formCentro = this.fb.group({
       nombre_centro: ['', [
         Validators.required,
@@ -145,6 +152,7 @@ export class ModificarCentroComponent implements OnInit, OnChanges {
       this.centrosService.modificarCentro(this.centroSeleccionado.correo_centro, datosModificados).subscribe(response => {
         if (response.success) {
           this.toastr.success('Centro modificado con éxito', 'Éxito');
+          console.log('Confirmar rol:', this.sharedService.getIdRol());
           setTimeout(() => {
             this.cerrarFormulario();
           }, 1000);

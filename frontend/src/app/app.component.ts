@@ -9,12 +9,16 @@ import { filter } from 'rxjs/operators';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
+  isAuthenticated: boolean = false;
   constructor(public authService: AuthService, public router: Router) {}
 
   rolSimulado: 'admin' | 'responsable' | 'educador' = 'educador';
   mostrarBotonVolver: boolean = false;
 
   ngOnInit(): void {
+    this.authService.authState$.subscribe(state => {
+      this.isAuthenticated = state;
+    });
     this.router.events
       .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
       .subscribe((event) => {

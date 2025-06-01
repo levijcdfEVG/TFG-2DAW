@@ -5,6 +5,7 @@ import { jwtDecode } from "jwt-decode";
 import { CookieService } from "ngx-cookie-service";
 import { Router } from "@angular/router";
 import { environment } from "../../environments/environment.prod";
+import { SharedService } from './shared.service';
 
 declare const google: any;
 
@@ -12,16 +13,21 @@ declare const google: any;
   providedIn: 'root'
 })
 export class AuthService {
-
-  private authState: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  authState$: Observable<boolean> = this.authState.asObservable();
-  private backendUrl = environment.apiUrl
+  private authState: BehaviorSubject<boolean>;
+  authState$: Observable<boolean>;
+  backendUrl: string | undefined;
 
   constructor(
       private http: HttpClient,
       private cookieService: CookieService,
+      private sharedService: SharedService,
       private router: Router
-  ) {}
+  ) {
+    const token = this.getToken();
+    const loggedIn = !!token && !this.isTokenExpired(token);
+    this.authState = new BehaviorSubject<boolean>(loggedIn);
+    this.authState$ = this.authState.asObservable();
+  }
 
   /**
    * Actualiza el estado de autenticación del usuario.
@@ -101,6 +107,7 @@ decodeToken(): any | null {
   logout(): void {
     this.authState.next(false);
     this.cookieService.delete('token', '/');
+    this.sharedService.clearAll();
     this.router.navigate(['/login']);
     google.accounts.id.disableAutoSelect();
   }

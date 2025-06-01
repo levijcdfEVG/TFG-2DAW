@@ -36,12 +36,16 @@ export class MenuComponent implements OnInit {
       next: (respuesta) => {
         this.datosUsuario = respuesta.data;
         console.log('Datos del usuario desde MySQL:', this.datosUsuario);
-       //this.idRol = this.datosUsuario.id_rol;
+        this.idRol = this.datosUsuario.id_rol;
         this.idCentro = this.datosUsuario.id_centro;
 
         this.sharedService.setIdRol(this.idRol);
         this.sharedService.setIdCentro(this.idCentro);
         this.sharedService.setIdUsuario(this.datosUsuario.id);
+
+        console.log('idRol en sharedService:', this.sharedService.getIdRol());
+        console.log('idCentro en sharedService:', this.sharedService.getIdCentro());
+        console.log('idUsuario en sharedService:', this.sharedService.getIdUsuario());
 
         switch (this.idRol) {
           case 1:
