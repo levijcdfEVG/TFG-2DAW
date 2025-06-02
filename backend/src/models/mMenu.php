@@ -56,7 +56,22 @@ class mMenu {
         }
     }
 
-    
+    public function getUserByDay(){
+        $this->conectar();
+        
+        try{
+            $sql = 'SELECT DATE(fch_registro) AS fecha, COUNT(*) AS cantidad FROM usuario u GROUP BY DATE(fch_registro) ORDER BY fecha;';
+
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+
+            $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return ['success' => true, 'data' => $resultados];
+        } catch(PDOException $e){
+            return ['success' => false, 'message' => 'Error al obtener los datos: ' . $e->getMessage()];
+        }
+    }
 }
 
 ?>

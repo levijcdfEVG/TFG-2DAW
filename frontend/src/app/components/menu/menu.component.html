@@ -1,74 +1,92 @@
 <!-- Simulación de cambio de rol (solo en desarrollo) -->
-<div  class="btn-group mb-4">
-  <button class="btn btn-primary" (click)="cambiarRol('admin')">Admin</button>
-  <button class="btn btn-secondary" (click)="cambiarRol('responsable')">Responsable</button>
-  <button class="btn btn-success" (click)="cambiarRol('educador')">Educador</button>
+<div class="container-fluid vh-100">
+    <div class="row h-100">
+        <!-- Aside izquierdo con navegación -->
+        <aside class="col-md-3 col-lg-2 d-md-block bg-light sidebar min-vh-100 h-100">
+            <div class="position-sticky pt-3">
+                <!-- Dropdown para cambio de rol -->
+                <div class="dropdown mb-4 w-100 px-3">
+                    <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" id="dropdownRoleButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        Cambiar Rol ({{ rol | titlecase }})
+                    </button>
+                    <ul class="dropdown-menu w-100" aria-labelledby="dropdownRoleButton">
+                        <li><a class="dropdown-item" (click)="cambiarRol('admin')">Admin</a></li>
+                        <li><a class="dropdown-item" (click)="cambiarRol('responsable')">Responsable</a></li>
+                        <li><a class="dropdown-item" (click)="cambiarRol('educador')">Educador</a></li>
+                    </ul>
+                </div>
+                <nav class="nav flex-column" [ngSwitch]="rol">
+                    <!-- Menú para administrador -->
+                    <div *ngSwitchCase="'admin'">
+                        <h6 class="sidebar-heading px-3 mt-4 mb-1 text-muted">Administración</h6>
+                        <a routerLink="/info-centros" class="nav-link">
+                            <i class="bi bi-building"></i> Centros
+                        </a>
+                        <a routerLink="/info-formaciones" class="nav-link">
+                            <i class="bi bi-book"></i> Formaciones
+                        </a>
+                        <a routerLink="/info-cursos" class="nav-link">
+                            <i class="bi bi-calendar"></i> Curso Académico
+                        </a>
+                        <a routerLink="/info-educadores" class="nav-link">
+                            <i class="bi bi-people"></i> Educadores
+                        </a>
+                    </div>
+
+                    <!-- Menú para responsable -->
+                    <div *ngSwitchCase="'responsable'">
+                        <h6 class="sidebar-heading px-3 mt-4 mb-1 text-muted">Gestión</h6>
+                        <a routerLink="/info-formaciones" class="nav-link">
+                            <i class="bi bi-book"></i> Formaciones
+                        </a>
+                        <a routerLink="/info-cursos" class="nav-link">
+                            <i class="bi bi-calendar"></i> Curso académico
+                        </a>
+                        <a routerLink="/info-educadores" class="nav-link">
+                            <i class="bi bi-people"></i> Usuarios
+                        </a>
+                    </div>
+
+                    <!-- Menú para educador -->
+                    <div *ngSwitchCase="'educador'">
+                        <a routerLink="/mi-perfil" class="nav-link">
+                            <i class="bi bi-person"></i> Mi Información
+                        </a>
+                    </div>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Contenido principal -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2" *ngIf="rol === 'admin'">Panel de Administrador</h1>
+                <h1 class="h2" *ngIf="rol === 'responsable'">Panel de Responsable</h1>
+                <h1 class="h2" *ngIf="rol === 'educador'">Panel de Educador</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <div class="btn-group me-2">
+                        <span class="text-muted">Bienvenido, {{userEmail}}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráficos (solo para admin) -->
+            <div class="row" *ngIf="rol === 'admin'">
+                <div class="col-12 mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">Usuarios Registrados por Día</h5>
+                            <div class="chart-container">
+                                <canvas baseChart
+                                    [data]="chartData"
+                                    [type]="chartType"
+                                    [options]="chartOptions">
+                                </canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
 </div>
-
-<nav class="nav flex-column" [ngSwitch]="rol">
-  <!-- Menú para administrador -->
-  <div *ngSwitchCase="'admin'" class="d-flex flex-column justify-content-center align-items-center vh-80">
-        <h1 class="fw-bold text-center mb-5">Menú Administrador</h1>
-        <div class="container mt-5">
-          <div class="row row-cols-2 g-4">
-            <div class="col">
-              <a routerLink="/info-centros" class="btn btn-primary w-100 h-100 text-decoration-none text-white">
-                <h5>Centros</h5>
-              </a>
-            </div>
-            <div class="col">
-              <a routerLink="/info-formaciones" class="btn btn-primary w-100 h-100 text-decoration-none text-white">
-                <h5>Formaciones</h5>
-              </a>
-            </div>
-            <div class="col">
-              <a routerLink="/info-cursos" class="btn btn-primary w-100 h-100 text-decoration-none text-white">
-                <h5>Curso Académico</h5>
-              </a>
-            </div>
-            <div class="col">
-              <a routerLink="/info-educadores" class="btn btn-primary w-100 h-100 text-decoration-none text-white">
-                <h5>Educadores</h5>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-  <!-- Menú para responsable -->
-  <div *ngSwitchCase="'responsable'" class="d-flex flex-column justify-content-center align-items-center vh-80">
-        <h1 class="fw-bold text-center mb-5">Menú Responsable</h1>
-        <div class="container mt-5">
-          <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
-            <div class="col">
-              <a routerLink="/info-formaciones" class="btn btn-primary w-100 h-100 text-decoration-none text-white">
-                <h5>Formaciones</h5>
-              </a>
-            </div>
-            <div class="col">
-              <a routerLink="/info-cursos" class="btn btn-primary w-100 h-100 text-decoration-none text-white">
-                <h5>Curso académico</h5>
-              </a>
-            </div>
-            <div class="col">
-              <a routerLink="/info-educadores" class="btn btn-primary w-100 h-100 text-decoration-none text-white">
-                <h5>Usuarios</h5>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-  <!-- Menú para educador -->
-  <div *ngSwitchCase="'educador'">
-    <a class="nav-link" routerLink="/mi-perfil">Mi Información</a>
-  </div>
-
-  
-
-  <!-- Fallback -->
-  <div *ngSwitchDefault>
-    <span class="text-danger">Rol no reconocido</span>
-  </div>
-</nav>
-

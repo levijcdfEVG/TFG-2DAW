@@ -4,6 +4,7 @@ import {Subject, takeUntil} from "rxjs";
 import {UsuarioService} from "../../../services/usuario.service";
 import {Router} from "@angular/router";
 import * as $ from "jquery";
+import {User} from "../../../interfaces/user.interface";
 
 @Component({
   selector: 'app-info-educador',
@@ -12,7 +13,7 @@ import * as $ from "jquery";
 })
 export class InfoEducadorComponent implements OnInit  {
 
-  dataUsers: any[] = [];
+  dataUsers: User[] = [];
   filterForm!: FormGroup;
 
   hasSearched: boolean = false;
@@ -45,6 +46,7 @@ export class InfoEducadorComponent implements OnInit  {
         .pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: (response: any) => {
         this.dataUsers = response;
+        console.log(this.dataUsers);
         this.hasSearched = true;
         this.cdr.detectChanges();
         this.loadDataTable();
@@ -113,7 +115,7 @@ export class InfoEducadorComponent implements OnInit  {
     setTimeout(() => {
       $('#usersTable').DataTable({
         data: this.dataUsers,
-        autoWidth: true,
+        autoWidth: false,
         searching: false,
         ordering: false,
         pagingType: 'simple_numbers',

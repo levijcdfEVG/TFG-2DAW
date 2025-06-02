@@ -1,14 +1,12 @@
 <app-new-user></app-new-user>
 <div class="container-fluid">
     <!-- User Filter -->
-    <div class="card rounded-0 my-3 mx-4">
-        <div class="card-header font-weight-bold bg-light">
-            <div class="row fs-6">
-                <div class="col-6">
-                    <h5 class="mb-0">Filtro de Usuarios</h5>
-                </div>
-                <div class="col-6 text-end font-weight-bold">
-                    <button class="btn text-theme" data-bs-toggle="modal" data-bs-target="#newUserModal">
+    <div class="card my-3 mx-4">
+        <div class="card-header m-0 bg-theme text-white">
+            <div class="d-flex fs-6 align-items-center">
+                <h5 class="mb-0">Filtro de Usuarios</h5>
+                <div class="ms-auto">
+                    <button class="btn text-white" data-bs-toggle="modal" data-bs-target="#newUserModal">
                         <i class="fa fa-plus me-2"></i>Nuevo Usuario
                     </button>
                 </div>
@@ -16,7 +14,7 @@
         </div>
         <div class="card-body">
             <form [formGroup]="filterForm" (ngSubmit)="searchByFilter()">
-                <div class="row mb-3">
+                <div class="row d-flex mb-3">
                     <div class="col-md-4 d-flex align-items-center mb-2 mb-md-0">
                         <label for="nombre" class="form-label fw-bold mb-0 me-3" style="min-width: 110px;">Nombre:</label>
                         <input type="text"

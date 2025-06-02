@@ -62,5 +62,14 @@ class cMenu
         echo json_encode($resultado);
         exit;
     }
+
+
+    public function getUserByDay(){
+        $resultado = $this->objMenu->getUserByDay();
+
+        header('Content-Type: application/json');
+        echo json_encode($resultado);
+        exit;
+    }
 }
 ?>

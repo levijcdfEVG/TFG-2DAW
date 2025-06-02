@@ -77,11 +77,7 @@
                 $stmt->execute($values);
                 $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                return [
-                    'success' => true,
-                    'message' => count($results) . ' usuario(s) encontrado(s)',
-                    'data' => $results
-                ];
+                return ['success' => true, 'message' => count($results) . ' usuario(s) encontrado(s)', 'data' => $results];
             } catch (PDOException $e) {
                 error_log('Database Error: ' . $e->getMessage());
                 return ['success' => false, 'message' => 'Error al ejecutar la consulta: ' . $e->getMessage()];

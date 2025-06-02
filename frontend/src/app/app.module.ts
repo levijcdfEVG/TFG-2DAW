@@ -37,7 +37,9 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { GoogleSignInComponent } from './components/google-sign-in/google-sign-in.component';
 import { CookieService } from "ngx-cookie-service";
-import {NgSelectModule} from "@ng-select/ng-select";
+import { NgSelectModule } from "@ng-select/ng-select";
+import { NgChartsModule } from 'ng2-charts';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -78,6 +80,7 @@ import {NgSelectModule} from "@ng-select/ng-select";
     ReactiveFormsModule,
     HttpClientModule,
     NgSelectModule,
+    NgChartsModule,
   ],
   providers: [
     CookieService
