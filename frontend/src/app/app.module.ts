@@ -53,6 +53,9 @@ import {MatOptionModule} from "@angular/material/core";
 
 
 
+import { NgSelectModule } from "@ng-select/ng-select";
+import { NgChartsModule } from 'ng2-charts';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -94,6 +97,7 @@ import {MatOptionModule} from "@angular/material/core";
     ReactiveFormsModule,
     NgSelectModule,
     NgMultiSelectDropDownModule.forRoot()
+    NgChartsModule,
   ],
   providers: [
     CookieService

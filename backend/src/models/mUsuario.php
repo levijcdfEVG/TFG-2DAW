@@ -18,7 +18,7 @@
         /**
          * Conecta a la base de datos.
          *
-         * Este método crea una instancia de la clase bbdd y utiliza el método 'conexion' 
+         * Este método crea una instancia de la clase bbdd y utiliza el método 'conexion'
          * para obtener la conexión a la base de datos que se usará en las operaciones posteriores.
          *
          * @return void
@@ -92,7 +92,7 @@
                     $values[':id_rol'] = $params['id_rol'];
                 }
 
-                if (isset($params['nuevo_educador']) && $params['nuevo_educador'] !== '0' && $params['nuevo_educador'] !== 0) {
+                if (isset($params['nuevo_educador']) && $params['nuevo_educador'] !== '2' && $params['nuevo_educador'] !== 2) {
                     $conditions[] = "u.nuevo_educador = :nuevo_educador";
                     $values[':nuevo_educador'] = $params['nuevo_educador'];
                 }
@@ -132,8 +132,8 @@
                 $values = [':id_centro' => $params['id_centro']];
 
                 $conditions = [];
-                
-                
+
+
                 if (!empty($params['nombre_user'])) {
                     $conditions[] = "u.nombre_user LIKE :nombre_user";
                     $values[':nombre_user'] = "%" . $params['nombre_user'] . "%";
@@ -208,12 +208,12 @@
         public function getUserById($id): array {
             $this->conectar();
 
-            $sql = "SELECT u.*, r.nombre_rol, cf.nombre_centro, l.nombre_localidad FROM usuario u 
-                    JOIN roles r ON u.id_rol = r.id 
+            $sql = "SELECT u.*, r.nombre_rol, cf.nombre_centro, l.nombre_localidad FROM usuario u
+                    JOIN roles r ON u.id_rol = r.id
                     JOIN centro_fundacion cf ON u.id_centro = cf.id
                     JOIN localidad l ON cf.id_local = l.id
                     WHERE u.id = :id;";
-            
+
 
             $stmt = $this->conexion->prepare($sql);
             $stmt->execute([':id' => $id]);

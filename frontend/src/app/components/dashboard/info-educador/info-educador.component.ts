@@ -7,6 +7,7 @@ import { RoleService } from './../../../services/role.service';
 import { Role } from 'src/app/interfaces/role.interface';
 import * as $ from "jquery";
 import { SharedService } from 'src/app/services/shared.service';
+import {User} from "../../../interfaces/user.interface";
 
 @Component({
   selector: 'app-info-educador',
@@ -15,12 +16,12 @@ import { SharedService } from 'src/app/services/shared.service';
 })
 export class InfoEducadorComponent implements OnInit  {
 
-  dataUsers: any[] = [];
+  dataUsers: User[] = [];
   roleData: Role[] = [];
 
   idRol: number  = this.sharedService.getIdRol() || 0;
   idCentro: number  = this.sharedService.getIdCentro() || 0;
-  
+
   filterForm!: FormGroup;
 
   hasSearched: boolean = false;
@@ -36,7 +37,7 @@ export class InfoEducadorComponent implements OnInit  {
     new_educator: 0,
     status: 1
   } as const;
-  
+
 
   constructor(
       private userService: UsuarioService,
@@ -51,7 +52,7 @@ export class InfoEducadorComponent implements OnInit  {
 
     console.log('ID Rol:', this.idRol);
     console.log('ID Centro:', this.idCentro);
-    
+
     this.createFilterForm();
 
     this.loadRoles();
@@ -88,7 +89,7 @@ export class InfoEducadorComponent implements OnInit  {
       this.loadUsers(params);
     }
   }
-  
+
 
   /**
    * Cambia el estado de un usuario (activo/inactivo)
@@ -136,7 +137,7 @@ export class InfoEducadorComponent implements OnInit  {
    */
   isFormDefault(): boolean {
     return Object.entries(this.defaultValues)
-      .every(([key, value]) => 
+      .every(([key, value]) =>
         this.filterForm.get(key)?.value === value
       );
   }
@@ -152,6 +153,7 @@ export class InfoEducadorComponent implements OnInit  {
         .pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: (response: any) => {
         this.dataUsers = response;
+        console.log(this.dataUsers);
         this.hasSearched = true;
         this.cdr.detectChanges();
         this.loadDataTable();
@@ -207,12 +209,14 @@ export class InfoEducadorComponent implements OnInit  {
         pageLength: 5,
         searching: false,
         ordering: false,
+        pagingType: 'simple_numbers',
+        pageLength: 5,
         lengthChange: false,
         pagingType: 'simple_numbers',
         language: {
           lengthMenu: "Mostrar _MENU_ entradas",
           info: "Mostrando _START_ a _END_ de _TOTAL_ entradas",
-          infoEmpty: "Mostrando 0 a 0 de 0 entradas",
+          infoEmpty: 'Mostrando 0 a 0 de 0 entradas',
           paginate: {
             first: "",
             previous: " <i class='fas fa-chevron-left'></i> Anterior",

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import { AuthService } from './services/auth.service';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
@@ -16,6 +16,7 @@ export class AppComponent implements OnInit {
     public router: Router,
     private sharedService: SharedService
   ) {}
+  constructor(public authService: AuthService, public router: Router, private cdRef: ChangeDetectorRef) {}
 
   rolSimulado: 'admin' | 'responsable' | 'educador' = 'educador';
   mostrarBotonVolver: boolean = false;

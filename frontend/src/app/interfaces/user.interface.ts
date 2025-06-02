@@ -5,8 +5,9 @@ export interface User {
     apellido_user: string;
     correo_user: string;
     telefono_user: string;
-    id_rol: string;
+    id_rol: number;
     estado: boolean;
     id_centro: number;
     nuevo_educador: boolean;
+    fecha_registro: string;
 } 

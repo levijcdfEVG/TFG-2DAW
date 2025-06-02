@@ -2,8 +2,6 @@ import {Component, NgZone, OnInit} from '@angular/core';
 import {jwtDecode} from "jwt-decode";
 import {AuthService} from "../../services/auth.service";
 import {Router} from "@angular/router";
-import {googleID} from "../../config/config";
-import {FormBuilder, FormGroup} from "@angular/forms";
 import Swal2 from "sweetalert2";
 import {CookieService} from "ngx-cookie-service";
 import {ToastrService} from "ngx-toastr";

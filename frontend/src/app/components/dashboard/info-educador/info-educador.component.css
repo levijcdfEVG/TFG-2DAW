@@ -29,3 +29,7 @@
 
 
 
+
+.bg-theme {
+    background-color: var(--color-primario);
+}

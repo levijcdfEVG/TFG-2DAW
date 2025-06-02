@@ -1,8 +1,8 @@
 <?php
-    require_once MODELS . 'mUsuario.php';
-    require_once __DIR__ . '/../../vendor/autoload.php';
-    require_once 'config/config.php';
-    require_once 'helpers/GoogleJWTVerifier.php';
+require_once MODELS . 'mUsuario.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
+require_once 'config/config.php';
+require_once 'helpers/GoogleJWTVerifier.php';
 
     /**
      * Controlador de usuarios.
@@ -162,10 +162,10 @@
 
         /**
          * Actualiza los datos de un usuario existente.
-         * 
+         *
          * Este método recibe los datos actualizados del usuario en formato JSON y los
          * valida antes de proceder con la actualización en la base de datos.
-         * 
+         *
          * @return array Resultado de la operación de actualización.
          */
         public function updateUser() {
@@ -251,7 +251,7 @@
                 }
 
                 $response = $modelo->changeStatus($id);
-                
+
                 if (!$response['success']) {
                     return $this->sendResponse(["success" => false, "error" => $response['message']]);
                 }
