@@ -11,6 +11,10 @@ import Swal2 from 'sweetalert2';
 })
 export class InfoCentroComponent implements OnInit {
 
+   /**
+   * Columnas visibles en la tabla de centros.
+   */
+
   displayedColumns: string[] = [
     'nombre_centro',
     'direccion_centro',
@@ -19,8 +23,15 @@ export class InfoCentroComponent implements OnInit {
     'telefono_centro',
     'nombre_localidad'
   ];
+
+  /**
+   * Fuente de datos para la tabla.
+   */
   dataSource: any[] = [];
 
+  /**
+   * Objeto para registrar un nuevo centro.
+   */
   nuevoCentro: any = {
     nombre_centro: '',
     direccion_centro: '',
@@ -29,27 +40,56 @@ export class InfoCentroComponent implements OnInit {
     telefono_centro: '',
     correo_centro: ''
   };
+
+  /**
+   * Mensaje informativo que se muestra si no hay resultados.
+   */
   mensaje: string = '';
+
+   /**
+   * Centro seleccionado para modificar.
+   */
   centroSeleccionado: any = {};
+
+   /**
+   * Centro marcado para ser eliminado.
+   */
   centroAEliminar: any = null;
 
+  /**
+   * Constructor que inyecta los servicios necesarios.
+   * @param centrosService Servicio para acceder a datos de centros.
+   * @param toastr Servicio para mostrar notificaciones.
+   * @param cdr Servicio para detectar cambios manuales.
+   */
   constructor(private centrosService: CentrosService, private toastr: ToastrService, private cdr: ChangeDetectorRef) {}
 
+  /**
+   * Hook de inicialización. Carga la lista de centros al inicio.
+   */
   ngOnInit(): void {
     this.getCentros();
   }
 
+  /**
+   * Abre el modal para modificar un centro existente.
+   * @param element Centro seleccionado de la tabla.
+   */
   modificarRegistro(element: any): void {
-    this.centroSeleccionado = { ...element }; // Copiar los datos del registro seleccionado
+    this.centroSeleccionado = { ...element }; 
     const modal = document.getElementById('modificarCentroModal');
     if (modal) {
       const bootstrapModal = new (window as any).bootstrap.Modal(modal);
-      bootstrapModal.show(); // Mostrar el modal
+      bootstrapModal.show(); 
     }
   }
   
+  /**
+   * Solicita confirmación y elimina un centro si el usuario acepta.
+   * @param element Centro a eliminar.
+   */
   borrarRegistro(element: any): void {
-    this.centroAEliminar = element; // Guarda el centro que se desea eliminar
+    this.centroAEliminar = element; 
     Swal2.fire({
       title: '¿Estás seguro?',
       text: 'No podrás revertir esta acción.',
@@ -68,20 +108,28 @@ export class InfoCentroComponent implements OnInit {
           } else {
             this.toastr.error('Error al eliminar el centro: ' + response.message, 'Error');
           }
-          this.centroAEliminar = null; // Limpia la variable
+          this.centroAEliminar = null;
         }, error => {
           this.toastr.error('Error al comunicarse con el servidor.', 'Error');
-          this.centroAEliminar = null; // Limpia la variable
+          this.centroAEliminar = null; 
         });
       }
     });
   }
 
+  /**
+   * Refresca la lista de centros. Se puede usar desde eventos externos.
+   * @param event Evento recibido desde el componente hijo.
+   */
   refreshLista(event: any): void {
     this.getCentros();
     this.cdr.detectChanges();
   }
 
+  /**
+   * Carga todos los centros desde el servicio.
+   * Muestra mensaje si no hay resultados.
+   */
   private getCentros(): void {
     this.centrosService.getCentros().subscribe(response => {
       if (response.success) {
