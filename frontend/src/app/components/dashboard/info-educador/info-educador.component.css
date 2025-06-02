@@ -1,0 +1,31 @@
+/* Estilo minimos que no se pueden controlar con Bootstrap*/
+
+.card-header {
+    background-color: var(--color-terciario);
+}
+
+.btn-outline-search {
+    color: var(--color-terciario);
+    border-color: var(--color-terciario);
+    background-color: transparent;
+}
+.btn-outline-search:hover {
+    color: #fff;
+    background-color: var(--color-terciario);
+    border-color: var(--color-terciario);
+}
+.btn-outline-search:focus {
+    box-shadow: 0 0 0 0.25rem rgba(var(--color-detalles-rgb), 0.25);
+}
+.btn-outline-search:active {
+    color: #fff;
+    background-color: var(--color-terciario);
+    border-color: var(--color-terciario);
+}
+.btn-outline-search:disabled {
+    color: var(--color-terciario);
+    background-color: transparent;
+}
+
+
+

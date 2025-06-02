@@ -1,4 +1,5 @@
 export interface User {
+    data: any;
     id: number;
     nombre_user: string;
     apellido_user: string;
@@ -6,6 +7,6 @@ export interface User {
     telefono_user: string;
     id_rol: string;
     estado: boolean;
-    // id_centro: number;
+    id_centro: number;
     nuevo_educador: boolean;
 } 

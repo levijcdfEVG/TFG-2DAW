@@ -12,7 +12,7 @@ class CRol {
     public function getAllRoles() {
         try {
             $response = $this->mRol->getAllRoles();
-            return $response;
+            echo json_encode($response);
         } catch (Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }
@@ -26,7 +26,7 @@ class CRol {
             }
 
             $response = $this->mRol->getRoleById($id);
-            return $response;
+            echo json_encode($response);
         } catch (Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }
@@ -41,7 +41,7 @@ class CRol {
             }
 
             $response = $this->mRol->createRole($data);
-            return $response;
+            echo json_encode($response);
         } catch (Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }
@@ -70,7 +70,7 @@ class CRol {
             }
 
             $response = $this->mRol->deleteRole($id);
-            return $response;
+            echo json_encode($response);
         } catch (Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }

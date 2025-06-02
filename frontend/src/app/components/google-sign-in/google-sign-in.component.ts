@@ -40,7 +40,7 @@ export class GoogleSignInComponent implements OnInit {
     const token = this.authService.getToken();
     if (token && !this.authService.isTokenExpired(token)) {
       this.authService.setAuthState(true);
-      this.router.navigate(['/info-centros']);
+      this.router.navigate(['/no-autorizado']);
       return;
     }
     // Mostrar botón de login si no hay token válido

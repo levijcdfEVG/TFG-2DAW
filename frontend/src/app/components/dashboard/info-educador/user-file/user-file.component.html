@@ -1,39 +1,86 @@
 <div class="container-fluid p-4">
 
-    <!-- Sección del usuario -->
-    <div class="d-flex mb-4 border">
-        <!-- Card con la imagen -->
+<!-- Sección del usuario -->
+    <div class="d-flex mb-4">
+
+    <!-- Card con la imagen -->
         <div class="card mx-4">
             <div class="card-body d-flex flex-column align-items-center justify-content-center">
-                <img [src]="imgPath" class="img-fluid rounded-circle mb-3" style="max-width: 200px; height: auto;" alt="Foto de usuario" />
+                <img [src]="imgPath" class="img-fluid rounded-circle mb-3" style="max-width: 185px; height: auto;" alt="Foto de usuario" />
             </div>
         </div>
 
-        <!-- Card con los datos -->
-        <div class="card w-75 ms-5">
-            <div class="card-title p-1 border-bottom">
-                <h5>Datos del Usuario</h5>
+    <!-- Card con los datos -->
+        <div class="card w-100 mx-4">
+            <div class="card-title p-2 rounded-top-1 border-bottom text-white">
+                <h5 class="mb-0">ID ({{userData?.id}}) - {{userData?.estado === 1 ? 'Activo' : 'Inactivo'}}</h5>
             </div>
-            <div class="card-body ">
-                <div *ngIf="userData; else loading" class="row">
-                    <div class="col-md-4 border">
-                        <p><strong>Nombre:</strong> {{ userData.nombre_user }} </p>
-                        <p><strong>Correo:</strong> {{ userData.correo_user }} </p>
+            <div class="card-body">
+                <div class="row w-100">
+
+                <!-- Primera fila -->
+                    <div class="col-12 mb-4">
+                        <div class="d-flex justify-content-between">
+                            <div class="d-flex col-4">
+                                <div class="w-25 text-end fw-bold pe-3">Nombre:</div>
+                                <div>{{ userData?.nombre_user }}</div>
+                            </div>
+                            <div class="d-flex align-items-center col-4">
+                                <div class="w-25 text-end fw-bold pe-3">Apellidos:</div>
+                                <div>{{ userData?.apellido_user }}</div>
+                            </div>
+                            <div class="d-flex align-items-center col-4">
+                                <div class="w-25 text-end fw-bold pe-3">Rol:</div>
+                                <div>{{ userData?.nombre_rol }}</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-4 border">
-                        <p><strong>Apellidos:</strong> {{ userData.apellido_user }} </p>
+
+                <!-- Segunda fila -->
+                    <div class="col-12 mb-4">
+                        <div class="d-flex justify-content-between">
+                            <div class="d-flex align-items-center col-4">
+                                <div class="w-25 text-end fw-bold pe-3">Teléfono:</div>
+                                <div>{{ userData?.telefono_user }}</div>
+                            </div>
+                            <div class="d-flex align-items-center col-4">
+                                <div class="w-25 text-end fw-bold pe-3">Centro:</div>
+                                <div>{{ userData?.nombre_centro }}</div>
+                            </div>
+                            <div class="d-flex align-items-center col-4">
+                                <div class="w-25 text-end fw-bold pe-3">Localidad:</div>
+                                <div>{{ userData?.nombre_localidad }}</div>
+                            </div>
+                        </div>
                     </div>
-                    
+
+                <!-- Tercera fila - Correo con más espacio -->
+                    <div class="col-12 mb-4">
+                        <div class="d-flex">
+                            <div class="d-flex align-items-center w-100">
+                                <div class="text-end fw-bold ps-4 pe-3">Correo Electrónico:</div>
+                                <div>{{ userData?.correo_user }}</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <ng-template #loading>
-                    <p>Cargando datos del usuario...</p>
-                </ng-template>
+                <div class="row">
+                    <div class="col-12 text-end">
+                        <button class="btn btn-outline-primary me-2" (click)="openEditModal()">Editar</button>
+                        <button class="btn btn-outline-danger" 
+                                [class.btn-outline-danger]="userData?.estado === 1"
+                                [class.btn-outline-success]="userData?.estado === 0"
+                                (click)="changeStatus()">
+                            {{ userData?.estado === 1 ? 'Deshabilitar' : 'Habilitar' }}
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Sección de Tabs -->
-    <div class="card">
+<!-- Sección de Tabs -->
+    <div class="card mx-4 mt-5">
         <div class="card-header">
             <ul class="nav nav-tabs card-header-tabs">
                 <li class="nav-item" (click)="activeTab = 'general'">
@@ -48,7 +95,7 @@
             </ul>
         </div>
         <div class="card-body">
-            <!-- Tab content -->
+        <!-- Tab content -->
             <div *ngIf="activeTab === 'general'">
                 <h5>Formaciones Generales</h5>
                 <ul>
@@ -72,3 +119,6 @@
         </div>
     </div>
 </div>
+
+<app-edit-user *ngIf="selectedUser" [userData]="selectedUser"></app-edit-user>
+

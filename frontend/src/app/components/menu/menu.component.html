@@ -1,10 +1,3 @@
-<!-- Simulación de cambio de rol (solo en desarrollo) -->
-<div  class="btn-group mb-4">
-  <button class="btn btn-primary" (click)="cambiarRol('admin')">Admin</button>
-  <button class="btn btn-secondary" (click)="cambiarRol('responsable')">Responsable</button>
-  <button class="btn btn-success" (click)="cambiarRol('educador')">Educador</button>
-</div>
-
 <nav class="nav flex-column" [ngSwitch]="rol">
   <!-- Menú para administrador -->
   <div *ngSwitchCase="'admin'" class="d-flex flex-column justify-content-center align-items-center vh-80">
@@ -52,19 +45,18 @@
             </div>
             <div class="col">
               <a routerLink="/info-educadores" class="btn btn-primary w-100 h-100 text-decoration-none text-white">
-                <h5>Usuarios</h5>
+                <h5>Educadores</h5>
               </a>
             </div>
           </div>
         </div>
       </div>
 
-  <!-- Menú para educador -->
-  <div *ngSwitchCase="'educador'">
-    <a class="nav-link" routerLink="/mi-perfil">Mi Información</a>
-  </div>
+<!-- Menú para educador -->
 
-  
+      <!-- Foto de perfil dinámica -->
+      <!-- <img [src]="userPicture || 'https://via.placeholder.com/80'" alt="Foto de perfil" class="rounded-circle border" width="80" height="80" referrerpolicy="no-referrer"/> -->
+   
 
   <!-- Fallback -->
   <div *ngSwitchDefault>

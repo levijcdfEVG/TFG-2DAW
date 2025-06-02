@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, Subject } from 'rxjs';
 import { User } from '../interfaces/user.interface';
 import { map, catchError } from 'rxjs/operators';
 import { environment } from "../../environments/environment.prod";
@@ -9,6 +9,10 @@ import { environment } from "../../environments/environment.prod";
   providedIn: 'root'
 })
 export class UsuarioService {
+  usuariosActualizados$: any;
+  notificarCambio() {
+    throw new Error('Method not implemented.');
+  }
 
   userPath = environment.apiUrl+'?controlador=cUsuario&accion=';
 
@@ -18,17 +22,41 @@ export class UsuarioService {
   getUsersByParams(params: any): Observable<any> {
     // Convertir los parámetros a HttpParams
     const httpParams = new HttpParams({ fromObject: params });
-    // console.log(this.userPath + 'getUsersByParams', { params: httpParams });
+    console.log(this.userPath + 'getUsersByParams', { params: httpParams });
     return this.http.get<any>(this.userPath + 'getUsersByParams', { params: httpParams })
       .pipe(
         map(res => res.data), catchError(this.handleError)
       );
   }
 
+   //Obtener lista de usuarios según el centro
+  getUsersByCentro(params: any): Observable<any> {
+    // Convertimos el objeto params a HttpParams para la consulta GET
+    const httpParams = new HttpParams({ fromObject: params });
+    console.log(this.userPath + 'getUsersByCentro', { params: httpParams });
+
+    return this.http.get<any>(this.userPath + 'getUsersByCentro', { params: httpParams })
+    .pipe(
+      map(res => {
+        // El backend devuelve un objeto { success, message, data }
+        if (res && res.success) {
+          return res.data;  // Aquí devuelves directamente el array de usuarios
+        } else {
+          // Aquí puedes lanzar error para que el subscribe lo capture
+         throw new Error(res?.message || 'Error al obtener usuarios por centro');
+        }
+      }),
+      catchError((err) => {
+        // 👇 Para capturar errores inesperados del servidor (status 500, etc.)
+        console.error('Error en servicio getUsersByCentro:', err);
+        return throwError(() => err);
+      })
+    );
+  }
+
   // Obtener un usuario por su id
   getUserById(userId: number): Observable<User> {
     const params = new HttpParams().set('id', userId.toString());
-    // console.log(this.userPath + `getUserById&${userId}`);
     return this.http.get<any>(this.userPath + 'getUserById', { params })
       .pipe(
         map(res => res.data),
@@ -43,8 +71,8 @@ export class UsuarioService {
   }
 
   // Actualizar un usuario
-  updateUser(user: User): Observable<any> {
-    return this.http.put<any>(this.userPath + 'updateUser', user)
+  updateUser(userData: any): Observable<any> {
+    return this.http.put<any>(this.userPath + 'updateUser', userData)
         .pipe(catchError(this.handleError));
   }
 
@@ -57,12 +85,12 @@ export class UsuarioService {
 
   // Cambiar el estado del usuario
   changeStatus(userId: number): Observable<any> {
-    console.log(this.userPath + `changeStatus$id=${userId}`);
-    return this.http.put<any>(this.userPath + 'changeStatus', { id: userId })
+    const params = new HttpParams().set('id', userId.toString());
+    return this.http.put<any>(this.userPath + 'changeStatus', null, { params })
       .pipe(catchError(this.handleError));
   }
 
-  // Handle HTTP errors
+   // Handle HTTP errors
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'Ha ocurrido un error';
     

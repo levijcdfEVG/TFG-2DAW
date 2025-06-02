@@ -27,11 +27,11 @@ INSERT INTO localidad (nombre_localidad, provincia_id) VALUES
 
 -- Centros Fundacion
 INSERT INTO centro_fundacion (nombre_centro, direccion_centro, cp, correo_centro, telefono_centro, id_local) VALUES
-    ('Badajoz Centro', 'Calle de la Fundación, Badajoz', '06001', 'badajoz.centro@fundacionloyola.net', '924232323', 1),
-    ('Don Benito Centro', 'Avenida de la Educación, Don Benito', '06400', 'donbenito.centro@fundacionloyola.net', '924321456', 2),
-    ('Salamanca Centro', 'Calle de la Investigación, Salamanca', '37007', 'salamanca.centro@fundacionloyola.net', '923456789', 3),
-    ('Ciudad Rodrigo Centro', 'Avenida de la Fundación, Ciudad Rodrigo', '07400', 'ciudaddrigocentro@fundacionloyola.net', '924112233', 4),
-    ('Almería Centro', 'Paseo Marítimo, Almería', '04001', 'almeriacentro@fundacionloyola.net', '950111222', 5);
+    ('Badajoz Centro', 'Calle de la Fundación, Badajoz', '06001', 'badajoz.centro@fundacionloyola.es', '924232323', 1),
+    ('Don Benito Centro', 'Avenida de la Educación, Don Benito', '06400', 'donbenito.centro@fundacionloyola.es', '924321456', 2),
+    ('Salamanca Centro', 'Calle de la Investigación, Salamanca', '37007', 'salamanca.centro@fundacionloyola.es', '923456789', 3),
+    ('Ciudad Rodrigo Centro', 'Avenida de la Fundación, Ciudad Rodrigo', '07400', 'ciudaddrigocentro@fundacionloyola.es', '924112233', 4),
+    ('Almería Centro', 'Paseo Marítimo, Almería', '04001', 'almeriacentro@fundacionloyola.es', '950111222', 5);
 
 -- Usuarios (corrigiendo: se añade id_centro)
 INSERT INTO usuario (nombre_user, apellido_user, correo_user, telefono_user, nuevo_educador, id_rol, id_centro) VALUES
