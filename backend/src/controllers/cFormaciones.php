@@ -231,48 +231,7 @@ class cFormaciones {
             $response = $this->mFormacion->asignarUsuarioAFormacion($idFormacion, $idsUsuarios);
 
             if ($response['success']) {
-                // Obtener nombre de la formación
-                $nombreFormacionResponse = $this->mFormacion->getFormacionById($idFormacion);
-                $nombreFormacion = $nombreFormacionResponse['success'] ? $nombreFormacionResponse['nombre'] : 'una formación';
-
-                // Enviar correos usando Google Apps Script
-                foreach ($idsUsuarios as $idUsuario) {
-                    $usuario = $this->mUsuarios->obtenerUsuarioPorId($idUsuario);
-                    if ($usuario && isset($usuario['correo_user'])) {
-                        $email = $usuario['correo_user'];
-                        $nombre = $usuario['nombre_user'] ?? 'Usuario';
-
-                        $asunto = "Asignación a formación";
-                        $data = [
-                            'to' => $email,
-                            'subject' => $asunto,
-                            'nombre' => $nombre,
-                            'formacion' => $nombreFormacion,
-                            'tipo' => 'alta'
-                        ];
-
-                       $content = json_encode($data, JSON_UNESCAPED_UNICODE);
-                       $options = [
-                            'http' => [
-                                'method'  => 'POST',
-                                'header'  => "Content-type: application/json\r\n". 
-                                            "Content-Length: " . strlen($content) . "\r\n",
-                                'content' => $content
-                            ]
-                        ];
-
-                        $context = stream_context_create($options);
-                        $url = GOOGLEMAILER;
-                        $result = file_get_contents($url, false, $context);
-                        
-                        if ($result === FALSE) {
-                            error_log("No se pudo enviar email al usuario ID {$idUsuario} ({$email})");
-                        }
-                    } else {
-                        error_log("No se encontró email para usuario ID {$idUsuario}");
-                    }
-                }
-
+                $this->sendMails('alta', $idFormacion, $idsUsuarios);
                 $this->sendResponse(true, $response['message'] ?? 'Usuarios asignados correctamente.');
             } else {
                 $this->sendResponse(false, $response['message'] ?? 'No se pudo asignar a los usuarios.', null, 500);
@@ -360,43 +319,7 @@ class cFormaciones {
             $response = $this->mFormacion->desasignarUsuariosFormacion($idFormacion, $idsUsuarios);
 
             if ($response['success']) {
-                $nombreFormacionResponse = $this->mFormacion->getFormacionById($idFormacion);
-                $nombreFormacion = $nombreFormacionResponse['success'] ? $nombreFormacionResponse['nombre'] : 'una formación';
-
-                foreach ($idsUsuarios as $idUsuario) {
-                    $usuario = $this->mUsuarios->obtenerUsuarioPorId($idUsuario);
-                    if ($usuario && isset($usuario['correo_user'])) {
-                        $email = $usuario['correo_user'];
-                        $nombre = $usuario['nombre_user'] ?? 'Usuario';
-
-                        $asunto = "Asignación a formación";
-                        $data = [
-                            'to' => $email,
-                            'subject' => $asunto,
-                            'nombre' => $nombre,
-                            'formacion' => $nombreFormacion,
-                            'tipo' => 'baja'
-                        ];
-
-                        $content = json_encode($data, JSON_UNESCAPED_UNICODE);
-                        $options = [
-                            'http' => [
-                                'method'  => 'POST',
-                                'header'  => "Content-type: application/json\r\n" . 
-                                            "Content-Length: " . strlen($content) . "\r\n",
-                                'content' => $content
-                            ]
-                        ];
-
-                        $context = stream_context_create($options);
-                        $result = file_get_contents(GOOGLEMAILER, false, $context);
-
-                        if ($result === FALSE) {
-                            error_log("No se pudo enviar email al usuario ID {$idUsuario} ({$email})");
-                        }
-                    }
-                }
-                // Respuesta ÚNICA tras finalizar el bucle
+                $this->sendMails('baja', $idFormacion, $idsUsuarios);
                 $this->sendResponse(true, $response['message'] ?? 'Usuarios desasignados correctamente.');
             } else {
                 $this->sendResponse(false, $response['message'] ?? 'No se pudo desasignar a los usuarios.', null, 500);
@@ -457,7 +380,7 @@ class cFormaciones {
      *
      * @author Levi Josué Candeias de Figueiredo <levijosuecandeiasdefigueiredo.guadalupe@alumnado.fundacionloyola.net>
      */
-    private function validateForm(array $data): array {
+   private function validateForm(array $data): array {
         if (!isset($data['formacion']) || !is_array($data['formacion'])) {
             $this->sendResponse(false, 'Falta el bloque "formacion" en los datos', null, 422);
             exit;
@@ -521,7 +444,54 @@ class cFormaciones {
         }
 
         return $data;
+   }
+
+    /**
+     * Envía correos electrónicos a una lista de usuarios relacionados con una formación específica.
+     *
+     * @param string $tipoCorreo   Tipo de correo a enviar (por ejemplo, notificación, recordatorio, etc.).
+     * @param int    $idFormacion  ID de la formación asociada al correo.
+     * @param array  $idsUsuarios  Array de IDs de usuarios a los que se enviará el correo.
+     *
+     * @return void
+     */
+    private function sendMails($tipoCorreo, $idFormacion, $idsUsuarios) {
+        $nombreFormacionResponse = $this->mFormacion->getFormacionById($idFormacion);
+        $nombreFormacion = $nombreFormacionResponse['success'] ? $nombreFormacionResponse['nombre'] : 'una formación';
+
+        foreach ($idsUsuarios as $idUsuario) {
+            $usuario = $this->mUsuarios->obtenerUsuarioPorId($idUsuario);
+            if ($usuario && isset($usuario['correo_user'])) {
+                $email = $usuario['correo_user'];
+                $nombre = $usuario['nombre_user'] ?? 'Usuario';
+
+                $asunto = "Asignación a formación";
+                $data = [
+                    'to'        => $email,
+                    'subject'   => $asunto,
+                    'nombre'    => $nombre,
+                    'formacion' => $nombreFormacion,
+                    'tipo'      => $tipoCorreo
+                ];
+
+                $content = json_encode($data, JSON_UNESCAPED_UNICODE);
+                $options = [
+                    'http' => [
+                        'method'  => 'POST',
+                        'header'  => "Content-type: application/json\r\n" .
+                                    "Content-Length: " . strlen($content) . "\r\n",
+                        'content' => $content
+                    ]
+                ];
+
+                $context = stream_context_create($options);
+                $result = file_get_contents(GOOGLEMAILER, false, $context);
+
+                if ($result === FALSE) {
+                    error_log("No se pudo enviar email al usuario ID {$idUsuario} ({$email})");
+                }
+            }
+        }
     }
 
-    
 }
