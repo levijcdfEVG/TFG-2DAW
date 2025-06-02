@@ -209,8 +209,6 @@ export class InfoEducadorComponent implements OnInit  {
         pageLength: 5,
         searching: false,
         ordering: false,
-        pagingType: 'simple_numbers',
-        pageLength: 5,
         lengthChange: false,
         pagingType: 'simple_numbers',
         language: {

@@ -16,7 +16,6 @@ export class AppComponent implements OnInit {
     public router: Router,
     private sharedService: SharedService
   ) {}
-  constructor(public authService: AuthService, public router: Router, private cdRef: ChangeDetectorRef) {}
 
   rolSimulado: 'admin' | 'responsable' | 'educador' = 'educador';
   mostrarBotonVolver: boolean = false;

@@ -50,7 +50,7 @@ export class MenuComponent implements OnInit {
         switch (this.idRol) {
           case 1:
             this.rol = 'educador';
-            this.router.navigate(['/info-educadores', this.datosUsuario.id]);
+            this.router.navigate(['/usuarios', this.datosUsuario.id]);
             break;
           case 2:
             this.rol = 'admin';
