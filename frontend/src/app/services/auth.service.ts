@@ -15,7 +15,7 @@ declare const google: any;
 export class AuthService {
   private authState: BehaviorSubject<boolean>;
   authState$: Observable<boolean>;
-  backendUrl: string | undefined;
+  backendUrl: string = environment.apiUrl;
 
   constructor(
       private http: HttpClient,

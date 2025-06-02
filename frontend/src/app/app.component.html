@@ -2,7 +2,7 @@
 
 <div class="container my-3 d-flex justify-content-end">
   <button
-    *ngIf="mostrarBotonVolver"
+    *ngIf="isAuthenticated && mostrarBotonVolver"
     class="btn btn-outline-secondary"
     (click)="volverAlMenu()"
   >

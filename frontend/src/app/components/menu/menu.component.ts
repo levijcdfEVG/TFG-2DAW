@@ -50,6 +50,7 @@ export class MenuComponent implements OnInit {
         switch (this.idRol) {
           case 1:
             this.rol = 'educador';
+            this.router.navigate(['/info-educadores', this.datosUsuario.id]);
             break;
           case 2:
             this.rol = 'admin';
@@ -68,24 +69,4 @@ export class MenuComponent implements OnInit {
     console.warn('No se pudo obtener información del token.');
   }
 }
-
-  cambiarRol(nuevoRol: 'admin' | 'responsable' | 'educador'): void {
-    this.rol = nuevoRol;
-    switch (nuevoRol) {
-      case 'educador':
-        this.idRol = 1;
-        this.sharedService.setIdRol(this.idRol);
-        this.router.navigate(['/info-educadores', this.datosUsuario.id]);
-        break;
-      case 'admin':
-        this.idRol = 2;
-        this.sharedService.setIdRol(this.idRol); 
-        break;
-      case 'responsable':
-        this.idRol = 3;
-        this.sharedService.setIdRol(this.idRol); 
-        break;
-    }
-    console.log('idRol cambiado a:', this.sharedService.getIdRol());
-  }
 }
