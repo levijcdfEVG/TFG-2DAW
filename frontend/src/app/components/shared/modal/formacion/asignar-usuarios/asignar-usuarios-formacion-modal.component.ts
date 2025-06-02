@@ -1,10 +1,16 @@
-import {ChangeDetectorRef, Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
-import { IDropdownSettings } from 'ng-multiselect-dropdown';
+/**
+ * @fileoverview Componente para asignar usuarios a una formación específica mediante un modal.
+ * Permite seleccionar usuarios educadores no asignados actualmente a la formación y guardarlos.
+ *
+ * @component
+ * @author Levi Josué Candeias de Figueiredo
+ */
+
+import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormacionService } from '../../../../../services/formacion.service';
-import {FormControl} from "@angular/forms";
-import {UsuarioService} from "../../../../../services/usuario.service";
-import Swal2 from "sweetalert2";
-import {ToastrService} from "ngx-toastr";
+import { UsuarioService } from '../../../../../services/usuario.service';
+import Swal2 from 'sweetalert2';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-asignar-usuarios',
@@ -13,20 +19,52 @@ import {ToastrService} from "ngx-toastr";
 })
 export class AsignarUsuariosFormacionModalComponent implements OnInit {
 
+  /**
+   * Evento emitido cuando se actualiza la asignación de usuarios, usado para refrescar la tabla externa.
+   */
   @Output() updateTable = new EventEmitter<void>();
+
+  /**
+   * Lista de usuarios disponibles para asignar.
+   */
   protected usuarios: any[] = [];
+
+  /**
+   * ID de la formación actual a la que se van a asignar los usuarios.
+   */
   protected idFormacion: number = 0;
+
+  /**
+   * Lista de usuarios filtrados por el buscador.
+   */
   protected usuariosFiltrados = [...this.usuarios];
+
+  /**
+   * Término de búsqueda utilizado para filtrar usuarios por nombre o apellido.
+   */
   protected filtro: string = '';
+
+  /**
+   * Lista de usuarios que ya están asignados a la formación (no se pueden volver a asignar).
+   */
   protected usuariosNoSeleccionables: any[] = [];
+
+  /**
+   * Lista de usuarios seleccionados para ser asignados a la formación.
+   */
   protected usuariosSeleccionados: any[] = [];
 
   constructor(
       private formacionService: FormacionService,
       private usuariosService: UsuarioService,
       private toastr: ToastrService,
-      private cdr: ChangeDetectorRef ) {}
+      private cdr: ChangeDetectorRef
+  ) {}
 
+  /**
+   * Inicializa el componente obteniendo el ID de la formación desde el servicio
+   * y cargando los usuarios disponibles para asignar.
+   */
   ngOnInit(): void {
     this.formacionService.getIdFormacion().subscribe(
         id => {
@@ -35,11 +73,14 @@ export class AsignarUsuariosFormacionModalComponent implements OnInit {
         error => {
           console.error('Error al obtener el id de la formación:', error);
         }
-    )
+    );
     this.loadUsers();
   }
 
-  public filtrarUsuarios() {
+  /**
+   * Filtra la lista de usuarios por nombre o apellido usando el valor del filtro.
+   */
+  public filtrarUsuarios(): void {
     const term = this.filtro.toLowerCase();
     this.usuariosFiltrados = this.usuarios.filter(u =>
         u.nombre_user.toLowerCase().includes(term) ||
@@ -47,11 +88,21 @@ export class AsignarUsuariosFormacionModalComponent implements OnInit {
     );
   }
 
-  public isSeleccionado(usuario: any) {
+  /**
+   * Verifica si un usuario está actualmente seleccionado para ser asignado.
+   * @param usuario Usuario a verificar
+   * @returns true si está seleccionado, false en caso contrario
+   */
+  public isSeleccionado(usuario: any): boolean {
     return this.usuariosSeleccionados.some(u => u.id === usuario.id);
   }
 
-  public toggleSeleccion(usuario: any) {
+  /**
+   * Alterna la selección de un usuario.
+   * Si ya estaba seleccionado, lo deselecciona; si no, lo agrega.
+   * @param usuario Usuario a alternar
+   */
+  public toggleSeleccion(usuario: any): void {
     if (this.isSeleccionado(usuario)) {
       this.usuariosSeleccionados = this.usuariosSeleccionados.filter(u => u.id !== usuario.id);
     } else {
@@ -59,7 +110,11 @@ export class AsignarUsuariosFormacionModalComponent implements OnInit {
     }
   }
 
-  public guardar() {
+  /**
+   * Guarda los cambios realizados, asignando los usuarios seleccionados a la formación actual.
+   * Muestra una alerta de confirmación antes de proceder.
+   */
+  public guardar(): void {
     Swal2.fire({
       title: '¿Desea guardar los cambios?',
       icon: 'question',
@@ -93,19 +148,20 @@ export class AsignarUsuariosFormacionModalComponent implements OnInit {
     });
   }
 
-
-  private loadUsers() {
-    this.usuariosService.getUsersByParams(
-        {
-          "name": "",
-          "surname": "",
-          "email": "",
-          "phone": "",
-          "role": "1",
-          "new_educator": '',
-          "status": 1
-        }
-    ).subscribe(response => {
+  /**
+   * Carga todos los usuarios educadores activos que no estén ya asignados a la formación actual.
+   * También filtra los que ya están asignados para que no aparezcan como disponibles.
+   */
+  private loadUsers(): void {
+    this.usuariosService.getUsersByParams({
+      name: '',
+      surname: '',
+      email: '',
+      phone: '',
+      role: '1',
+      new_educator: '',
+      status: 1
+    }).subscribe(response => {
       if (response.length > 0) {
         this.usuarios = response;
 
@@ -113,7 +169,6 @@ export class AsignarUsuariosFormacionModalComponent implements OnInit {
           if (response.success) {
             this.usuariosNoSeleccionables = response.data;
 
-            // Ahora que ya tienes usuariosNoSeleccionables, haces el filtro correctamente
             this.usuarios = this.usuarios.filter(u =>
                 !this.usuariosNoSeleccionables.some(us => us.id === u.id)
             );
@@ -121,7 +176,7 @@ export class AsignarUsuariosFormacionModalComponent implements OnInit {
             this.usuariosFiltrados = [...this.usuarios];
           } else {
             console.error('Error al obtener los usuarios de la formación');
-            this.usuariosFiltrados = [...this.usuarios]; // aunque no tengas no seleccionables, muestra todos
+            this.usuariosFiltrados = [...this.usuarios];
           }
         });
 

@@ -13,9 +13,14 @@ import {
 } from "../../../shared/modal/formacion/asignar-usuarios/asignar-usuarios-formacion-modal.component";
 
 /**
- * @fileoverview Componente InscripcionFormacionComponent para Manejar las inscripciones de usuarios
- * @author Levi Josué Candeias de Figueiredo <levijosuecandeiasdefigueiredo.guadalupe@alumnado.fundacionloyola.net>
+ * @fileoverview Componente `InscripcionFormacionComponent` para gestionar las inscripciones de usuarios a una formación.
+ * Permite listar usuarios inscritos, desasignarlos y abrir un modal para asignar nuevos usuarios.
+ * Utiliza DataTables para renderizar dinámicamente los usuarios y SweetAlert2 para confirmaciones.
+ *
+ * @author Levi Josué Candeias de Figueiredo
+ * <levijosuecandeiasdefigueiredo.guadalupe@alumnado.fundacionloyola.net>
  */
+
 @Component({
     selector: 'app-asignar-usuario-formacion',
     templateUrl: './inscripcion-formacion.component.html',
@@ -23,10 +28,25 @@ import {
 })
 export class InscripcionFormacionComponent implements OnInit {
 
-    // @ts-ignore
-    @ViewChild(AsignarUsuariosFormacionModalComponent, { static: false }) modalAsignar: AsignarUsuariosFormacionModalComponent;
+    /**
+     * Referencia al componente modal para asignar usuarios.
+     */
+    @ViewChild(AsignarUsuariosFormacionModalComponent, { static: false })
+    modalAsignar!: AsignarUsuariosFormacionModalComponent;
+
+    /**
+     * Lista de usuarios asignados a la formación.
+     */
     protected users: any[] = [];
+
+    /**
+     * ID de la formación obtenida desde la URL.
+     */
     protected formacionId: number = 0;
+
+    /**
+     * Lista de IDs de usuarios seleccionados para desasignar.
+     */
     public usuariosABorrar: number[] = [];
 
     constructor(
@@ -37,19 +57,27 @@ export class InscripcionFormacionComponent implements OnInit {
         private route: ActivatedRoute
     ) {}
 
+    /**
+     * Método del ciclo de vida que se ejecuta al inicializar el componente.
+     * Obtiene el ID de formación de la URL y carga los usuarios.
+     */
     ngOnInit(): void {
         this.getFormacionidFromUrl();
     }
 
+    /**
+     * Obtiene el ID de la formación desde la URL y carga los usuarios correspondientes.
+     * Muestra un toast informativo o de error si no se encuentra el ID.
+     */
     private getFormacionidFromUrl(): void {
         const id = this.route.snapshot.paramMap.get('id');
         if (id) {
             this.formacionId = parseInt(id);
             this.formacionService.setIdFormacion(this.formacionId);
-            this.toasts.info('Registros de la formación de id: ' + this.formacionId, 'Asignar Usuarios', {
+            this.toasts.info(`Registros de la formación de id: ${this.formacionId}`, 'Asignar Usuarios', {
                 positionClass: 'toast-bottom-right'
             });
-            this.loadUsers(); // ahora que tenemos formacionId cargamos usuarios
+            this.loadUsers();
         } else {
             this.toasts.error('No se pudo obtener el id de la formación', 'Asignar Usuarios', {
                 positionClass: 'toast-bottom-right'
@@ -57,6 +85,9 @@ export class InscripcionFormacionComponent implements OnInit {
         }
     }
 
+    /**
+     * Solicita al servicio los usuarios asignados a la formación y los carga en la tabla.
+     */
     private loadUsers(): void {
         this.formacionService.getUsersByFormacion(this.formacionId).subscribe(response => {
             if (response.success) {
@@ -70,7 +101,10 @@ export class InscripcionFormacionComponent implements OnInit {
         });
     }
 
-    private loadDataTable() {
+    /**
+     * Renderiza la tabla con DataTables y agrega los botones para desasignar usuarios.
+     */
+    private loadDataTable(): void {
         const table: any = $('#usuariosFormacion');
         if ($.fn.dataTable.isDataTable(table)) {
             table.DataTable().destroy();
@@ -81,20 +115,18 @@ export class InscripcionFormacionComponent implements OnInit {
 
         this.users.forEach(u => {
             const row = `
-        <tr data-id="${u.id}">
-          <td>${u.nombre_user} ${u.apellido_user}</td>
-          <td>${u.correo_user}</td>
-          <td>${u.telefono_user || '-'}</td>
-          <td>
-            ${u.id_rol === 1 ? 'Educador' : (u.id_rol === 2 ? 'Administrador' : (u.id_rol === 3 ? 'Responsable de centro' : '-'))}
-          </td>
-          <td>
-            <button class="btn btn-sm btn-outline-danger btn-desasignar" title="Desasignar usuario">
-              <i class="fa fa-user-minus"></i>
-            </button>
-          </td>
-        </tr>
-      `;
+                <tr data-id="${u.id}">
+                    <td>${u.nombre_user} ${u.apellido_user}</td>
+                    <td>${u.correo_user}</td>
+                    <td>${u.telefono_user || '-'}</td>
+                    <td>${u.id_rol === 1 ? 'Educador' : (u.id_rol === 2 ? 'Administrador' : (u.id_rol === 3 ? 'Responsable de centro' : '-'))}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-danger btn-desasignar" title="Desasignar usuario">
+                            <i class="fa fa-user-minus"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
             tbody.append(row);
         });
 
@@ -120,12 +152,15 @@ export class InscripcionFormacionComponent implements OnInit {
         this.bindEvents();
     }
 
-    private bindEvents() {
+    /**
+     * Asocia eventos a los botones de desasignación de usuarios en la tabla.
+     * Permite seleccionar múltiples usuarios para desasignar.
+     */
+    private bindEvents(): void {
         $(document).off('click', '.btn-desasignar').on('click', '.btn-desasignar', (event) => {
             const button = $(event.currentTarget);
             const idUsuario = button.closest('tr').data('id');
 
-            // Alternar selección
             const index = this.usuariosABorrar.indexOf(idUsuario);
             if (index === -1) {
                 this.usuariosABorrar.push(idUsuario);
@@ -139,8 +174,11 @@ export class InscripcionFormacionComponent implements OnInit {
         });
     }
 
-
-    public borrarUsuarios() {
+    /**
+     * Desasigna los usuarios seleccionados de la formación previa confirmación con SweetAlert.
+     * Muestra toasts de éxito o error según el resultado.
+     */
+    public borrarUsuarios(): void {
         Swal2.fire({
             title: 'Confirmar desasignación',
             text: 'Estas seguro que deseas desasignar esto(s) usuario(s) de la formación?',
@@ -157,7 +195,6 @@ export class InscripcionFormacionComponent implements OnInit {
                         this.toasts.success('Usuarios desasignados correctamente', 'Desasignar Usuarios', {
                             positionClass: 'toast-bottom-right'
                         });
-                        this.loadUsers();
                         this.usuariosABorrar = [];
                         this.loadUsers();
                     } else {
@@ -168,11 +205,14 @@ export class InscripcionFormacionComponent implements OnInit {
                 });
             }
         });
-
     }
 
-    protected loadModalUsers(){
+    /**
+     * Llama al método `ngOnInit` del componente modal para cargar los datos al abrirlo.
+     */
+    protected loadModalUsers(): void {
         console.log(this.modalAsignar);
         this.modalAsignar.ngOnInit();
     }
 }
+

@@ -1,11 +1,15 @@
+/**
+ * Servicio para gestionar las operaciones relacionadas con formaciones.
+ * Incluye métodos para obtener, crear, editar, desactivar y gestionar usuarios asignados.
+ * @author Levi Josué Candeias de Figueiredo <levijosuecandeiasdefigueiredo.guadalupe@alumnado.fundacionloyola.es>
+ */
+
 import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
-import {BehaviorSubject, Observable, tap} from 'rxjs';
-import {AddCentroPayload, FormacionResponse} from '../services/interfaces/formacionesResponse';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { AddCentroPayload, FormacionResponse } from '../services/interfaces/formacionesResponse';
 import { ToastrService } from 'ngx-toastr';
-import {error} from "@angular/compiler-cli/src/transformers/util";
 import { environment } from "../../environments/environment.prod";
-import { localEnvironment } from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -15,34 +19,45 @@ export class FormacionService {
   private formacionAEditar = new BehaviorSubject<any>(null);
   public idFormacion = new BehaviorSubject<number>(0);
 
-  constructor(private http: HttpClient,
-              private toastr: ToastrService) { }
+  constructor(
+      private http: HttpClient,
+      private toastr: ToastrService
+  ) { }
 
+  /**
+   * Obtiene todas las formaciones del backend.
+   * @returns Observable con la respuesta del backend.
+   */
   public getAllFormaciones(): Observable<FormacionResponse> {
     const url = `${this.backendUrl}?controlador=cFormaciones&accion=getAllFormaciones`;
     return this.http.get<FormacionResponse>(url).pipe(
-      tap({
-        next: (response) => {
-          if (response.success) {
-            this.toastr.success("Formaciones cargadas exitosamente", "CRUD Formaciones", {
-              positionClass: "toast-bottom-right"
-            });
-          } else {
+        tap({
+          next: (response) => {
+            if (response.success) {
+              this.toastr.success("Formaciones cargadas exitosamente", "CRUD Formaciones", {
+                positionClass: "toast-bottom-right"
+              });
+            } else {
+              this.toastr.error("Error al cargar las formaciones", "CRUD Formaciones", {
+                positionClass: "toast-bottom-right"
+              });
+            }
+          },
+          error: (response) => {
             this.toastr.error("Error al cargar las formaciones", "CRUD Formaciones", {
               positionClass: "toast-bottom-right"
             });
+            console.error(response);
           }
-        },
-        error: (response) => {
-          this.toastr.error("Error al cargar las formaciones", "CRUD Formaciones", {
-            positionClass: "toast-bottom-right"
-          });
-          console.error(response);
-        }
-      })
+        })
     );
   }
 
+  /**
+   * Inserta una nueva formación en el backend.
+   * @param data Datos de la formación, módulos, objetivos, centros y cursos.
+   * @returns Observable con la respuesta del backend.
+   */
   public insertarFormacion(data: any): Observable<any> {
     const url = `${this.backendUrl}?controlador=cFormaciones&accion=crearFormacion`;
     const payloadData = {
@@ -55,6 +70,11 @@ export class FormacionService {
     return this.http.post<any>(url, payloadData);
   }
 
+  /**
+   * Edita una formación existente.
+   * @param data Datos actualizados de la formación.
+   * @returns Observable con la respuesta del backend.
+   */
   public editarFormacion(data: any): Observable<any> {
     const url = `${this.backendUrl}?controlador=cFormaciones&accion=updateFormacion`;
     const payloadData = {
@@ -68,46 +88,77 @@ export class FormacionService {
     return this.http.post<any>(url, payloadData);
   }
 
-
+  /**
+   * Desactiva una formación por su ID.
+   * @param id ID de la formación.
+   * @returns Observable con la respuesta del backend.
+   */
   public desactivarFormacion(id: number): Observable<any> {
     const url = `${this.backendUrl}?controlador=cFormaciones&accion=desactivarFormacion`;
-
     return this.http.post<any>(url, { id });
   }
 
+  /**
+   * Obtiene los usuarios asignados a una formación.
+   * @param idFormacion ID de la formación.
+   * @returns Observable con los usuarios asignados.
+   */
   public getUsersByFormacion(idFormacion: number): Observable<any> {
     const url = `${this.backendUrl}?controlador=cFormaciones&accion=getUsersByFormacion&idFormacion=${idFormacion}`;
     return this.http.get<any>(url);
   }
 
-
+  /**
+   * Desasigna usuarios de una formación.
+   * @param idFormacion ID de la formación.
+   * @param idsUsuarios Lista de IDs de usuarios a desasignar.
+   * @returns Observable con la respuesta del backend.
+   */
   public unasignUsersByFormacion(idFormacion: number, idsUsuarios: number[]): Observable<any> {
     const url = `${this.backendUrl}?controlador=cFormaciones&accion=unasignUsersByFormacion`;
-    console.log(idFormacion);
-
-    return this.http.post<any>(url, {idFormacion, idsUsuarios});
+    return this.http.post<any>(url, { idFormacion, idsUsuarios });
   }
 
+  /**
+   * Asigna usuarios a una formación.
+   * @param idFormacion ID de la formación.
+   * @param idsUsuarios Lista de IDs de usuarios a asignar.
+   * @returns Observable con la respuesta del backend.
+   */
   public asignUserFormacion(idFormacion: number, idsUsuarios: number[]): Observable<any> {
     const url = `${this.backendUrl}?controlador=cFormaciones&accion=asignUserFormacion`;
-    return this.http.post<any>(url, {idFormacion, idsUsuarios});
+    return this.http.post<any>(url, { idFormacion, idsUsuarios });
   }
 
+  /**
+   * Devuelve el observable de la formación que se está editando.
+   * @returns Observable de la formación a editar.
+   */
   public getFormacionAEditar(): Observable<any> {
     return this.formacionAEditar.asObservable();
   }
 
-  public setFormacionAEditar(formacion: any) {
+  /**
+   * Establece la formación que se va a editar.
+   * @param formacion Objeto de formación.
+   */
+  public setFormacionAEditar(formacion: any): void {
     this.formacionAEditar.next(formacion);
   }
 
-  public getIdFormacion(): Observable<any> {
-   return this.idFormacion.asObservable();
+  /**
+   * Devuelve el observable del ID de la formación seleccionada.
+   * @returns Observable del ID de formación.
+   */
+  public getIdFormacion(): Observable<number> {
+    return this.idFormacion.asObservable();
   }
 
-  public setIdFormacion(idFormacion: number) {
+  /**
+   * Establece el ID de la formación seleccionada.
+   * @param idFormacion ID de la formación.
+   */
+  public setIdFormacion(idFormacion: number): void {
     this.idFormacion.next(idFormacion);
   }
-
-
 }
