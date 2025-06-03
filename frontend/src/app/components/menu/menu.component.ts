@@ -34,7 +34,7 @@ export class MenuComponent implements OnInit {
         backgroundColor: 'rgba(75,192,192,0.4)',
         borderColor: 'rgba(75,192,192,1)',
         fill: true,
-        tension: 0.5
+        tension: 0.1
       }
     ]
   };

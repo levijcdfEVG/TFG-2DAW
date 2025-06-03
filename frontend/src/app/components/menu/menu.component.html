@@ -59,7 +59,7 @@
 
         <!-- Contenido principal -->
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom ">
                 <h1 class="h2" *ngIf="rol === 'admin'">Panel de Administrador</h1>
                 <h1 class="h2" *ngIf="rol === 'responsable'">Panel de Responsable</h1>
                 <h1 class="h2" *ngIf="rol === 'educador'">Panel de Educador</h1>
@@ -72,10 +72,38 @@
 
             <!-- Gráficos (solo para admin) -->
             <div class="row" *ngIf="rol === 'admin'">
-                <div class="col-12 mb-4">
+                <div class="col-6 mb-4">
                     <div class="card shadow-sm">
                         <div class="card-body">
-                            <h5 class="card-title">Usuarios Registrados por Día</h5>
+                            <h5 class="card-title text-center">Sesiones iniciadas hoy</h5>
+                            <div class="chart-container">
+                                <canvas baseChart
+                                        [data]="chartData"
+                                        [type]="chartType"
+                                        [options]="chartOptions">
+                                </canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Formaciones activas</h5>
+                            <div class="chart-container">
+                                <canvas baseChart
+                                        [data]="chartData"
+                                        [type]="chartType"
+                                        [options]="chartOptions">
+                                </canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mb-4 mx-auto">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title"></h5>
                             <div class="chart-container">
                                 <canvas baseChart
                                         [data]="chartData"
