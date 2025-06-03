@@ -73,7 +73,7 @@ export class InfoCentroComponent implements OnInit {
 
   /**
    * Abre el modal para modificar un centro existente.
-   * @param element Centro seleccionado de la tabla.
+   * @param element registro seleccionado de la tabla.
    */
   modificarRegistro(element: any): void {
     this.centroSeleccionado = { ...element }; 
@@ -86,7 +86,7 @@ export class InfoCentroComponent implements OnInit {
   
   /**
    * Solicita confirmación y elimina un centro si el usuario acepta.
-   * @param element Centro a eliminar.
+   * @param element registro a eliminar.
    */
   borrarRegistro(element: any): void {
     this.centroAEliminar = element; 

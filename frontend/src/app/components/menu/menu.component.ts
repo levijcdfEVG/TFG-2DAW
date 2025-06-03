@@ -51,7 +51,7 @@ export class MenuComponent implements OnInit {
    * Inyecta los servicios necesarios para el menú.
    * @param menuService Servicio que obtiene información adicional del usuario desde MySQL.
    * @param authService Servicio de autenticación que maneja el token.
-   * @param sharedService Servicio compartido para almacenar datos globales del usuario.
+   * @param sharedService Servicio compartido para almacenar datos del usuario.
    * @param router Servicio de rutas para navegación dinámica.
    */
   constructor(private menuService: MenuService, private authService: AuthService, private sharedService: SharedService, private router: Router) {}
