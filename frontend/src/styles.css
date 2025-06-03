@@ -1,6 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
 @import "@ng-select/ng-select/themes/default.theme.css";
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
 
 :root {
     --color-primario: #006DA4;
