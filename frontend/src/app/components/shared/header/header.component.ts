@@ -9,19 +9,18 @@ import {Router} from "@angular/router";
 })
 export class HeaderComponent {
 
-    logoPath = 'assets/logotipo.png';
+  logoPath = 'assets/logotipo.png';
 
-    // RRSS
-    facebook = 'https://www.facebook.com';
-    twitter_X = 'https://www.twitter.com';
-    instagram = 'https://www.instagram.com';
-    youtube = 'https://www.youtube.com';
+  // RRSS
+  facebook = 'https://www.facebook.com/EscuelaVirgendeGuadalupe/';
+  twitter_X = 'https://x.com/i/flow/login?redirect_after_login=%2Fescuelaevg';
+  instagram = 'https://www.instagram.com/escuelaevg/?hl=es';
+  youtube = 'https://www.youtube.com/user/VirgenDeGuadalupeTV';
 
-    constructor(private authService: AuthService, private router: Router) {
-    }
+  constructor(private authService: AuthService, private router: Router) {}
 
   logout() {
-        this.authService.logout();
-        this.router.navigate(['/login']);
-    }
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
 }
