@@ -53,6 +53,7 @@ export class AsignarUsuariosFormacionModalComponent implements OnInit {
    * Lista de usuarios seleccionados para ser asignados a la formación.
    */
   protected usuariosSeleccionados: any[] = [];
+  sharedService: any;
 
   constructor(
       private formacionService: FormacionService,
@@ -153,15 +154,25 @@ export class AsignarUsuariosFormacionModalComponent implements OnInit {
    * También filtra los que ya están asignados para que no aparezcan como disponibles.
    */
   private loadUsers(): void {
-    this.usuariosService.getUsersByParams({
+    const idRol = this.sharedService.getIdRol();
+    const idCentro = this.sharedService.getIdCentro();
+
+    const filtros: any = {
       name: '',
       surname: '',
       email: '',
       phone: '',
-      role: '1',
+      role: '1', // educadores
       new_educator: '',
       status: 1
-    }).subscribe(response => {
+    };
+
+    // Si el usuario es responsable (rol 3), añadimos idCentro al filtro
+    if (idRol === 3 && idCentro !== null) {
+      filtros.idCentro = idCentro;
+    }
+
+    this.usuariosService.getUsersByParams(filtros).subscribe(response => {
       if (response.length > 0) {
         this.usuarios = response;
 

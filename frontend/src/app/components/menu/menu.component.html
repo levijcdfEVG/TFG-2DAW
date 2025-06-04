@@ -1,32 +1,30 @@
 <nav class="nav flex-column" [ngSwitch]="rol">
   <!-- Menú para administrador -->
-  <div *ngSwitchCase="'admin'" class="d-flex flex-column justify-content-center align-items-center vh-80">
-        <h1 class="fw-bold text-center mb-5">Menú Administrador</h1>
-        <div class="container mt-5">
-          <div class="row row-cols-2 g-4">
-            <div class="col">
-              <a routerLink="/info-centros" class="btn btn-primary w-100 h-100 text-decoration-none text-white">
-                <h5>Centros</h5>
-              </a>
-            </div>
-            <div class="col">
-              <a routerLink="/info-formaciones" class="btn btn-primary w-100 h-100 text-decoration-none text-white">
-                <h5>Formaciones</h5>
-              </a>
-            </div>
-            <div class="col">
-              <a routerLink="/info-cursos" class="btn btn-primary w-100 h-100 text-decoration-none text-white">
-                <h5>Curso Académico</h5>
-              </a>
-            </div>
-            <div class="col">
-              <a routerLink="/info-educadores" class="btn btn-primary w-100 h-100 text-decoration-none text-white">
-                <h5>Educadores</h5>
-              </a>
-            </div>
-          </div>
-        </div>
+<div *ngSwitchCase="'admin'" class="d-flex flex-column justify-content-center align-items-center vh-80">
+  <h1 class="fw-bold text-center mb-5">Menú Administrador</h1>
+  <div class="container mt-5">
+    <!-- Fila con los dos primeros botones -->
+    <div class="row justify-content-center g-4 mb-3">
+      <div class="col-12 col-md-5">
+        <a routerLink="/info-centros" class="btn btn-primary w-100 h-100 text-decoration-none text-white">
+          <h5>Centros</h5>
+        </a>
       </div>
+      <div class="col-12 col-md-5">
+        <a routerLink="/info-formaciones" class="btn btn-primary w-100 h-100 text-decoration-none text-white">
+          <h5>Formaciones</h5>
+        </a>
+      </div>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-4">
+        <a routerLink="/info-educadores" class="btn btn-primary w-100 h-100 text-decoration-none text-white">
+          <h5>Educadores</h5>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
 
   <!-- Menú para responsable -->
   <div *ngSwitchCase="'responsable'" class="d-flex flex-column justify-content-center align-items-center vh-80">
@@ -36,11 +34,6 @@
             <div class="col">
               <a routerLink="/info-formaciones" class="btn btn-primary w-100 h-100 text-decoration-none text-white">
                 <h5>Formaciones</h5>
-              </a>
-            </div>
-            <div class="col">
-              <a routerLink="/info-cursos" class="btn btn-primary w-100 h-100 text-decoration-none text-white">
-                <h5>Curso académico</h5>
               </a>
             </div>
             <div class="col">
