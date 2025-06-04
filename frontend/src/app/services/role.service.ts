@@ -8,12 +8,21 @@ import { environment } from "../../environments/environment.prod";
 @Injectable({
   providedIn: 'root'
 })
+
+/**
+ * Servicio encargado de manejar la obtención de roles desde el backend.
+ */
 export class RoleService {
 
+    /** URL base para las peticiones relacionadas con roles */
   private rolePath = environment.apiUrl+'?controlador=cRol&accion=';
 
   constructor(private http: HttpClient) { }
 
+    /**
+   * Obtiene todos los roles disponibles desde el backend.
+   * @returns Observable con un array de objetos de tipo `Role`
+   */
   getAllRoles(): Observable<Role[]> {
     return this.http.get<any>(this.rolePath + 'getAllRoles')
         .pipe(
@@ -21,15 +30,19 @@ export class RoleService {
         );
   }
 
-  // Handle HTTP errors
+    /**
+   * Maneja los errores de las peticiones HTTP.
+   * @param error Objeto de error de tipo HttpErrorResponse
+   * @returns Observable que emite un mensaje de error legible
+   */
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'Ha ocurrido un error';
 
     if (error.error instanceof ErrorEvent) {
-      // Client-side error
+      // Error del lado del cliente
       errorMessage = `Error: ${error.error.message}`;
     } else {
-      // Server-side error
+      // Error del lado del servidor
       errorMessage = `Código de error: ${error.status}\nMensaje: ${error.message}`;
     }
 
