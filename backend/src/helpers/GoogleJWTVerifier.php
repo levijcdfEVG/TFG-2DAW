@@ -51,7 +51,6 @@ class GoogleJWTVerifier {
                 return (array) $decoded;
 
             } catch (Exception $e) {
-                // Intenta con la siguiente clave
             }
         }
 
