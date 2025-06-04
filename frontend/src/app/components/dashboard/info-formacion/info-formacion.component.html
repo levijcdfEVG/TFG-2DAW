@@ -1,35 +1,37 @@
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4>Listado de formaciones</h4>
-        <div class="d-flex">
-            <button class="btn btn-outline-secondary btn-sm me-2" (click)="ngOnInit()">
-                <i class="fa-solid fa-arrows-rotate"></i>
-            </button>
-            <button class="btn btn-primary" data-bs-target="#crearFormacionModal" data-bs-toggle="modal">+ Añadir formación</button>
+<div class="container-fluid">
+    <div class="my-3 mx-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4>Listado de formaciones</h4>
+            <div class="d-flex">
+                <button class="btn btn-outline-secondary btn-sm me-2" (click)="ngOnInit()">
+                    <i class="fa-solid fa-arrows-rotate"></i>
+                </button>
+                <button class="btn btn-primary" data-bs-target="#crearFormacionModal" data-bs-toggle="modal">+ Añadir formación</button>
+            </div>
         </div>
-    </div>
 
-    <table id="formaciones" class="table table-bordered table-hover">
-        <thead class="table-light">
-        <tr>
-            <th>Información Completa</th>
-            <th>Id</th>
-            <th>Justificación</th>
-            <th>Duración</th>
-            <th>Modalidad</th>
-            <th>Curso de Inicio</th>
-            <th>Curso de Final</th>
-            <th>Acciones</th>
-        </tr>
-        </thead>
-        <tbody>
+        <table id="formaciones" class="table table-bordered table-hover">
+            <thead class="table-light">
+            <tr>
+                <th>Información Completa</th>
+                <th>Id</th>
+                <th>Justificación</th>
+                <th>Duración</th>
+                <th>Modalidad</th>
+                <th>Curso de Inicio</th>
+                <th>Curso de Final</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
             <div *ngIf="noFormations">
                 No hay formaciones disponibles
             </div>
-        <!-- Aquí se llenará con jQuery -->
-        </tbody>
-    </table>
+            <!-- Aquí se llenará con jQuery -->
+            </tbody>
+        </table>
 
+    </div>
 </div>
 
 <app-crear-formacion-modal (formSubmit)="fetchFormaciones()"></app-crear-formacion-modal>
