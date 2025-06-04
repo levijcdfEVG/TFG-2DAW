@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../../vendor/autoload.php'; // Asegúrate de que este path sea correcto
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
@@ -49,8 +49,6 @@ class GoogleJWTVerifier {
                 }
 
                 return (array) $decoded;
-
-            } catch (Exception $e) {
             }
         }
 

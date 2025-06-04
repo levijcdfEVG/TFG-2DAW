@@ -6,7 +6,8 @@
         "firebase/php-jwt": "^6.11",
         "phpseclib/phpseclib": "^3.0",
         "phpdocumentor/shim": "^3.7",
-        "phpmailer/phpmailer": "^6.10"
+        "phpmailer/phpmailer": "^6.10",
+        "google/apiclient": "^2.18"
     },
     "license": "MIT",
     "autoload": {

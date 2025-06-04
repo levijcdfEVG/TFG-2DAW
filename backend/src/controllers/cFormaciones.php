@@ -4,6 +4,7 @@ require_once MODELS . 'mUsuario.php';
 require_once MODELS.'mFormacion.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once 'config/config.php';
+require_once 'helpers/auth_helper.php';
 
 /**
  * Controlador para gestionar las operaciones CRUD de formaciones.
@@ -50,6 +51,8 @@ class cFormaciones {
             return;
         }
 
+        verificarTokenYCorreo();
+
         try {
             $response = $this->mFormacion->listarAllFormaciones();
             echo json_encode($response);
@@ -70,6 +73,8 @@ class cFormaciones {
         //     $this->methodNotAllowed(['POST']);
         //     return;
         // }
+
+        verificarTokenYCorreo();
 
         try {
             $json = file_get_contents("php://input");
@@ -105,6 +110,8 @@ class cFormaciones {
         //     $this->methodNotAllowed(['PUT']);
         //     return;
         // }
+
+        verificarTokenYCorreo();
 
         try {
             $input = json_decode(file_get_contents('php://input'), true);
@@ -142,6 +149,8 @@ class cFormaciones {
         //     return;
         // }
 
+        verificarTokenYCorreo();
+
         try {
             $input = json_decode(file_get_contents('php://input'), true);
 
@@ -175,6 +184,8 @@ class cFormaciones {
             $this->methodNotAllowed(['DELETE']);
             return;
         }
+
+        verificarTokenYCorreo();
 
         try {
             $input = json_decode(file_get_contents('php://input'), true);
@@ -217,6 +228,7 @@ class cFormaciones {
      * }
      */
    public function asignUserFormacion() {
+        verificarTokenYCorreo();
         try {
             $input = json_decode(file_get_contents('php://input'), true);
 
@@ -261,7 +273,7 @@ class cFormaciones {
         //     $this->methodNotAllowed(['GET']);
         //     return;
         // }
-
+        verificarTokenYCorreo();
         try {
             if (!isset($_GET['idFormacion']) || empty($_GET['idFormacion'])) {
                 $this->sendResponse(false, 'Falta el parámetro idFormacion', null, 400);
@@ -304,6 +316,8 @@ class cFormaciones {
             $this->methodNotAllowed(['POST']);
             return;
         }
+
+        verificarTokenYCorreo();
 
         try {
             $input = json_decode(file_get_contents('php://input'), true);
