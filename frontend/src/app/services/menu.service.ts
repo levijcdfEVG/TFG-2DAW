@@ -16,10 +16,6 @@ export class MenuService {
   }
 
   getUserByDay(): Observable<any> {
-    return this.http.get<any>(this.urlBase+'getUserByDay').pipe(map(res => res.data));
-  }
-
-  getActividadUsuarios(): Observable<any> {
-    return this.http.get(`${environment.apiUrl}/estadisticas/actividad-usuarios`);
+    return this.http.get<any>(this.urlBase+'getUserByDay');
   }
 }

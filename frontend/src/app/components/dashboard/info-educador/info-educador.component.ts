@@ -34,7 +34,7 @@ export class InfoEducadorComponent implements OnInit  {
     email: '',
     phone: '',
     role: 0,
-    new_educator: 0,
+    new_educator: 2,
     status: 1
   } as const;
 
@@ -153,7 +153,6 @@ export class InfoEducadorComponent implements OnInit  {
         .pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: (response: any) => {
         this.dataUsers = response;
-        console.log(this.dataUsers);
         this.hasSearched = true;
         this.cdr.detectChanges();
         this.loadDataTable();

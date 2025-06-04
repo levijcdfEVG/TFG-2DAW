@@ -64,7 +64,6 @@ class mMenu {
 
             $stmt = $this->conexion->prepare($sql);
             $stmt->execute();
-
             $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             return ['success' => true, 'data' => $resultados];

@@ -4,17 +4,7 @@
         <!-- Aside izquierdo con navegación -->
         <aside class="col-md-3 col-lg-2 d-md-block bg-light sidebar min-vh-100 h-100">
             <div class="position-sticky pt-3">
-                <!-- Dropdown para cambio de rol -->
-                <div class="dropdown mb-4 w-100 px-3">
-                    <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" id="dropdownRoleButton" data-bs-toggle="dropdown" aria-expanded="false">
-                        Cambiar Rol ({{ rol | titlecase }})
-                    </button>
-                    <ul class="dropdown-menu w-100" aria-labelledby="dropdownRoleButton">
-                        <li><a class="dropdown-item" (click)="cambiarRol('admin')">Admin</a></li>
-                        <li><a class="dropdown-item" (click)="cambiarRol('responsable')">Responsable</a></li>
-                        <li><a class="dropdown-item" (click)="cambiarRol('educador')">Educador</a></li>
-                    </ul>
-                </div>
+
                 <nav class="nav flex-column" [ngSwitch]="rol">
                     <!-- Menú para administrador -->
                     <div *ngSwitchCase="'admin'">

@@ -22,21 +22,8 @@ export class MenuComponent implements OnInit {
   idCentro: number  = 0;
 
   public chartData: ChartData = {
-    labels: Array.from({length: 15}, (_, i) => {
-      const date = new Date();
-      date.setDate(date.getDate() - (14 - i));
-      return date.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' });
-    }),
-    datasets: [
-      {
-        data: Array(15).fill(0), // Inicializamos con ceros
-        label: 'Actividad',
-        backgroundColor: 'rgba(75,192,192,0.4)',
-        borderColor: 'rgba(75,192,192,1)',
-        fill: true,
-        tension: 0.1
-      }
-    ]
+    labels: [],
+    datasets: []
   };
 
   public chartOptions: ChartOptions = {
@@ -49,12 +36,17 @@ export class MenuComponent implements OnInit {
     },
     scales: {
       y: {
-        beginAtZero: true
+        beginAtZero: true,
+        ticks: {
+          precision: 0, // Fuerza números enteros
+          stepSize: 1   // Opcional: define el paso entre ticks
+        }
       }
+
     }
   };
 
-  public chartType: ChartType = 'line'; // puedes cambiar a 'bar', 'pie', 'doughnut', 'line', etc.
+  public chartType: ChartType = 'bar'; // puedes cambiar a 'bar', 'pie', 'doughnut', 'line', etc.
 
   constructor(private menuService: MenuService, private authService: AuthService, private sharedService: SharedService, private router: Router) {}
 
@@ -105,9 +97,34 @@ export class MenuComponent implements OnInit {
     } else {
       console.warn('No se pudo obtener información del token.');
     }
+    this.loadUserGraph();
   }
 
-  cambiarRol(nuevoRol: 'admin' | 'responsable' | 'educador'): void {
-    this.rol = nuevoRol;
+  loadUserGraph() {
+    this.menuService.getUserByDay().subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          const fechas = response.data.map((item: any) => item.fecha);
+          const cantidades = response.data.map((item: any) => item.cantidad);
+
+          this.chartData = {
+            labels: fechas,
+            datasets: [{
+              label: 'Usuarios conectados por día',
+              data: cantidades,
+              fill: true,
+              borderColor: 'rgba(75, 192, 192, 1)',
+              backgroundColor: 'rgba(75, 192, 192, 0.2)',
+              tension: 0.3
+            }]
+          };
+        } else {
+          console.warn('No se recibieron datos válidos');
+        }
+      },
+      error: (error) => {
+        console.error('Error al obtener los datos del usuario:', error);
+      }
+    });
   }
 }

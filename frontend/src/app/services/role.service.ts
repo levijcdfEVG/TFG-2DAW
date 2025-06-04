@@ -23,17 +23,10 @@ export class RoleService {
 
   // Handle HTTP errors
   private handleError(error: HttpErrorResponse) {
-    let errorMessage = 'Ha ocurrido un error';
-
-    if (error.error instanceof ErrorEvent) {
-      // Client-side error
-      errorMessage = `Error: ${error.error.message}`;
-    } else {
-      // Server-side error
-      errorMessage = `Código de error: ${error.status}\nMensaje: ${error.message}`;
-    }
-
-    console.error(errorMessage);
-    return throwError(() => errorMessage);
+    const errorMessage = error.error?.message || 'Error desconocido del servidor';
+    return throwError(() => ({
+      status: error.status,
+      message: errorMessage
+    }));
   }
 }
