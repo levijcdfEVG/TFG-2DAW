@@ -510,20 +510,13 @@ class MFormacion {
         try {
             $this->conectar();
 
-            $sql = "SELECT f.* FROM formacion f
-                    INNER JOIN inscripciones i ON f.id = i.id_formacion	
-                    INNER JOIN centro_formacion cf ON f.id = cf.id_formacion
-                    INNER JOIN centro_fundacion c ON cf.id_centro = c.id
-                    WHERE i.id_usu = 8 AND activo = 1;";
-
-            $stmt = $this->conexion->prepare($sql);
+            $stmt = $this->conexion->prepare("
+                SELECT f.* FROM formacion f
+                INNER JOIN inscripciones i ON f.id = i.id_formacion
+                WHERE i.id_usu = ?"
+            );
             $stmt->execute([$idUsuario]);
             $formaciones = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-            if (empty($formaciones)) {
-                return ['success' => true, 'formaciones' => $formaciones];
-            }
-
             return ['success' => true, 'formaciones' => $formaciones];
         } catch (PDOException $e) {
             return ['success' => false, 'message' => 'Error al obtener formaciones: ' . $e->getMessage()];

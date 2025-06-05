@@ -5,11 +5,12 @@
  */
 
 import { Injectable } from '@angular/core';
-import { HttpClient } from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { AddCentroPayload, FormacionResponse } from '../services/interfaces/formacionesResponse';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from "../../environments/environment.prod";
+import {catchError, map} from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -105,6 +106,12 @@ export class FormacionService {
    */
   public getUsersByFormacion(idFormacion: number): Observable<any> {
     const url = `${this.backendUrl}?controlador=cFormaciones&accion=getUsersByFormacion&idFormacion=${idFormacion}`;
+    return this.http.get<any>(url);
+  }
+
+  public getFormationByUserId(userId: number): Observable<any> {
+    const url = `${this.backendUrl}?controlador=cFormaciones&accion=getFormationByUserId&id=${userId}`;
+    console.log(url);
     return this.http.get<any>(url);
   }
 

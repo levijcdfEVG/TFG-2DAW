@@ -296,7 +296,6 @@ class cFormaciones {
      */
     public function getFormationByUserId($params) {
         try {
-            var_dump($params);
             if (!isset($_GET['id']) || empty($_GET['id'])) {
                 $this->sendResponse(false, 'Falta el parámetro id', null, 400);
                 return;

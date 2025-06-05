@@ -5,7 +5,7 @@ import { UsuarioService } from '../../../../services/usuario.service';
 import { ActivatedRoute } from "@angular/router";
 import { Subject, takeUntil } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
-import { FormacionesService } from 'src/app/services/formaciones.service';
+import { FormacionService } from 'src/app/services/formacion.service';
 
 @Component({
   selector: 'app-user-file',
@@ -28,7 +28,7 @@ export class UserFileComponent implements OnInit {
 
   constructor(
     private userService: UsuarioService,
-    private formationService: FormacionesService,
+    private formationService: FormacionService,
     private route: ActivatedRoute,
     private toastr: ToastrService
   ) {}
@@ -62,16 +62,20 @@ export class UserFileComponent implements OnInit {
   }
 
   loadUserFormations() {
-    this.formationService.getFormationsByUserId(this.userId).pipe(takeUntil(this.unsubscribe$)).subscribe({
+    console.log('Entra en loadUserFormations', this.userId);
+    this.formationService.getFormationByUserId(this.userId).pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: (response: any) => {
-        if(response) {
-          this.formationData = response;
+        if(response && response.success) {
+          this.formationData = response.data;
+          console.log('Entra en loadUserFormations', this.formationData);
         } else {
-          console.error('No formation data received');
+          console.error('No formation data received or error in response');
+          this.formationData = [];
         }
       },
       error: (error) => {
         console.error('Error al obtener las formaciones del usuario', error);
+        this.formationData = [];
       }
     });
   }

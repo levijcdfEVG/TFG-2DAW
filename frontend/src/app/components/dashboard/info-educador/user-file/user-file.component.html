@@ -87,27 +87,21 @@
             <table class="table table-striped table-sm">
                 <thead>
                     <tr>
-                        <th>Nombre</th>
-                        <th>Fecha Inicio</th>
-                        <th>Fecha Fin</th>
+                        <th>Denominación acción</th>
+                        <th>Lugar de impartición</th>
+                        <th>Duración estimada</th>
+                        <th>Modalidad</th>
                         <th>Estado</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let formation of formationData">
-                        <td>{{ formation.nombre }}</td>
-                        <td>{{ formation.fecha_inicio | date:'dd/MM/yyyy' }}</td>
-                        <td>{{ formation.fecha_fin | date:'dd/MM/yyyy' }}</td>
-                        <td>
-                            <span class="badge" 
-                                  [ngClass]="{
-                                    'bg-success': formation.estado === 'Activa',
-                                    'bg-warning': formation.estado === 'Pendiente',
-                                    'bg-secondary': formation.estado === 'Finalizada'
-                                  }">
-                                {{ formation.estado }}
-                            </span>
-                        </td>
+                        <td>PENDIENTE</td>
+                        <td>{{ formation.lugar_imparticion }}</td>
+                        <td>{{ formation.duracion}}</td>
+                        <td>{{ formation.modalidad}}</td>
+                        <td>{{ formation.activo}}</td>
+
                     </tr>
                 </tbody>
             </table>
