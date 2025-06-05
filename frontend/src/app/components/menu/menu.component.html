@@ -1,55 +1,17 @@
-<!-- Simulación de cambio de rol (solo en desarrollo) -->
-<div class="container-fluid vh-100">
-    <div class="row h-100">
-        <!-- Aside izquierdo con navegación -->
-        <aside class="col-md-3 col-lg-2 d-md-block bg-light sidebar min-vh-100 h-100">
-            <div class="position-sticky pt-3">
-
-                <nav class="nav flex-column" [ngSwitch]="rol">
-                    <!-- Menú para administrador -->
-                    <div *ngSwitchCase="'admin'">
-                        <h6 class="sidebar-heading px-3 mt-4 mb-1 text-muted">Administración</h6>
-                        <a routerLink="/info-centros" class="nav-link">
-                            <i class="bi bi-building"></i> Centros
-                        </a>
-                        <a routerLink="/info-formaciones" class="nav-link">
-                            <i class="bi bi-book"></i> Formaciones
-                        </a>
-                        <a routerLink="/info-cursos" class="nav-link">
-                            <i class="bi bi-calendar"></i> Curso Académico
-                        </a>
-                        <a routerLink="/info-educadores" class="nav-link">
-                            <i class="bi bi-people"></i> Educadores
-                        </a>
-                    </div>
-
-                    <!-- Menú para responsable -->
-                    <div *ngSwitchCase="'responsable'">
-                        <h6 class="sidebar-heading px-3 mt-4 mb-1 text-muted">Gestión</h6>
-                        <a routerLink="/info-formaciones" class="nav-link">
-                            <i class="bi bi-book"></i> Formaciones
-                        </a>
-                        <a routerLink="/info-cursos" class="nav-link">
-                            <i class="bi bi-calendar"></i> Curso académico
-                        </a>
-                        <a routerLink="/info-educadores" class="nav-link">
-                            <i class="bi bi-people"></i> Usuarios
-                        </a>
-                    </div>
-
-                    <!-- Menú para educador -->
-                    <div *ngSwitchCase="'educador'">
-                        <a routerLink="/mi-perfil" class="nav-link">
-                            <i class="bi bi-person"></i> Mi Información
-                        </a>
-                    </div>
-                </nav>
-            </div>
-        </aside>
-
-        <!-- Contenido principal -->
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom ">
+<div class="container-fluid">
+    <div class="row">
+        <aside class="col-2 m-0 p-0">
+            <nav class="nav pt-3 flex-column h-100 bg-light">
+              <h6 class="sidebar-heading px-3 mt-4 mb-1 text-muted">Administración</h6>
+              <a routerLink="/info-centros" class="nav-link mx-2">Centros</a>
+              <a routerLink="/info-formaciones" class="nav-link mx-2">Formaciones</a>
+              <a routerLink="/info-cursos" class="nav-link mx-2">Curso Académico</a>
+              <a routerLink="/info-educadores" class="nav-link mx-2">Educadores</a>
+            </nav>
+          </aside>
+        <!-- Contenido del menú -->
+        <div class="col-10 border border-danger">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 border-bottom">
                 <h1 class="h2" *ngIf="rol === 'admin'">Panel de Administrador</h1>
                 <h1 class="h2" *ngIf="rol === 'responsable'">Panel de Responsable</h1>
                 <h1 class="h2" *ngIf="rol === 'educador'">Panel de Educador</h1>
@@ -59,52 +21,52 @@
                     </div>
                 </div>
             </div>
-
+        
             <!-- Gráficos (solo para admin) -->
-            <div class="row" *ngIf="rol === 'admin'">
-                <div class="col-6 mb-4">
+            <div class="row mt-4" *ngIf="rol === 'admin'">  
+                <div class="col-5 mx-auto">
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <h5 class="card-title text-center">Sesiones iniciadas hoy</h5>
                             <div class="chart-container">
                                 <canvas baseChart
-                                        [data]="chartData"
-                                        [type]="chartType"
-                                        [options]="chartOptions">
+                                        [data]="userChartData"
+                                        [type]="userChartType"
+                                        [options]="userChartOptions">
                                 </canvas>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-6 mb-4">
+                <div class="col-5 mx-auto">
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <h5 class="card-title text-center">Formaciones activas</h5>
                             <div class="chart-container">
                                 <canvas baseChart
-                                        [data]="chartData"
-                                        [type]="chartType"
-                                        [options]="chartOptions">
+                                        [data]="userChartData"
+                                        [type]="formChartType"
+                                        [options]="formChartOptions">
                                 </canvas>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-6 mb-4 mx-auto">
+                <div class="col-5 mx-auto">
                     <div class="card shadow-sm">
                         <div class="card-body">
-                            <h5 class="card-title"></h5>
+                            <h5 class="card-title text-center">PRUEBA</h5>
                             <div class="chart-container">
                                 <canvas baseChart
-                                        [data]="chartData"
-                                        [type]="chartType"
-                                        [options]="chartOptions">
+                                        [data]="userChartData"
+                                        [type]="pruebaChartType"
+                                        [options]="pruebaChartOptions">
                                 </canvas>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </main>
+        </div>
     </div>
 </div>

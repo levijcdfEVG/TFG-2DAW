@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { User } from '../interfaces/user.interface';
 import { map, catchError } from 'rxjs/operators';
 
 @Injectable({
@@ -15,8 +14,14 @@ export class FormacionesService {
 
     // Get a user list with or without params
 
-    getFormationsByUserId(id: number): Observable<any> {
-        return this.http.get('/api/formaciones');
+    getFormationsByUserId(userId: number): Observable<any> {
+        console.log(userId);
+        const params = new HttpParams().set('id', userId.toString());
+        return this.http.get<any>(this.formationPath + 'getFormationByUserId', { params })
+        .pipe(
+            map(res => res.data),
+            catchError(this.handleError)
+        );
     }
 
     // Handle HTTP errors

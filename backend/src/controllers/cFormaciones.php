@@ -283,6 +283,40 @@ class cFormaciones {
     }
 
     /**
+     * Obtiene las formaciones de un usuario específico.
+     *
+     * Este método espera una petición GET con el parámetro `id` en la URL.
+     * Llama al modelo para recuperar las formaciones asociadas al usuario y devuelve
+     * una respuesta JSON con los resultados.
+     *
+     * @return void
+     *
+     * @throws Exception Si ocurre un error inesperado durante el proceso.
+     *
+     */
+    public function getFormationByUserId($params) {
+        try {
+            var_dump($params);
+            if (!isset($_GET['id']) || empty($_GET['id'])) {
+                $this->sendResponse(false, 'Falta el parámetro id', null, 400);
+                return;
+            }
+
+            $idUsuario = (int)$_GET['id'];
+            $resultado = $this->mFormacion->getFormationByUserId($idUsuario);
+
+            if (!$resultado['success']) {
+                $this->sendResponse(false, $resultado['message'] ?? 'Error desconocido', null, 500);
+                return;
+            }
+
+            $this->sendResponse(true, 'Formaciones obtenidas correctamente', $resultado['formaciones']);
+        } catch (Exception $e) {
+            $this->sendResponse(false, $e->getMessage(), null, 500);
+        }
+    }
+    
+    /**
      * Desasigna uno o varios usuarios de una formación específica.
      *
      * Procesa una solicitud JSON que debe contener el ID de la formación y un array de IDs de usuarios.

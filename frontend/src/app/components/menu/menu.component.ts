@@ -1,9 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
 import { MenuService } from 'src/app/services/menu.service';
 import { SharedService } from 'src/app/services/shared.service';
 import { Router } from '@angular/router';
 import { ChartData, ChartOptions, ChartType } from "chart.js";
+import { RoleService } from 'src/app/services/role.service';
 
 @Component({
   selector: 'app-menu',
@@ -11,7 +12,7 @@ import { ChartData, ChartOptions, ChartType } from "chart.js";
   styleUrls: ['./menu.component.css']
 })
 export class MenuComponent implements OnInit {
-  @Input() rol: 'admin' | 'responsable' | 'educador' = 'admin';
+  rol: 'admin' | 'responsable' | 'educador' = 'admin';
 
   userInfo: any = {};
   userEmail: string = '';
@@ -21,12 +22,9 @@ export class MenuComponent implements OnInit {
   idRol: number  = 0;
   idCentro: number  = 0;
 
-  public chartData: ChartData = {
-    labels: [],
-    datasets: []
-  };
-
-  public chartOptions: ChartOptions = {
+  public userChartData: ChartData = { labels: [], datasets: [] };
+  public userChartType: ChartType = 'line'; // puedes cambiar a 'bar', 'pie', 'doughnut', 'line', etc.
+  public userChartOptions: ChartOptions = {
     responsive: true,
     plugins: {
       legend: {
@@ -46,9 +44,51 @@ export class MenuComponent implements OnInit {
     }
   };
 
-  public chartType: ChartType = 'bar'; // puedes cambiar a 'bar', 'pie', 'doughnut', 'line', etc.
+  // public userChartData: ChartData = { labels: [], datasets: [] };
+  public formChartType: ChartType = 'line'; // puedes cambiar a 'bar', 'pie', 'doughnut', 'line', etc.
+  public formChartOptions: ChartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'top'
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          precision: 0, // Fuerza números enteros
+          stepSize: 1   // Opcional: define el paso entre ticks
+        }
+      }
 
-  constructor(private menuService: MenuService, private authService: AuthService, private sharedService: SharedService, private router: Router) {}
+    }
+  };
+
+  // public userChartData: ChartData = { labels: [], datasets: [] };
+  public pruebaChartType: ChartType = 'line'; // puedes cambiar a 'bar', 'pie', 'doughnut', 'line', etc.
+  public pruebaChartOptions: ChartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'top'
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          precision: 0, // Fuerza números enteros
+          stepSize: 1   // Opcional: define el paso entre ticks
+        }
+      }
+
+    }
+  };
+
+  constructor(private menuService: MenuService, private authService: AuthService, private sharedService: SharedService, private router: Router, private roleService: RoleService) {}
 
   ngOnInit(): void {
     const tokenPayload = this.authService.decodeToken();
@@ -88,6 +128,7 @@ export class MenuComponent implements OnInit {
               this.rol = 'responsable';
               break;
           }
+          this.roleService.setRol(this.rol);
         },
         error: (error) => {
           console.error('Error al obtener datos del usuario:', error);
@@ -107,7 +148,7 @@ export class MenuComponent implements OnInit {
           const fechas = response.data.map((item: any) => item.fecha);
           const cantidades = response.data.map((item: any) => item.cantidad);
 
-          this.chartData = {
+          this.userChartData = {
             labels: fechas,
             datasets: [{
               label: 'Usuarios conectados por día',

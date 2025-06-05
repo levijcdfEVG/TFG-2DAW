@@ -1,13 +1,15 @@
-import { Component} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {AuthService} from "../../../services/auth.service";
 import {Router} from "@angular/router";
+import { RoleService } from 'src/app/services/role.service';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
+  rol: 'admin' | 'responsable' | 'educador' = 'educador';
 
   logoPath = 'assets/logotipo.png';
 
@@ -17,7 +19,13 @@ export class HeaderComponent {
   instagram = 'https://www.instagram.com/escuelaevg/?hl=es';
   youtube = 'https://www.youtube.com/user/VirgenDeGuadalupeTV';
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router, private roleService: RoleService) {}
+
+  ngOnInit(): void {
+    this.roleService.rol$.subscribe(rol => {
+      this.rol = rol;
+    });
+  }
 
   logout() {
     this.authService.logout();

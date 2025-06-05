@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
-import {Observable, throwError} from "rxjs";
+import {Observable, throwError, BehaviorSubject} from "rxjs";
 import { Role } from '../interfaces/role.interface';
 import {map, catchError} from "rxjs/operators";
 import { environment } from "../../environments/environment.prod";
@@ -11,6 +11,18 @@ import { environment } from "../../environments/environment.prod";
 export class RoleService {
 
   private rolePath = environment.apiUrl+'?controlador=cRol&accion=';
+
+  // Centralización del rol
+  private rolSubject = new BehaviorSubject<'admin' | 'responsable' | 'educador'>('educador');
+  rol$ = this.rolSubject.asObservable();
+
+  setRol(rol: 'admin' | 'responsable' | 'educador') {
+    this.rolSubject.next(rol);
+  }
+
+  getRol(): 'admin' | 'responsable' | 'educador' {
+    return this.rolSubject.value;
+  }
 
   constructor(private http: HttpClient) { }
 
