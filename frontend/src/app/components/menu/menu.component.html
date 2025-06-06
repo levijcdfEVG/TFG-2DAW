@@ -10,7 +10,7 @@
             </nav>
           </aside>
         <!-- Contenido del menú -->
-        <div class="col-10 border border-danger">
+        <div class="col-10">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 border-bottom">
                 <h1 class="h2" *ngIf="rol === 'admin'">Panel de Administrador</h1>
                 <h1 class="h2" *ngIf="rol === 'responsable'">Panel de Responsable</h1>
@@ -23,7 +23,7 @@
             </div>
         
             <!-- Gráficos (solo para admin) -->
-            <div class="row mt-4" *ngIf="rol === 'admin'">  
+            <div class="row mt-4" *ngIf="rol === 'admin'">
                 <div class="col-5 mx-auto">
                     <div class="card shadow-sm">
                         <div class="card-body">
@@ -58,9 +58,9 @@
                             <h5 class="card-title text-center">Nuevos educadores por centro</h5>
                             <div class="chart-container">
                                 <canvas baseChart
-                                        [data]="userChartData"
-                                        [type]="pruebaChartType"
-                                        [options]="pruebaChartOptions">
+                                        [data]="centerChartData"
+                                        [type]="centerChartType"
+                                        [options]="centerChartOptions">
                                 </canvas>
                             </div>
                         </div>

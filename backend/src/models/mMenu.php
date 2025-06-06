@@ -56,7 +56,7 @@ class mMenu {
         }
     }
 
-    public function getUserByDay(){
+    public function getUserByDay() {
         $this->conectar();
         
         try{
@@ -93,17 +93,37 @@ class mMenu {
         }
     }
 
-    public function getFormationActiveByMonth(){
+    public function getFormationActiveByMonth() {
         $this->conectar();
     
         try{
-            $sql = 'SELECT 
-                    DATE_FORMAT(CURRENT_DATE, "%Y-%m") as mes,
-                    COUNT(*) as cantidad 
+            $sql = 'SELECT DATE_FORMAT(CURRENT_DATE, "%Y-%m") as mes, COUNT(*) as cantidad 
                     FROM formacion 
-                    WHERE estado = "activa" 
+                    WHERE activo = 1 
                     GROUP BY DATE_FORMAT(CURRENT_DATE, "%Y-%m")
                     ORDER BY mes DESC';
+    
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+            $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+            return ['success' => true, 'data' => $resultados];
+        } catch(PDOException $e){
+            return ['success' => false, 'message' => 'Error al obtener los datos: ' . $e->getMessage()];
+        }
+    }
+
+    public function getUserByCenter() {
+        $this->conectar();
+    
+        try{
+            $sql = 'SELECT c.nombre_centro,
+                    COUNT(u.id) as total_usuarios
+                    FROM usuario u
+                    JOIN centro_fundacion c ON u.id_centro = c.id
+                    WHERE u.estado  = 1
+                    GROUP BY c.nombre_centro
+                    ORDER BY total_usuarios DESC';
     
             $stmt = $this->conexion->prepare($sql);
             $stmt->execute();

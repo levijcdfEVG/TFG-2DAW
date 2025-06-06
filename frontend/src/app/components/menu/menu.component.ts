@@ -67,9 +67,9 @@ export class MenuComponent implements OnInit {
     }
   };
 
-  // public userChartData: ChartData = { labels: [], datasets: [] };
-  public pruebaChartType: ChartType = 'line'; // puedes cambiar a 'bar', 'pie', 'doughnut', 'line', etc.
-  public pruebaChartOptions: ChartOptions = {
+  public centerChartData: ChartData = { labels: [], datasets: [] };
+  public centerChartType: ChartType = 'bar'; // puedes cambiar a 'bar', 'pie', 'doughnut', 'line', etc.
+  public centerChartOptions: ChartOptions = {
     responsive: true,
     plugins: {
       legend: {
@@ -144,70 +144,49 @@ export class MenuComponent implements OnInit {
     }
     this.loadUserGraph();
     this.loadFormGraph();
+    this.loadCenterGraph();
   }
 
   loadUserGraph() {
     this.menuService.getUserByDay().subscribe({
       next: (response) => {
         if (response.success && response.data) {
-          // Verificar si la respuesta tiene la nueva estructura
-          if (response.data.totalSesiones && response.data.sesionesPorRol) {
-            const totalSesiones = response.data.totalSesiones;    // Sesiones totales por día
-            const sesionesPorRol = response.data.sesionesPorRol;  // Sesiones por rol y día
+          const totalSesiones = response.data.totalSesiones;    // Sesiones totales por día
+          const sesionesPorRol = response.data.sesionesPorRol;  // Sesiones por rol y día
 
-            // Procesar datos para el gráfico
-            const fechas = totalSesiones.map((item: { fecha: string }) => item.fecha);
-            const totales = totalSesiones.map((item: { cantidad: number }) => item.cantidad);
+          // Procesar datos para el gráfico
+          const fechas = totalSesiones.map((item: { fecha: string }) => item.fecha);
+          const totales = totalSesiones.map((item: { cantidad: number }) => item.cantidad);
 
-            // Procesar datos por rol
-            const roles = Array.from(new Set(sesionesPorRol.map((item: { nombre_rol: string }) => item.nombre_rol))) as string[]; // Obtiene una lista unica de roles
-            const datasets = roles.map((rol: string) => {
-              const datos = fechas.map((fecha: string) => {
-                const registro = sesionesPorRol.find((item: { fecha: string; nombre_rol: string }) => 
-                  item.fecha === fecha && item.nombre_rol === rol
-                );
-                return registro ? registro.cantidad : 0;
-              });
-              return {
-                label: rol,
-                data: datos,
-                borderColor: this.getRandomColor(),
-                fill: false,
-                type: 'line' as const
-              } as ChartDataset<'line', number[]>;
+          // Procesar datos por rol
+          const roles = Array.from(new Set(sesionesPorRol.map((item: { nombre_rol: string }) => item.nombre_rol))) as string[]; // Obtiene una lista unica de roles
+          const datasets = roles.map((rol: string) => {
+            const datos = fechas.map((fecha: string) => {
+              const registro = sesionesPorRol.find((item: { fecha: string; nombre_rol: string }) => 
+                item.fecha === fecha && item.nombre_rol === rol
+              );
+              return registro ? registro.cantidad : 0;
             });
-
-            // Añadir el dataset de totales
-            datasets.unshift({
-              label: 'Total Sesiones',
-              data: totales,
-              borderColor: '#000000',
+            return {
+              label: rol,
+              data: datos,
               fill: false,
               type: 'line' as const
-            } as ChartDataset<'line', number[]>);
+            } as ChartDataset<'line', number[]>;
+          });
 
-            this.userChartData = {
-              labels: fechas,
-              datasets: datasets
-            };
-          } else {
-            // Si la respuesta tiene el formato antiguo
-            const fechas = response.data.map((item: { fecha: string }) => item.fecha);
-            const cantidades = response.data.map((item: { cantidad: number }) => item.cantidad);
+          // Añadir el dataset de totales
+          datasets.unshift({
+            label: 'Total Sesiones',
+            data: totales,
+            fill: false,
+            type: 'line' as const
+          } as ChartDataset<'line', number[]>);
 
-            this.userChartData = {
-              labels: fechas,
-              datasets: [{
-                label: 'Usuarios conectados por día',
-                data: cantidades,
-                fill: true,
-                borderColor: 'rgba(75, 192, 192, 1)',
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                tension: 0.3,
-                type: 'line' as const
-              } as ChartDataset<'line', number[]>]
-            };
-          }
+          this.userChartData = {
+            labels: fechas,
+            datasets: datasets
+          };
         } else {
           console.warn('No se recibieron datos válidos');
         }
@@ -221,40 +200,110 @@ export class MenuComponent implements OnInit {
   loadFormGraph() {
     this.menuService.getFormationActiveByMonth().subscribe({
       next: (response) => {
-        console.log(response);
-          if(response) {
-              const meses = response.data.map((item: any) => {
-                  // Convertir el formato YYYY-MM a un formato más legible
-                  const [year, month] = item.mes.split('-');
-                  return new Date(parseInt(year), parseInt(month) - 1).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
-              });
-              const cantidades = response.data.map((item: any) => item.cantidad);
+        if (response) {
+          const meses = response.data.map((item: any) => {
+            const [year, month] = item.mes.split('-');
+            return new Date(parseInt(year), parseInt(month) - 1).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+          });
+          const cantidades = response.data.map((item: any) => item.cantidad);
 
-              this.formChartData = {
-                  labels: meses,
-                  datasets: [{
-                      label: 'Formaciones activas por mes',
-                      data: cantidades,
-                      fill: true,
-                      borderColor: 'rgba(75, 192, 192, 1)',
-                      backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                      tension: 0.3
-                  }]
-              };
-          }
+          // Definimos los colores y estilos para el gráfico
+          const chartColors = {
+            borderColor: 'rgb(75, 192, 192)',      // Verde azulado
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            pointBackgroundColor: 'rgb(75, 192, 192)',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: 'rgb(75, 192, 192)'
+          };
+
+          this.formChartData = {
+            labels: meses,
+            datasets: [{
+              label: 'Formaciones activas por mes',
+              data: cantidades,
+              fill: true,
+              type: 'line' as const,
+              ...chartColors,
+              pointRadius: 5,
+              pointHoverRadius: 8,
+              borderWidth: 2,
+              tension: 0.3
+            }]
+          };
+
+          // Actualizamos las opciones del gráfico
+          this.formChartOptions = {
+            responsive: true,
+            plugins: {
+              legend: {
+                display: true,
+                position: 'top',
+                labels: {
+                  color: '#666',
+                  font: {
+                    size: 12
+                  }
+                }
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                grid: {
+                  color: 'rgba(0, 0, 0, 0.1)'
+                },
+                ticks: {
+                  precision: 0,
+                  stepSize: 1,
+                  color: '#666'
+                }
+              },
+              x: {
+                grid: {
+                  color: 'rgba(0, 0, 0, 0.1)'
+                },
+                ticks: {
+                  color: '#666'
+                }
+              }
+            }
+          };
+        }
       },
       error: (error) => {
-          console.error('Error al obtener los datos de formaciones:', error);
+        console.error('Error al obtener los datos de formaciones:', error);
       }
-  });
+    });
   }
 
-  private getRandomColor(): string {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
+  loadCenterGraph() {
+    this.menuService.getUserByCenter().subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          // Procesar los datos para el gráfico
+          const labels = response.data.map((item: any) => item.nombre_centro);
+          const data = response.data.map((item: any) => item.total_usuarios);
+  
+          this.centerChartData = {
+            labels: labels,
+            datasets: [
+              {
+                label: 'Total Usuarios',
+                data: data,
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgb(54, 162, 235)',
+                borderWidth: 1
+              }
+            ]
+          };
+        } else {
+          console.warn('No se recibieron datos válidos para el gráfico de centros');
+        }
+      },
+      error: (error) => {
+        console.error('Error al obtener los datos de centros:', error);
+      }
+    });
   }
 }

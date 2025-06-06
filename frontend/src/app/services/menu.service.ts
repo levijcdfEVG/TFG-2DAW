@@ -21,5 +21,9 @@ export class MenuService {
 
   getFormationActiveByMonth(): Observable<any> {
     return this.http.get<any>(this.urlBase+'getFormationActiveByMonth');
-}
+  } 
+
+  getUserByCenter(): Observable<any> {
+    return this.http.get<any>(this.urlBase+'getUserByCenter');
+  } 
 }
