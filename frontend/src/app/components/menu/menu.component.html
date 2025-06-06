@@ -41,10 +41,10 @@
                 <div class="col-5 mx-auto">
                     <div class="card shadow-sm">
                         <div class="card-body">
-                            <h5 class="card-title text-center">Formaciones activas</h5>
+                            <h5 class="card-title text-center">Formaciones activas cada mes</h5>
                             <div class="chart-container">
                                 <canvas baseChart
-                                        [data]="userChartData"
+                                        [data]="formChartData"
                                         [type]="formChartType"
                                         [options]="formChartOptions">
                                 </canvas>
@@ -52,10 +52,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-5 mx-auto">
+                <div class="col-5 mt-4 mx-auto">
                     <div class="card shadow-sm">
                         <div class="card-body">
-                            <h5 class="card-title text-center">PRUEBA</h5>
+                            <h5 class="card-title text-center">Nuevos educadores por centro</h5>
                             <div class="chart-container">
                                 <canvas baseChart
                                         [data]="userChartData"

@@ -64,8 +64,51 @@ class mMenu {
 
             $stmt = $this->conexion->prepare($sql);
             $stmt->execute();
-            $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $totalSesiones = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+            // Consulta para obtener la distribución por tipo de usuario
+            $sql = 'SELECT DATE(fch_registro) AS fecha, 
+                   r.nombre_rol,
+                   COUNT(*) AS cantidad 
+                   FROM usuario u 
+                   JOIN roles r ON u.id_rol = r.id 
+                   GROUP BY DATE(fch_registro), r.nombre_rol 
+                   ORDER BY fecha, r.nombre_rol;';
+
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+            $sesionesPorRol = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return [
+                'success' => true, 
+                'data' => [
+                    'totalSesiones' => $totalSesiones,
+                    'sesionesPorRol' => $sesionesPorRol
+                ]
+            ];
+
+            return ['success' => true, 'data' => $resultados];
+        } catch(PDOException $e){
+            return ['success' => false, 'message' => 'Error al obtener los datos: ' . $e->getMessage()];
+        }
+    }
+
+    public function getFormationActiveByMonth(){
+        $this->conectar();
+    
+        try{
+            $sql = 'SELECT 
+                    DATE_FORMAT(CURRENT_DATE, "%Y-%m") as mes,
+                    COUNT(*) as cantidad 
+                    FROM formacion 
+                    WHERE estado = "activa" 
+                    GROUP BY DATE_FORMAT(CURRENT_DATE, "%Y-%m")
+                    ORDER BY mes DESC';
+    
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+            $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
             return ['success' => true, 'data' => $resultados];
         } catch(PDOException $e){
             return ['success' => false, 'message' => 'Error al obtener los datos: ' . $e->getMessage()];

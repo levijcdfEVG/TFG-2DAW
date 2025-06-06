@@ -18,4 +18,8 @@ export class MenuService {
   getUserByDay(): Observable<any> {
     return this.http.get<any>(this.urlBase+'getUserByDay');
   }
+
+  getFormationActiveByMonth(): Observable<any> {
+    return this.http.get<any>(this.urlBase+'getFormationActiveByMonth');
+}
 }
