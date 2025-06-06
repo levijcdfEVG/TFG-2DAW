@@ -5,6 +5,7 @@ import { UsuarioService } from '../../../../services/usuario.service';
 import { ActivatedRoute } from "@angular/router";
 import { Subject, takeUntil } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
+import { FormacionService } from 'src/app/services/formacion.service';
 
 @Component({
   selector: 'app-user-file',
@@ -17,9 +18,9 @@ export class UserFileComponent implements OnInit {
   selectedUser: any;
   userId!: number;
   userData: any | null = null;
-  formaciones: any[] = [];
-  formacionesPendientes: any[] = [];
-  formacionesFinalizadas: any[] = [];
+  
+// VARIABLES FORMACIONES ------------------------------------------
+  formationData: any[] = [];
 
   activeTab: string = 'general';
 
@@ -27,6 +28,7 @@ export class UserFileComponent implements OnInit {
 
   constructor(
     private userService: UsuarioService,
+    private formationService: FormacionService,
     private route: ActivatedRoute,
     private toastr: ToastrService
   ) {}
@@ -38,8 +40,11 @@ export class UserFileComponent implements OnInit {
         this.loadUser();
       }
     });
+
+    this.loadUserFormations();
   }
 
+// CARGAD DE DATOS --------------------------------------------
   loadUser() {
     this.userService.getUserById(this.userId).pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: (response: any) => {
@@ -52,6 +57,25 @@ export class UserFileComponent implements OnInit {
       error: (error) => {
         console.error('Error al obtener al usuario', error);
         this.userData = null;
+      }
+    });
+  }
+
+  loadUserFormations() {
+    console.log('Entra en loadUserFormations', this.userId);
+    this.formationService.getFormationByUserId(this.userId).pipe(takeUntil(this.unsubscribe$)).subscribe({
+      next: (response: any) => {
+        if(response && response.success) {
+          this.formationData = response.data;
+          console.log('Entra en loadUserFormations', this.formationData);
+        } else {
+          console.error('No formation data received or error in response');
+          this.formationData = [];
+        }
+      },
+      error: (error) => {
+        console.error('Error al obtener las formaciones del usuario', error);
+        this.formationData = [];
       }
     });
   }

@@ -63,6 +63,8 @@ export class InfoFormacionComponent implements OnInit {
 
         setTimeout(() => {
           $('#formaciones').DataTable({
+            autoWidth: false,
+            pagingType: 'simple_numbers',
             language: {
               lengthMenu: 'Mostrar _MENU_ registros',
               zeroRecords: 'No se encontraron resultados',
@@ -71,8 +73,8 @@ export class InfoFormacionComponent implements OnInit {
               infoFiltered: '(filtrado de _MAX_ registros totales)',
               search: 'Buscar:',
               paginate: {
-                first: 'Primero',
-                last: 'Último',
+                first: '',
+                last: '',
                 next: 'Siguiente',
                 previous: 'Anterior'
               }
@@ -214,7 +216,7 @@ export class InfoFormacionComponent implements OnInit {
     this.formaciones.forEach(f => {
       const row = `
         <tr data-id="${f.id}">
-          <td class="text-center align-middle">
+          <td class="text-left">
             <button class="btn btn-info btn-sm btn-info-detalle" title="Ver info"><i class="fa fa-list"></i></button>
           </td>
           <td>${f.id}</td>
@@ -223,10 +225,10 @@ export class InfoFormacionComponent implements OnInit {
           <td>${f.modalidad}</td>
           <td>${f.cursos[0]}</td>
           <td>${f.cursos[1] || 'No hay curso de final'}</td>
-          <td class="text-center align-middle">
+          <td class="text-end align-middle">
             <button class="btn btn-sm btn-outline-primary me-2 btn-editar" title="Editar" data-bs-toggle="modal" data-bs-target="#editarFormacionModal"><i class="fa-solid fa-pencil"></i></button>
-            <button class="btn btn-sm btn-outline-danger btn-borrar" title="Borrar"><i class="fa-solid fa-trash-can"></i></button>
-            <button class="btn btn-sm btn-outline-success btn-inscribir" title="Inscribir"><i class="fa-solid fa-list"></i></button>
+            <button class="btn btn-sm btn-outline-danger me-2 btn-borrar" title="Borrar"><i class="fa-solid fa-trash-can"></i></button>
+            <button class="btn btn-sm btn-outline-success me-2 btn-inscribir" title="Inscribir"><i class="fa-solid fa-list"></i></button>
           </td>
         </tr>
       `;

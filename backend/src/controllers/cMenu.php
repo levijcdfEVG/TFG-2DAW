@@ -51,7 +51,7 @@ class cMenu
         $email = $input['email'] ?? null;
 
         if (!$email) {
-            http_response_code(400); 
+            http_response_code(400);
             echo json_encode(['error' => 'Falta el parámetro email.']);
             exit;
         }
@@ -66,6 +66,23 @@ class cMenu
 
     public function getUserByDay(){
         $resultado = $this->objMenu->getUserByDay();
+
+        header('Content-Type: application/json');
+        echo json_encode($resultado);
+        exit;
+    }
+
+    public function getFormationActiveByMonth() {
+        $resultado = $this->objMenu->getFormationActiveByMonth();
+
+        header('Content-Type: application/json');
+        echo json_encode($resultado);
+        exit;
+    }
+
+
+    public function getUserByCenter() {
+        $resultado = $this->objMenu->getUserByCenter();
 
         header('Content-Type: application/json');
         echo json_encode($resultado);

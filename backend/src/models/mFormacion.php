@@ -500,6 +500,30 @@ class MFormacion {
     }
 
     /**
+     * Obtiene las formaciones asociadas a un usuario específico.
+     *
+     * @param int $idUsuario El ID del usuario para el que se desean obtener las formaciones.
+     * @return array Un array asociativo con la clave 'success' (bool) y, si es exitoso, la clave 'formaciones' (array de formaciones).
+     *               En caso de error, incluye la clave 'message' con la descripción del error.
+     */
+    public function getFormationByUserId(int $idUsuario): array {
+        try {
+            $this->conectar();
+
+            $stmt = $this->conexion->prepare("
+                SELECT f.* FROM formacion f
+                INNER JOIN inscripciones i ON f.id = i.id_formacion
+                WHERE i.id_usu = ?"
+            );
+            $stmt->execute([$idUsuario]);
+            $formaciones = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return ['success' => true, 'formaciones' => $formaciones];
+        } catch (PDOException $e) {
+            return ['success' => false, 'message' => 'Error al obtener formaciones: ' . $e->getMessage()];
+        }
+    }
+
+    /**
      * Desasigna una lista de usuarios de una formación específica.
      *
      * Elimina los registros de la tabla 'inscripciones' que correspondan a la formación y a los usuarios indicados.

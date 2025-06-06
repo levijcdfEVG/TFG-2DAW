@@ -1,66 +1,72 @@
-<nav class="nav flex-column" [ngSwitch]="rol">
-  <!-- Menú para administrador -->
-  <div *ngSwitchCase="'admin'" class="d-flex flex-column justify-content-center align-items-center vh-80">
-        <h1 class="fw-bold text-center mb-5">Menú Administrador</h1>
-        <div class="container mt-5">
-          <div class="row row-cols-2 g-4">
-            <div class="col">
-              <a routerLink="/info-centros" class="btn btn-primary w-100 h-100 text-decoration-none text-white">
-                <h5>Centros</h5>
-              </a>
+<div class="container-fluid">
+    <div class="row">
+        <aside *ngIf="rol === 'admin'" class="col-2 m-0 p-0">
+            <nav class="nav pt-3 flex-column h-100 bg-light">
+              <h6 class="sidebar-heading px-3 mt-4 mb-1 text-muted">Administración</h6>
+              <a routerLink="/info-centros" class="nav-link mx-2">Centros</a>
+              <a routerLink="/info-formaciones" class="nav-link mx-2">Formaciones</a>
+              <a routerLink="/info-cursos" class="nav-link mx-2">Curso Académico</a>
+              <a routerLink="/info-educadores" class="nav-link mx-2">Educadores</a>
+            </nav>
+          </aside>
+        <!-- Contenido del menú -->
+        <div class="col-10">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 border-bottom">
+                <h1 class="h2" *ngIf="rol === 'admin'">Panel de Administrador</h1>
+                <h1 class="h2" *ngIf="rol === 'responsable'">Panel de Responsable</h1>
+                <h1 class="h2" *ngIf="rol === 'educador'">Panel de Educador</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <div class="btn-group me-2">
+                        <span class="text-muted">Bienvenido, {{userInfo.given_name | titlecase}} {{userInfo.family_name | titlecase}}</span>
+                    </div>
+                </div>
             </div>
-            <div class="col">
-              <a routerLink="/info-formaciones" class="btn btn-primary w-100 h-100 text-decoration-none text-white">
-                <h5>Formaciones</h5>
-              </a>
+        
+            <!-- Gráficos (solo para admin) -->
+            <div class="row mt-4" *ngIf="rol === 'admin'">
+                <div class="col-5 mx-auto">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Sesiones iniciadas hoy</h5>
+                            <div class="chart-container">
+                                <canvas baseChart
+                                        [data]="userChartData"
+                                        [type]="userChartType"
+                                        [options]="userChartOptions">
+                                </canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-5 mx-auto">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Formaciones activas cada mes</h5>
+                            <div class="chart-container">
+                                <canvas baseChart
+                                        [data]="formChartData"
+                                        [type]="formChartType"
+                                        [options]="formChartOptions">
+                                </canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-5 mt-4 mx-auto">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Nuevos educadores por centro</h5>
+                            <div class="chart-container">
+                                <canvas baseChart
+                                        [data]="centerChartData"
+                                        [type]="centerChartType"
+                                        [options]="centerChartOptions">
+                                </canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="col">
-              <a routerLink="/info-cursos" class="btn btn-primary w-100 h-100 text-decoration-none text-white">
-                <h5>Curso Académico</h5>
-              </a>
-            </div>
-            <div class="col">
-              <a routerLink="/info-educadores" class="btn btn-primary w-100 h-100 text-decoration-none text-white">
-                <h5>Educadores</h5>
-              </a>
-            </div>
-          </div>
         </div>
-      </div>
-
-  <!-- Menú para responsable -->
-  <div *ngSwitchCase="'responsable'" class="d-flex flex-column justify-content-center align-items-center vh-80">
-        <h1 class="fw-bold text-center mb-5">Menú Responsable</h1>
-        <div class="container mt-5">
-          <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
-            <div class="col">
-              <a routerLink="/info-formaciones" class="btn btn-primary w-100 h-100 text-decoration-none text-white">
-                <h5>Formaciones</h5>
-              </a>
-            </div>
-            <div class="col">
-              <a routerLink="/info-cursos" class="btn btn-primary w-100 h-100 text-decoration-none text-white">
-                <h5>Curso académico</h5>
-              </a>
-            </div>
-            <div class="col">
-              <a routerLink="/info-educadores" class="btn btn-primary w-100 h-100 text-decoration-none text-white">
-                <h5>Educadores</h5>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-<!-- Menú para educador -->
-
-      <!-- Foto de perfil dinámica -->
-      <!-- <img [src]="userPicture || 'https://via.placeholder.com/80'" alt="Foto de perfil" class="rounded-circle border" width="80" height="80" referrerpolicy="no-referrer"/> -->
-
-
-  <!-- Fallback -->
-  <div *ngSwitchDefault>
-    <span class="text-danger">Rol no reconocido</span>
-  </div>
-</nav>
-
+    </div>
+</div>

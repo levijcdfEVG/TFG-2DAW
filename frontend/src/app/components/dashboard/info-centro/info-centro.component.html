@@ -1,54 +1,52 @@
-<main>
-<div class="table-responsive container mt-4">
-    <table class="table table-striped table-hover">
-      <thead class="thead-dark">
-        <tr>
-          <th>Nombre Centro</th>
-          <th>Dirección</th>
-          <th>Código Postal</th>
-          <th>Localidad</th>
-          <th>Teléfono</th>
-          <th>Correo</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngIf="mensaje">
-          <td colspan="7" class="text-center">{{ mensaje }}</td>
-        </tr>
-        <tr *ngFor="let element of dataSource">
-          <td>{{ element.nombre_centro }}</td>
-          <td>{{ element.direccion_centro }}</td>
-          <td>{{ element.cp }}</td>
-          <td>{{ element.nombre_localidad }}</td>          
-          <td>{{ element.telefono_centro }}</td>
-          <td>{{ element.correo_centro }}</td>
-          <td>
-            <button class="btn btn-warning btn-sm" (click)="modificarRegistro(element)">
-              Modificar
+<div class="container-fluid">
+    <div class="my-3 mx-4">
+        <div class="d-flex justify-content-end">
+            <!-- Botón para abrir el modal -->
+            <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#altaCentroModal">
+                Alta centro
             </button>
-            <button class="btn btn-danger btn-sm" (click)="borrarRegistro(element)">
-              Borrar
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  
-  <div class="container mt-3">
-    <div class="d-flex justify-content-end">
-      <!-- Botón para abrir el modal -->
-      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#altaCentroModal">
-        Alta centro
-      </button>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Nombre Centro</th>
+                        <th>Dirección</th>
+                        <th>Código Postal</th>
+                        <th>Localidad</th>
+                        <th>Teléfono</th>
+                        <th>Correo</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tr *ngIf="mensaje">
+                    <td colspan="7" class="text-center">{{ mensaje }}</td>
+                </tr>
+                <tr *ngFor="let element of dataSource">
+                    <td>{{ element.nombre_centro }}</td>
+                    <td>{{ element.direccion_centro }}</td>
+                    <td>{{ element.cp }}</td>
+                    <td>{{ element.nombre_localidad }}</td>
+                    <td>{{ element.telefono_centro }}</td>
+                    <td>{{ element.correo_centro }}</td>
+                    <td class="d-flex justify-content-center gap-2">
+                        <button class="btn btn-warning btn-sm" (click)="modificarRegistro(element)">
+                            Modificar
+                        </button>
+                        <button class="btn btn-danger btn-sm" (click)="borrarRegistro(element)">
+                            Borrar
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
-  </div>
-
-
+</div>
 <app-alta-centro (refreshLista)="refreshLista($event)"></app-alta-centro>
 <app-modificar-centro
   [centroSeleccionado]="centroSeleccionado">
 </app-modificar-centro>
   
-</main>

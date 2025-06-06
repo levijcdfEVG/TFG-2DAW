@@ -21,7 +21,7 @@ const routes: Routes = [
   { path: "info-formaciones", component: InfoFormacionComponent, canActivate: [AuthGuard] },
   { path: "info-cursos", component: InfoFormacionComponent, canActivate: [AuthGuard] },
   { path: "info-educadores", component: InfoEducadorComponent, canActivate: [AuthGuard] },
-  { path: "usuarios/:id", component: UserFileComponent, canActivate: [AuthGuard, ResponsableCentroGuard]},
+  { path: "info-educadores/:id", component: UserFileComponent, canActivate: [AuthGuard, ResponsableCentroGuard]},
   { path: "login", component: GoogleSignInComponent },
   { path: "menu", component: MenuComponent, canActivate: [AuthGuard] },
   { path: 'inscribir-usuarios/formacion/:id', component: InscripcionFormacionComponent,  canActivate: [AuthGuard] },

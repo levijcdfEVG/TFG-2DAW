@@ -9,9 +9,10 @@ import { environment } from "../../environments/environment.prod";
   providedIn: 'root'
 })
 export class UsuarioService {
-  usuariosActualizados$: any;
+  usuariosActualizados$ = new Subject<void>();
+
   notificarCambio() {
-    throw new Error('Method not implemented.');
+    this.usuariosActualizados$.next();
   }
 
   userPath = environment.apiUrl+'?controlador=cUsuario&accion=';
@@ -20,9 +21,8 @@ export class UsuarioService {
 
   // Mostrar usuarios con o sin parametros de filtro
   getUsersByParams(params: any): Observable<any> {
-    // Convertir los parámetros a HttpParams
-    const httpParams = new HttpParams({ fromObject: params });
-    console.log(this.userPath + 'getUsersByParams', { params: httpParams });
+    const httpParams = new HttpParams({ fromObject: params }); // Convertir los parámetros a HttpParams
+    // console.log(this.userPath + 'getUsersByParams', { params: httpParams });
     return this.http.get<any>(this.userPath + 'getUsersByParams', { params: httpParams })
       .pipe(
         map(res => res.data), catchError(this.handleError)
@@ -33,7 +33,7 @@ export class UsuarioService {
   getUsersByCentro(params: any): Observable<any> {
     // Convertimos el objeto params a HttpParams para la consulta GET
     const httpParams = new HttpParams({ fromObject: params });
-    console.log(this.userPath + 'getUsersByCentro', { params: httpParams });
+    // console.log(this.userPath + 'getUsersByCentro', { params: httpParams });
 
     return this.http.get<any>(this.userPath + 'getUsersByCentro', { params: httpParams })
     .pipe(
@@ -92,17 +92,10 @@ export class UsuarioService {
 
    // Handle HTTP errors
   private handleError(error: HttpErrorResponse) {
-    let errorMessage = 'Ha ocurrido un error';
-    
-    if (error.error instanceof ErrorEvent) {
-      // Client-side error
-      errorMessage = `Error: ${error.error.message}`;
-    } else {
-      // Server-side error
-      errorMessage = `Código de error: ${error.status}\nMensaje: ${error.message}`;
-    }
-    
-    console.error(errorMessage);
-    return throwError(() => errorMessage);
+    const errorMessage = error.error?.message || 'Error desconocido del servidor';
+    return throwError(() => ({
+      status: error.status,
+      message: errorMessage
+    }));
   }
 }

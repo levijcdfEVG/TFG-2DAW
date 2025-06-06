@@ -16,10 +16,14 @@ export class MenuService {
   }
 
   getUserByDay(): Observable<any> {
-    return this.http.get<any>(this.urlBase+'getUserByDay').pipe(map(res => res.data));
+    return this.http.get<any>(this.urlBase+'getUserByDay');
   }
 
-  getActividadUsuarios(): Observable<any> {
-    return this.http.get(`${environment.apiUrl}/estadisticas/actividad-usuarios`);
-  }
+  getFormationActiveByMonth(): Observable<any> {
+    return this.http.get<any>(this.urlBase+'getFormationActiveByMonth');
+  } 
+
+  getUserByCenter(): Observable<any> {
+    return this.http.get<any>(this.urlBase+'getUserByCenter');
+  } 
 }

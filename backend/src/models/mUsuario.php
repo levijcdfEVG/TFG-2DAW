@@ -36,13 +36,33 @@
          * @author Levi Josué Candeias de Figueiredo <levijosuecandeiasdefigueiredo.guadalupe@alumnado.fundacionloyola.net>
          */
         public function getUsuarioPorCorreo($correo) {
-            $this->conectar(); //Llamo al metodo conectar de arriba
+            $this->conectar(); // Conexión a la base de datos
 
+            // Paso 1: Buscar usuario por correo
+            $sql = "SELECT * FROM usuario WHERE correo_user = ?";
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->bindValue(1, $correo, PDO::PARAM_STR);
+            $stmt->execute();
+
+            $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            // Paso 2: Si se encontró el usuario, actualizar fch_registro
+            if ($usuario) {
+                $sql = "UPDATE usuario SET fch_registro = NOW() WHERE correo_user = ?";
+                $stmt = $this->conexion->prepare($sql);
+                $stmt->bindValue(1, $correo, PDO::PARAM_STR);
+                $stmt->execute();
+
+                // Paso 3: Volver a obtener el usuario actualizado
                 $sql = "SELECT * FROM usuario WHERE correo_user = ?";
                 $stmt = $this->conexion->prepare($sql);
                 $stmt->bindValue(1, $correo, PDO::PARAM_STR);
                 $stmt->execute();
-                return $stmt->fetch(PDO::FETCH_ASSOC);
+
+                $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+            }
+
+            return $usuario; // Puede ser null si no existe
         }
 
         /**

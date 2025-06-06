@@ -12,15 +12,15 @@ class MLocalidad {
         try {
             $this->conectar();
 
-            $sql = "SELECT l.*, p.nombre as provincia_nombre 
-                     FROM localidad l 
-                     LEFT JOIN provincia p ON l.provincia_id = p.id 
+            $sql = "SELECT l.*, p.nombre as provincia_nombre
+                     FROM localidad l
+                     LEFT JOIN provincia p ON l.provincia_id = p.id
                      ORDER BY l.nombre_localidad";
-                     
+
             $stmt = $this->conexion->prepare($sql);
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            
+
             return ['success' => true, 'data' => $result];
         } catch (PDOException $e) {
             return ['success' => false, 'message' => 'Error al obtener las localidades: ' . $e->getMessage()];
@@ -41,9 +41,9 @@ class MLocalidad {
 
     public function getLocalityById($id) {
         try {
-            $query = "SELECT l.*, p.nombre as provincia_nombre 
-                     FROM localidad l 
-                     JOIN provincia p ON l.provincia_id = p.id 
+            $query = "SELECT l.*, p.nombre as provincia_nombre
+                     FROM localidad l
+                     JOIN provincia p ON l.provincia_id = p.id
                      WHERE l.id = :id";
             $stmt = $this->conexion->getConexion()->prepare($query);
             $stmt->bindParam(':id', $id);
@@ -53,4 +53,4 @@ class MLocalidad {
             throw new Exception("Error al obtener la localidad: " . $e->getMessage());
         }
     }
-} 
+}

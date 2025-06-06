@@ -24,14 +24,14 @@ export class SharedService {
   setIdRol(id: number): void {
     this.idRol = id;
     localStorage.setItem('idRol', id.toString());
-    console.log('Rol guardado en localStorage:', localStorage.getItem('idRol'));
+    // console.log('Rol guardado en localStorage:', localStorage.getItem('idRol'));
   }
 
   getIdRol(): number | null {
     if (this.idRol === null) {
       const stored = localStorage.getItem('idRol');
       this.idRol = stored !== null ? +stored : null;
-      console.log('Rol recuperado de localStorage:', this.idRol);
+      // console.log('Rol recuperado de localStorage:', this.idRol);
     }
     return this.idRol;
   }

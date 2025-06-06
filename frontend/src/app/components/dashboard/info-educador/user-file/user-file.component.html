@@ -81,41 +81,31 @@
 
 <!-- Sección de Tabs -->
     <div class="card mx-4 mt-5">
-        <div class="card-header">
-            <ul class="nav nav-tabs card-header-tabs">
-                <li class="nav-item" (click)="activeTab = 'general'">
-                    <a class="nav-link" [class.active]="activeTab === 'general'" href="#">Formaciones generales</a>
-                </li>
-                <li class="nav-item" (click)="activeTab = 'pendientes'">
-                    <a class="nav-link" [class.active]="activeTab === 'pendientes'" href="#">Formaciones pendientes</a>
-                </li>
-                <li class="nav-item" (click)="activeTab = 'finalizadas'">
-                    <a class="nav-link" [class.active]="activeTab === 'finalizadas'" href="#">Formaciones finalizadas</a>
-                </li>
-            </ul>
-        </div>
         <div class="card-body">
         <!-- Tab content -->
-            <div *ngIf="activeTab === 'general'">
-                <h5>Formaciones Generales</h5>
-                <ul>
-                    <li *ngFor="let form of formaciones">{{ form.nombre }}</li>
-                </ul>
-            </div>
-            <div *ngIf="activeTab === 'pendientes'">
-                <h5>Formaciones Pendientes</h5>
-                <ul>
-                    <li *ngFor="let form of formacionesPendientes">{{ form.nombre }}</li>
-                </ul>
-            </div>
-            <div *ngIf="activeTab === 'finalizadas'">
-                <h5>Formaciones Finalizadas</h5>
-                <ul>
-                    <li *ngFor="let form of formacionesFinalizadas">
-                        {{ form.nombre }} - Finalizado el: {{ form.fechaFinalizacion | date:'longDate' }}
-                    </li>
-                </ul>
-            </div>
+        <div class="table-responsive">
+            <table class="table table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th>Denominación acción</th>
+                        <th>Lugar de impartición</th>
+                        <th>Duración estimada</th>
+                        <th>Modalidad</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let formation of formationData">
+                        <td>PENDIENTE</td>
+                        <td>{{ formation.lugar_imparticion }}</td>
+                        <td>{{ formation.duracion}}</td>
+                        <td>{{ formation.modalidad}}</td>
+                        <td>{{ formation.activo}}</td>
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
         </div>
     </div>
 </div>
