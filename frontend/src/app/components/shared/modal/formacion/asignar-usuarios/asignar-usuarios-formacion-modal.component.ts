@@ -11,6 +11,7 @@ import { FormacionService } from '../../../../../services/formacion.service';
 import { UsuarioService } from '../../../../../services/usuario.service';
 import Swal2 from 'sweetalert2';
 import { ToastrService } from 'ngx-toastr';
+import {SharedService} from "../../../../../services/shared.service";
 
 @Component({
   selector: 'app-asignar-usuarios',
@@ -53,13 +54,13 @@ export class AsignarUsuariosFormacionModalComponent implements OnInit {
    * Lista de usuarios seleccionados para ser asignados a la formación.
    */
   protected usuariosSeleccionados: any[] = [];
-  sharedService: any;
 
   constructor(
       private formacionService: FormacionService,
       private usuariosService: UsuarioService,
       private toastr: ToastrService,
-      private cdr: ChangeDetectorRef
+      private cdr: ChangeDetectorRef,
+      private sharedService: SharedService
   ) {}
 
   /**
