@@ -122,6 +122,11 @@
                     $values[':estado'] = $params['estado'];
                 }
 
+                if (!empty($params['id_centro'])) {
+                    $conditions[] = "u.id_centro = :id_centro";
+                    $values[':id_centro'] = $params['id_centro'];
+                }
+
                 if (!empty($conditions)) {
                     $sql .= " AND " . implode(" AND ", $conditions);
                 }

@@ -13,14 +13,41 @@ import { FormacionService } from "../../services/formacion.service";
   styleUrls: ['./menu.component.css']
 })
 export class MenuComponent implements OnInit {
-  rol: 'admin' | 'responsable' | 'educador' = 'admin';
-
+  
+  /**
+   * Rol del usuario. Puede ser 'admin', 'responsable' o 'educador'.
+   * Se puede establecer desde el componente padre si es necesario.
+   */
+  @Input() rol: 'admin' | 'responsable' | 'educador' = 'admin';
+  
+  /**
+   * Información básica decodificada del token JWT.
+   */
   userInfo: any = {};
+
+  /**
+   * Correo electrónico del usuario autenticado.
+   */
   userEmail: string = '';
+
+  /**
+   * Información detallada del usuario desde la base de datos.
+   */
   datosUsuario: any = {};
+
+  /**
+   * URL de la imagen de perfil del usuario (si está disponible).
+   */
   userPicture: string = '';
 
+  /**
+   * ID del rol del usuario obtenido desde la base de datos.
+   */
   idRol: number  = 0;
+
+  /**
+   * ID del centro asociado al usuario.
+   */
   idCentro: number  = 0;
 
   public userChartData: ChartData = { labels: [], datasets: [] };

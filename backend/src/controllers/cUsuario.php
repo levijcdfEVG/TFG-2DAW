@@ -81,8 +81,9 @@ require_once 'helpers/GoogleJWTVerifier.php';
                     'correo_user' => filter_var($_GET['email'] ?? '', FILTER_SANITIZE_EMAIL),
                     'telefono_user' => filter_var($_GET['phone'] ?? '', FILTER_SANITIZE_STRING),
                     'id_rol' => filter_var($_GET['role'] ?? '', FILTER_SANITIZE_STRING),
-                    'nuevo_educador' => filter_var($_GET['new_educator'] ?? 2, FILTER_VALIDATE_INT),
-                    'estado' => filter_var($_GET['status'] ?? 2, FILTER_VALIDATE_INT)
+                    'nuevo_educador' => filter_var($_GET['new_educator'] ?? 0, FILTER_VALIDATE_INT),
+                    'estado' => filter_var($_GET['status'] ?? 2, FILTER_VALIDATE_INT),
+                    'id_centro' => filter_var($_GET['idCentro'] ?? null, FILTER_VALIDATE_INT)
                 ];
 
                 $response = $modelo->getUsersByParams($params);
