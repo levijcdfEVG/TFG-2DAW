@@ -13,6 +13,7 @@ export class HeaderComponent implements OnInit {
 
   logoPath = 'assets/logotipo.png';
 
+  intranet = "https://www.fundacionloyola.es/brocal/v2/index.php";
   // RRSS
   facebook = 'https://www.facebook.com/EscuelaVirgendeGuadalupe/';
   twitter_X = 'https://x.com/i/flow/login?redirect_after_login=%2Fescuelaevg';
