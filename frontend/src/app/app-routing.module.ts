@@ -14,11 +14,12 @@ import {
 import { NoAutorizadoComponent } from './pages/no-autorizado/no-autorizado.component';
 import { ResponsableCentroGuard } from './guards/responsable-centro.guard';
 import { RoleGuard } from './guards/role.guard';
+import { FormacionesGuard } from './guards/formaciones.guard';
 
 
 const routes: Routes = [
   { path: "info-centros", component: InfoCentroComponent, canActivate: [RoleGuard] },
-  { path: "info-formaciones", component: InfoFormacionComponent, canActivate: [AuthGuard] },
+  { path: "info-formaciones", component: InfoFormacionComponent, canActivate: [AuthGuard, FormacionesGuard] },
   { path: "info-cursos", component: InfoFormacionComponent, canActivate: [AuthGuard] },
   { path: "info-educadores", component: InfoEducadorComponent, canActivate: [AuthGuard] },
   { path: "usuarios/:id", component: UserFileComponent, canActivate: [AuthGuard, ResponsableCentroGuard]},
