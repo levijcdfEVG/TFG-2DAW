@@ -2,7 +2,7 @@
 <div class="container-fluid">
     <!-- User Filter -->
     <div class="card my-3 mx-4">
-        <div class="card-header d-flex justify-content-between align-items-center text-white">
+        <div class="card-header d-flex justify-content-between align-items-center text-white bg">
             <div>
                 <h5 class="text-white mb-0">Filtro de Usuarios</h5>
             </div>
@@ -139,9 +139,9 @@
     <!-- Users Table -->
     <div class="mx-4">
         <div *ngIf="hasSearched" class="card-body">
-            <div *ngIf="dataUsers && dataUsers.length > 0">
-                <table id="usersTable" class="w-100 table table-striped table-hover row-border mb-0">
-                    <thead class="table-primary">
+            <div *ngIf="dataUsers && dataUsers.length > 0" class="table-responsive overflow-hidden ">
+                <table id="usersTable" class="table table-striped table-hover row-border mb-0">
+                    <thead>
                         <tr>
                             <th scope="col" class="py-3 ps-4">Nombre</th>
                             <th scope="col" class="py-3">Apellidos</th>

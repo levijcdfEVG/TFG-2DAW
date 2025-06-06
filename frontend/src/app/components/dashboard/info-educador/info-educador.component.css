@@ -1,7 +1,7 @@
 /* Estilo minimos que no se pueden controlar con Bootstrap*/
 
-.card-header {
-    background-color: var(--color-terciario);
+.bg {
+   background-color: var(--color-secundario);
 }
 
 .btn-outline-search {
@@ -25,11 +25,4 @@
 .btn-outline-search:disabled {
     color: var(--color-terciario);
     background-color: transparent;
-}
-
-
-
-
-.bg-theme {
-    background-color: var(--color-primario);
 }

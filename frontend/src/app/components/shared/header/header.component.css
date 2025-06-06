@@ -5,9 +5,47 @@ nav {
 
 .logo {
   height: 90px;
+  margin: 0.5%;
 }
 
 .nav-link.active {
   border-bottom: 2.5px solid #066a97;
   color: #066a97 !important;
+}
+
+.menu-link {
+    position: relative;
+    color: #333;
+    text-decoration: none;
+    transition: all 0.1s ease;
+}
+
+.menu-link:hover {
+    color: #007bff;
+}
+
+.menu-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: #007bff;
+    transition: width 0.3s ease;
+}
+
+.menu-link:hover::after {
+    width: 100%;
+}
+
+/* Estilo para el enlace activo */
+.menu-link.active {
+    color: #007bff !important;
+    font-weight: 700 !important;
+}
+
+.menu-link.active::after {
+    width: 100%;
+    background-color: #007bff;
 }
