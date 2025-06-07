@@ -1,18 +1,12 @@
 <nav class="navbar py-1 text-white">
   <div class="container-fluid d-flex justify-content-between align-items-center">
     <!-- Logo o título -->
-    <a class="navbar-brand text-white" routerLink="/">INTRANET</a>
+    <a class="navbar-brand text-white" [href]="intranet" target="_blank">INTRANET</a>
     <!-- Enlaces de texto e íconos -->
     <div class="d-flex align-items-center">
       <!-- Enlaces de texto -->
-      <a class="nav-link me-3" href="#">
-          <i class="fa-solid fa-phone me-1"></i>
-          +34 924 25 17 61
-      </a>
-      <a class="nav-link me-3" href="#">
-          <i class="fa-solid fa-envelope me-1"></i>
-          guadalupe&#64;fundacionloyola.es
-      </a>
+      <span class="me-3"><i class="fa-solid fa-phone me-1"></i>+34 924 25 17 61</span>
+      <span class="me-3" ><i class="fa-solid fa-envelope me-1"></i>guadalupe&#64;fundacionloyola.es</span>
       <!-- Íconos -->
       <a class="nav-link me-2" [href]="facebook" target="_blank">
           <i class="fa-brands fa-facebook me-1"></i>
@@ -33,14 +27,14 @@
   </div>
 </nav>
 <div class="border d-flex justify-content-between align-items-center">
-  <img src="assets/logotipo.png" alt="" class="logo"/>
+    <a [href]="evg" target="_blank" class="m-2"><img src="assets/logotipo.png" alt="Logo Fundación Loyola" class="logo"/></a>
   <div class="pe-5 text-dark">
     <ul class="navbar-nav d-flex flex-row justify-content-between">
       <li class="nav-item mx-4">
         <a class="nav-link menu-link fs-6" routerLink="/info-centros" routerLinkActive="active">Centros</a>
       </li>
       <li class="nav-item mx-4">
-        <a class="nav-link menu-link fs-6" routerLink="/info-formaciones" routerLinkActive="active">Formaciones/Cursos</a>
+        <a class="nav-link menu-link fs-6" routerLink="/info-formaciones" routerLinkActive="active">Formaciones / Cursos</a>
       </li>
       <li class="nav-item mx-4">
         <a class="nav-link menu-link fs-6" routerLink="/info-educadores" routerLinkActive="active">Usuarios</a>

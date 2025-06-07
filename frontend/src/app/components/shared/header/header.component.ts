@@ -11,13 +11,15 @@ import { RoleService } from 'src/app/services/role.service';
 export class HeaderComponent implements OnInit {
   rol: 'admin' | 'responsable' | 'educador' = 'educador';
 
-  logoPath = 'assets/logotipo.png';
+  logoPath: string = 'assets/logotipo.png';
 
-  // RRSS
-  facebook = 'https://www.facebook.com/EscuelaVirgendeGuadalupe/';
-  twitter_X = 'https://x.com/i/flow/login?redirect_after_login=%2Fescuelaevg';
-  instagram = 'https://www.instagram.com/escuelaevg/?hl=es';
-  youtube = 'https://www.youtube.com/user/VirgenDeGuadalupeTV';
+  // RRSS y EVG
+  facebook: string = 'https://www.facebook.com/EscuelaVirgendeGuadalupe/';
+  twitter_X: string = 'https://x.com/i/flow/login?redirect_after_login=%2Fescuelaevg';
+  instagram: string = 'https://www.instagram.com/escuelaevg/?hl=es';
+  youtube: string = 'https://www.youtube.com/user/VirgenDeGuadalupeTV';
+  intranet: string = "https://www.fundacionloyola.es/brocal/v2/index.php";
+  evg: string = "https://fundacionloyola.com/vguadalupe/"
 
   constructor(private authService: AuthService, private router: Router, private roleService: RoleService) {}
 

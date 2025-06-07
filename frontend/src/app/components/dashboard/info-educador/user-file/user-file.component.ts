@@ -1,6 +1,6 @@
 declare const bootstrap: any;
 
-import { Component, OnInit } from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import { UsuarioService } from '../../../../services/usuario.service';
 import { ActivatedRoute } from "@angular/router";
 import { Subject, takeUntil } from 'rxjs';
@@ -13,6 +13,7 @@ import { FormacionService } from 'src/app/services/formacion.service';
   styleUrls: ['./user-file.component.css']
 })
 export class UserFileComponent implements OnInit {
+
   imgPath = 'assets/avatar.png';
 
   selectedUser: any;
@@ -21,8 +22,8 @@ export class UserFileComponent implements OnInit {
   
 // VARIABLES FORMACIONES ------------------------------------------
   formationData: any[] = [];
-
-  activeTab: string = 'general';
+  finalizedFormations: any[] = [];
+  pendingFormations: any[] = [];
 
   private unsubscribe$ = new Subject<void>();
 
@@ -30,6 +31,7 @@ export class UserFileComponent implements OnInit {
     private userService: UsuarioService,
     private formationService: FormacionService,
     private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef,
     private toastr: ToastrService
   ) {}
 
@@ -67,7 +69,8 @@ export class UserFileComponent implements OnInit {
       next: (response: any) => {
         if(response && response.success) {
           this.formationData = response.data;
-          console.log('Entra en loadUserFormations', this.formationData);
+          this.finalizedFormations = this.formationData.filter(f => f.activo == 0);
+          this.pendingFormations = this.formationData.filter(f => f.activo == 1);
         } else {
           console.error('No formation data received or error in response');
           this.formationData = [];
@@ -107,5 +110,18 @@ export class UserFileComponent implements OnInit {
       const modal = new bootstrap.Modal(document.getElementById('editUserModal')!);
       modal.show();
     }, 100);
+  }
+
+  toggleEstado(formation: any) {
+    this.formationService.cambiarEstado(formation.id).subscribe({
+      next: (response: any) => {
+        if (response.success) {
+          this.cdr.detectChanges();
+        }
+      },
+      error: (error) => {
+        console.error("Error al actualizar la formacion asignada al usuario", error);
+      }
+    });
   }
 }

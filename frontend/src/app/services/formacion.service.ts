@@ -168,4 +168,10 @@ export class FormacionService {
   public setIdFormacion(idFormacion: number): void {
     this.idFormacion.next(idFormacion);
   }
+
+  public cambiarEstado(formacion: any): Observable<any>{
+    const idFormacion = formacion.id;
+    const url = `${this.backendUrl}?controlador=cFormaciones&accion=cambiarEstado`;
+    return this.http.post<any>(url, { idFormacion });
+  }
 }

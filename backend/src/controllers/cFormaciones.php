@@ -376,6 +376,10 @@ class cFormaciones {
         }
     }
 
+    public function cambiarEstado(){
+
+
+    }
 
     /**
      * Envía la respuesta JSON al cliente con cabeceras HTTP y código de estado.
