@@ -3,6 +3,7 @@ require_once MODELS . 'mUsuario.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once 'config/config.php';
 require_once 'helpers/GoogleJWTVerifier.php';
+require_once 'helpers/auth_helper.php';
 
     /**
      * Controlador de usuarios.
