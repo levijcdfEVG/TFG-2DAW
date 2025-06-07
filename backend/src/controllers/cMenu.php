@@ -90,7 +90,7 @@ class cMenu
     }
 
     //Parte responsable
-        public function getUserByDayCentro(){
+        public function getUserByDayResponsable(){
         $id_centro = isset($_GET['id_centro']) ? intval($_GET['id_centro']) : null;
         $resultado = $this->objMenu->getUserByDayCentro($id_centro);
 
@@ -99,7 +99,7 @@ class cMenu
         exit;
     }
 
-    public function getFormationActiveByMonthCentro() {
+    public function getFormationActiveByMonthResponsable() {
         $id_centro = isset($_GET['id_centro']) ? intval($_GET['id_centro']) : null;
         $resultado = $this->objMenu->getFormationActiveByMonthCentro($id_centro);
 
@@ -108,7 +108,7 @@ class cMenu
         exit;
     }
 
-    public function getUserByCenterCentro() {
+    public function getUserByCenterResponsable() {
         $id_centro = isset($_GET['id_centro']) ? intval($_GET['id_centro']) : null;
         $resultado = $this->objMenu->getUserByCenterCentro($id_centro);
 
