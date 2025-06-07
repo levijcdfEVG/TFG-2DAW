@@ -50,6 +50,53 @@ function verificarTokenYCorreo(): string {
     return $email;
 }
 
+/**
+ * Verifica el token enviado por el frontend y el correo contra la whitelist (para usuarios no admin).
+ *
+ * @return string El correo si todo es válido.
+ */
+function verificarTokenYCorreoUserNormal(): string {
+    $modeloUsuario = new mUsuario();
+
+    $id_token = getAuthorizationHeader();
+
+    if (empty($id_token)) {
+        http_response_code(401);
+        echo json_encode(['error' => 'Token no proporcionado o vacio']);
+        exit;
+    }
+
+    // Quitar el prefijo "Bearer " si está presente
+    $id_token = preg_replace('/^Bearer\s+/i', '', $id_token);
+
+    try {
+        $payload = GoogleJWTVerifier::verify($id_token);
+    } catch (Exception $e) {
+        http_response_code(401);
+        echo json_encode(['error' => 'Token invalido o no verificable']);
+        exit;
+    }
+
+    $email = $payload['email'] ?? '';
+    $resultado = $modeloUsuario->getUsuarioPorCorreo($email);
+
+    if (!$resultado) {
+        http_response_code(403);
+        echo json_encode(['error' => 'Correo no autorizado']);
+        exit;
+    }
+
+    if (!in_array($resultado['id_rol'], [1, 2, 3], true)) {
+        http_response_code(403);
+        echo json_encode(['error' => 'No tiene permisos suficientes']);
+        exit;
+    }
+
+
+
+    return $email;
+}
+
 function getAuthorizationHeader() {
     $headers = null;
 

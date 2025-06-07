@@ -72,6 +72,7 @@ require_once 'helpers/auth_helper.php';
          * @return array Lista de usuarios que coinciden con los criterios de búsqueda.
          */
         public function getUsersByParams() {
+            verificarTokenYCorreo();
             $modelo = new mUsuario();
 
             try {
@@ -96,7 +97,8 @@ require_once 'helpers/auth_helper.php';
         }
 
        public function getUsersByCentro() {
-            $modelo = new mUsuario();
+        verificarTokenYCorreo();    
+        $modelo = new mUsuario();
 
             try {
                 // Validar y sanitizar idCentro (es lo único que realmente necesitamos desde el frontend)
@@ -147,6 +149,7 @@ require_once 'helpers/auth_helper.php';
          * @return array Resultado de la operación de creación.
          */
         public function createUser() {
+            verificarTokenYCorreo();
             try {
                 $data = json_decode(file_get_contents("php://input"), true);
                 $modelo = new mUsuario();
@@ -171,6 +174,7 @@ require_once 'helpers/auth_helper.php';
          * @return array Resultado de la operación de actualización.
          */
         public function updateUser() {
+            verificarTokenYCorreo();
             try {
                 $data = json_decode(file_get_contents("php://input"), true);
                 $modelo = new mUsuario();
@@ -200,6 +204,7 @@ require_once 'helpers/auth_helper.php';
          * @return array Información del usuario o mensaje de error si no existe.
          */
         public function getUserById($params) {
+            verificarTokenYCorreo();
             $modelo = new mUsuario();
 
             try {
@@ -234,6 +239,7 @@ require_once 'helpers/auth_helper.php';
          * @return array Resultado de la operación de cambio de estado.
          */
         public function changeStatus($params) {
+            verificarTokenYCorreo();
             $modelo = new mUsuario();
 
             try {
@@ -274,6 +280,7 @@ require_once 'helpers/auth_helper.php';
          * @return array Resultado de la operación de eliminación.
          */
         public function deleteUser() {
+            verificarTokenYCorreo();
             try {
                 $id = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT);
                 if (!$id) {
