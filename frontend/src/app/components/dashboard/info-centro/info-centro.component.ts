@@ -1,7 +1,8 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, NgZone} from '@angular/core';
 import { CentrosService } from 'src/app/services/centros.service';
 import { ToastrService } from 'ngx-toastr';
 import Swal2 from 'sweetalert2';
+import * as $ from "jquery";
 
 
 @Component({
@@ -61,8 +62,9 @@ export class InfoCentroComponent implements OnInit {
    * @param centrosService Servicio para acceder a datos de centros.
    * @param toastr Servicio para mostrar notificaciones.
    * @param cdr Servicio para detectar cambios manuales.
+   * @param ngZone Servicio para ejecutar código dentro de la zona de Angular
    */
-  constructor(private centrosService: CentrosService, private toastr: ToastrService, private cdr: ChangeDetectorRef) {}
+  constructor(private centrosService: CentrosService, private toastr: ToastrService, private cdr: ChangeDetectorRef, private ngZone: NgZone) {}
 
   /**
    * Hook de inicialización. Carga la lista de centros al inicio.
@@ -134,11 +136,96 @@ export class InfoCentroComponent implements OnInit {
     this.centrosService.getCentros().subscribe(response => {
       if (response.success) {
         this.dataSource = response.data;
+        this.loadDataTable();
       } else {
         this.mensaje = 'No existen centros registrados. Dar de alta uno nuevo.';
       }
     });
   }
 
+// METODOS DE LA TABLA -----------------------------------
+
+  loadDataTable() {
+    setTimeout(() => {
+      const table = $('#centerTable').DataTable({
+        data: this.dataSource,
+        processing: true,
+        autoWidth: false,
+        pageLength: 6,
+        searching: false,
+        ordering: false,
+        lengthChange: false,
+        pagingType: 'simple_numbers',
+        language: {
+          lengthMenu: "Mostrar _MENU_ entradas",
+          info: "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+          infoEmpty: 'Mostrando 0 a 0 de 0 entradas',
+          paginate: {
+            first: "",
+            previous: " <i class='fas fa-chevron-left'></i> Anterior",
+            next: "Siguiente <i class='fas fa-chevron-right'></i>",
+            last: ""
+          }
+        },
+        columns: [{
+          data: 'nombre_centro',
+          className: 'ps-4',
+        //
+        // <i class="fas fa-map-marker-alt text-theme me-2"></i>
+          render: (data: any, type: any, row: any) => {
+            return ` <a class="text-decoration-none text-detalles fw-medium" href="${row.url}" target="_blank">
+                        <i class="fas fa-building text-theme me-2"></i>
+                        ${row.nombre_centro}
+                      </a>
+                      
+            `
+          }
+        },{
+          data: 'direccion_centro',
+          className: 'text-start',
+          render: (data: any, type: any, row: any) => {
+            return `<i class="fas fa-map-marker-alt text-theme me-2"></i>${row.direccion_centro}`
+          }
+        },{
+          data: 'correo_centro',
+          render: (data: any, type: any, row: any) => {
+            return `<i class="fas fa-envelope text-theme me-2"></i>${row.correo_centro}`
+          }
+        },{
+          data: 'telefono_centro',
+          render: (data: any, type: any, row: any) => {
+            return `<i class="fas fa-phone text-theme me-2"></i>${row.telefono_centro}`
+          }
+        },{
+          data: 'cp',
+          className: 'text-end',
+        },{
+          data: 'nombre_localidad',
+        },{
+          data: 'null',
+          className: 'text-center',
+          render: (data: any, type: any, row: any) => `
+            <div class="d-flex justify-content-center gap-2">
+              <button class="btn btn-warning btn-sm btn-modificar">Modificar</button>
+              <button class="btn btn-danger btn-sm btn-borrar">Borrar</button>
+            </div>
+          `
+        }]
+      });
+
+      $('#centerTable tbody').on('click', 'button', (event) => {
+        const $btn = $(event.currentTarget);
+        const rowData = table.row($btn.closest('tr')).data();
+
+        this.ngZone.run(() => {
+          if ($btn.hasClass('btn-modificar')) {
+            this.modificarRegistro(rowData);
+          } else if ($btn.hasClass('btn-borrar')) {
+            this.borrarRegistro(rowData);
+          }
+        });
+      });
+    }, 100);
+  }
 }
 

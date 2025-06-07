@@ -57,7 +57,7 @@ export class MenuComponent implements OnInit {
     plugins: {
       legend: {
         display: true,
-        position: 'top'
+        position: 'bottom'
       }
     },
     scales: {
@@ -74,25 +74,7 @@ export class MenuComponent implements OnInit {
 
   public formChartData: ChartData = { labels: [], datasets: [] };
   public formChartType: ChartType = 'line'; // puedes cambiar a 'bar', 'pie', 'doughnut', 'line', etc.
-  public formChartOptions: ChartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        display: true,
-        position: 'top'
-      }
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        ticks: {
-          precision: 0, // Fuerza números enteros
-          stepSize: 1   // Opcional: define el paso entre ticks
-        }
-      }
-
-    }
-  };
+  public formChartOptions: ChartOptions = {};
 
   public centerChartData: ChartData = { labels: [], datasets: [] };
   public centerChartType: ChartType = 'bar'; // puedes cambiar a 'bar', 'pie', 'doughnut', 'line', etc.
@@ -101,7 +83,7 @@ export class MenuComponent implements OnInit {
     plugins: {
       legend: {
         display: true,
-        position: 'top'
+        position: 'bottom'
       }
     },
     scales: {
@@ -150,7 +132,7 @@ export class MenuComponent implements OnInit {
           switch (this.idRol) {
             case 1:
               this.rol = 'educador';
-              this.router.navigate(['/usuarios', this.datosUsuario.id]);
+              this.router.navigate(['info-educadores/', this.datosUsuario.id]);
               break;
             case 2:
               this.rol = 'admin';
@@ -165,7 +147,6 @@ export class MenuComponent implements OnInit {
           console.error('Error al obtener datos del usuario:', error);
         }
       });
-
     } else {
       console.warn('No se pudo obtener información del token.');
     }
@@ -249,7 +230,6 @@ export class MenuComponent implements OnInit {
             datasets: [{
               label: 'Formaciones activas por mes',
               data: cantidades,
-              fill: true,
               type: 'line' as const,
               ...chartColors,
               pointRadius: 5,
@@ -265,33 +245,15 @@ export class MenuComponent implements OnInit {
             plugins: {
               legend: {
                 display: true,
-                position: 'top',
-                labels: {
-                  color: '#666',
-                  font: {
-                    size: 12
-                  }
-                }
+                position: 'bottom',
               }
             },
             scales: {
               y: {
                 beginAtZero: true,
-                grid: {
-                  color: 'rgba(0, 0, 0, 0.1)'
-                },
                 ticks: {
                   precision: 0,
                   stepSize: 1,
-                  color: '#666'
-                }
-              },
-              x: {
-                grid: {
-                  color: 'rgba(0, 0, 0, 0.1)'
-                },
-                ticks: {
-                  color: '#666'
                 }
               }
             }

@@ -7,39 +7,23 @@
             </button>
         </div>
 
-        <div class="table-responsive">
-            <table class="table table-striped table-hover">
+        <div>
+            <table id="centerTable" class="table table-striped table-hover">
                 <thead>
                     <tr>
                         <th>Nombre Centro</th>
                         <th>Dirección</th>
+                        <th>Correo</th>
+                        <th>Teléfono</th>
                         <th>Código Postal</th>
                         <th>Localidad</th>
-                        <th>Teléfono</th>
-                        <th>Correo</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                <tr *ngIf="mensaje">
-                    <td colspan="7" class="text-center">{{ mensaje }}</td>
-                </tr>
-                <tr *ngFor="let element of dataSource">
-                    <td>{{ element.nombre_centro }}</td>
-                    <td>{{ element.direccion_centro }}</td>
-                    <td>{{ element.cp }}</td>
-                    <td>{{ element.nombre_localidad }}</td>
-                    <td>{{ element.telefono_centro }}</td>
-                    <td>{{ element.correo_centro }}</td>
-                    <td class="d-flex justify-content-center gap-2">
-                        <button class="btn btn-warning btn-sm" (click)="modificarRegistro(element)">
-                            Modificar
-                        </button>
-                        <button class="btn btn-danger btn-sm" (click)="borrarRegistro(element)">
-                            Borrar
-                        </button>
-                    </td>
-                </tr>
+                    <tr *ngIf="mensaje">
+                        <td colspan="7" class="text-center">{{ mensaje }}</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
