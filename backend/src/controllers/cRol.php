@@ -2,6 +2,7 @@
 
 require_once MODELS . 'mRol.php';
 require_once 'config/config.php';
+require_once 'helpers/auth_helper.php';
 
 class CRol {
 
@@ -10,6 +11,7 @@ class CRol {
     }
 
     public function getAllRoles() {
+        verificarTokenYCorreo();
         try {
             $response = $this->mRol->getAllRoles();
             echo json_encode($response);
@@ -19,6 +21,7 @@ class CRol {
     }
 
     public function getRoleById() {
+        verificarTokenYCorreo();
         try {
             $id = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT);
             if (!$id) {
@@ -33,6 +36,7 @@ class CRol {
     }
 
     public function createRole() {
+        verificarTokenYCorreo();
         try {
             $data = json_decode(file_get_contents("php://input"), true);
 
@@ -48,6 +52,7 @@ class CRol {
     }
 
     public function updateRole() {
+        verificarTokenYCorreo();
         try {
             $data = json_decode(file_get_contents("php://input"), true);
 
@@ -63,6 +68,7 @@ class CRol {
     }
 
     public function deleteRole() {
+        verificarTokenYCorreo();
         try {
             $id = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT);
             if (!$id) {

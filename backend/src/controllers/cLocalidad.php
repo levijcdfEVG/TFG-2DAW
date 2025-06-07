@@ -1,6 +1,7 @@
 <?php
 require_once MODELS . 'mLocalidad.php';
 require_once 'config/config.php';
+require_once 'helpers/auth_helper.php';
 
 class CLocalidad {
 
@@ -9,6 +10,7 @@ class CLocalidad {
     }
 
     public function getAllLocalities() {
+        verificarTokenYCorreo();
         try {
             $response = $this->mLocalidad->getAllLocalities();
             return $response;
@@ -18,6 +20,7 @@ class CLocalidad {
     }
 
     public function getLocalityByProvince($provinceId) {
+        verificarTokenYCorreo();
         try {
             $localidades = $this->modelo->getLocalityByProvince($provinceId);
             echo json_encode([
@@ -34,6 +37,7 @@ class CLocalidad {
     }
 
     public function getLocalityById($id) {
+        verificarTokenYCorreo();
         try {
             $localidad = $this->modelo->getLocalityById($id);
             if ($localidad) {

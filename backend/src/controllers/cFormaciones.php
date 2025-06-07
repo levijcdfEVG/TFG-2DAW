@@ -377,6 +377,7 @@ class cFormaciones {
     }
 
     public function cambiarEstado($params) {
+        verificarTokenYCorreoUserNormal();
         try {
 
             if(!is_array($params) || !isset($params['id_usu']) || !isset($params['id_formacion'])) {

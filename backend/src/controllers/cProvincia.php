@@ -1,6 +1,7 @@
 <?php
 require_once MODELS . 'mProvincia.php';
 require_once 'config/config.php';
+require_once 'helpers/auth_helper.php';
 
 class CProvincia {
 
@@ -9,6 +10,7 @@ class CProvincia {
     }
 
     public function getAllProvinces() {
+        verificarTokenYCorreo();
         try {
             $response = $this->mProvincia->getAllProvinces();
             return $response;
@@ -18,6 +20,7 @@ class CProvincia {
     }
 
     public function getProvinceById($id) {
+        verificarTokenYCorreo();
         try {
             $provincia = $this->modelo->getProvinceById($id);
             if ($provincia) {
