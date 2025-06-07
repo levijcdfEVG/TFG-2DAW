@@ -1,4 +1,9 @@
 .card-title {
+  background-color: var(--color-secundario);
+}
+
+.btn-dark-info {
   background-color: var(--color-terciario);
+  color: #ffffff;
 }
 

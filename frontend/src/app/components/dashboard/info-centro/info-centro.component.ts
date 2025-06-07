@@ -2,7 +2,10 @@ import {ChangeDetectorRef, Component, OnInit, NgZone} from '@angular/core';
 import { CentrosService } from 'src/app/services/centros.service';
 import { ToastrService } from 'ngx-toastr';
 import Swal2 from 'sweetalert2';
-import * as $ from "jquery";
+import * as $ from 'jquery';
+import 'datatables.net';
+import 'datatables.net-bs5';
+import {Subject, takeUntil} from "rxjs";
 
 
 @Component({
@@ -29,6 +32,8 @@ export class InfoCentroComponent implements OnInit {
    * Fuente de datos para la tabla.
    */
   dataSource: any[] = [];
+  dataTableInstance: any;
+  private unsubscribe$ = new Subject<void>();
 
   /**
    * Objeto para registrar un nuevo centro.
@@ -71,6 +76,12 @@ export class InfoCentroComponent implements OnInit {
    */
   ngOnInit(): void {
     this.getCentros();
+
+    this.centrosService.centrosActualizados$.pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
+        setTimeout(() => {
+          this.getCentros();
+        }, 200);
+    });
   }
 
   /**
@@ -107,6 +118,7 @@ export class InfoCentroComponent implements OnInit {
           if (response.success) {
             this.dataSource = this.dataSource.filter(item => item.correo_centro !== this.centroAEliminar.correo_centro);
             this.toastr.success('Centro eliminado correctamente.', 'Éxito');
+            this.loadDataTable();
           } else {
             this.toastr.error('Error al eliminar el centro: ' + response.message, 'Error');
           }
@@ -133,9 +145,10 @@ export class InfoCentroComponent implements OnInit {
    * Muestra mensaje si no hay resultados.
    */
   private getCentros(): void {
-    this.centrosService.getCentros().subscribe(response => {
+    this.centrosService.getCentros().pipe(takeUntil(this.unsubscribe$)).subscribe(response => {
       if (response.success) {
         this.dataSource = response.data;
+        this.cdr.detectChanges();
         this.loadDataTable();
       } else {
         this.mensaje = 'No existen centros registrados. Dar de alta uno nuevo.';
@@ -147,7 +160,15 @@ export class InfoCentroComponent implements OnInit {
 
   loadDataTable() {
     setTimeout(() => {
-      const table = $('#centerTable').DataTable({
+      const table = $('#centerTable');
+
+      if ($.fn.DataTable.isDataTable(table)) {
+        this.dataTableInstance.destroy();  // destruye la instancia
+        table.empty();              // limpia el contenido
+      }
+
+
+      this.dataTableInstance = table.DataTable({
         data: this.dataSource,
         processing: true,
         autoWidth: false,
@@ -215,7 +236,7 @@ export class InfoCentroComponent implements OnInit {
 
       $('#centerTable tbody').on('click', 'button', (event) => {
         const $btn = $(event.currentTarget);
-        const rowData = table.row($btn.closest('tr')).data();
+        const rowData = this.dataTableInstance.row($btn.closest('tr')).data();
 
         this.ngZone.run(() => {
           if ($btn.hasClass('btn-modificar')) {

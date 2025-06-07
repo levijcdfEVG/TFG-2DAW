@@ -26,14 +26,12 @@ export class ModificarCentroComponent implements OnInit, OnChanges {
    * @param fb FormBuilder para crear el formulario
    * @param centrosService Servicio para gestión de centros
    * @param toastr Servicio de notificaciones
-   * @param router Servicio de navegación
    * @param sharedService Servicio compartido para obtener datos globales
    */
   constructor(
     private fb: FormBuilder,
     private centrosService: CentrosService,
     private toastr: ToastrService,
-    private router: Router,
     private sharedService: SharedService
   ) {}
 

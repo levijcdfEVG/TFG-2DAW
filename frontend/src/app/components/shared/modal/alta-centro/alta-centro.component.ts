@@ -2,6 +2,7 @@ import {ChangeDetectorRef, Component, EventEmitter, Output} from '@angular/core'
 import { CentrosService } from 'src/app/services/centros.service';
 import { ToastrService } from 'ngx-toastr';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import {Subject, takeUntil} from "rxjs";
 
 
 /**
@@ -20,6 +21,8 @@ export class AltaCentroComponent {
 
   /** Evento que se emite para refrescar la lista de centros */
   @Output() refreshLista = new EventEmitter<any>();
+  private unsubscribe$ = new Subject<void>();
+
 
     /**
    * Constructor del componente
@@ -171,12 +174,12 @@ export class AltaCentroComponent {
         Validators.maxLength(255),
         AltaCentroComponent.emailFundacionLoyolaValidator
       ]]
-  });
+    });
 
-  this.formCentro.valueChanges.subscribe(values => {
-    this.nuevoCentro = values;
-  });
-}
+    this.formCentro.valueChanges.subscribe(values => {
+      this.nuevoCentro = values;
+    });
+  }
 
   /**
    * Crea un nuevo centro si el formulario es válido y la localidad coincide con el CP.
@@ -196,35 +199,37 @@ export class AltaCentroComponent {
     }
 
     // Validar que nombre_localidad coincida con el CP
-    this.centrosService.validarLocalidad(this.nuevoCentro.nombre_localidad, this.nuevoCentro.cp).subscribe(response => {
-      if (!response.success) {
-        this.toastr.warning('El código postal no coincide con la localidad.', 'Advertencia');
-        return;
-      }
-
-    
-  
-      // Llama para guardar el nuevo centro en el backend
-      this.centrosService.crearCentro(this.nuevoCentro).subscribe(response => {
-        if (response.success) {
-          this.toastr.success('Centro creado con éxito', 'Éxito');
-          this.centrosService.notificarCambio(); // Notificar cambio
-          this.formCentro.reset();
-          setTimeout(() => {
-            this.cerrarFormulario();
-          }, 1000);
-          setTimeout(() => {
-            this.refreshLista.emit(true);
-          }, 1000);
-    
-        } else {
-          this.toastr.error('Error al crear el centro: ' + response.message, 'Error');
+    this.centrosService.validarLocalidad(this.nuevoCentro.nombre_localidad, this.nuevoCentro.cp).subscribe({
+      next: (response) => {
+        if (!response.success) {
+          this.toastr.warning('El código postal no coincide con la localidad.', 'Advertencia');
+          return;
         }
-      }, error => {
-        this.toastr.error('Error al comunicarse con el servidor.', error);
-      });
-    }, error => {
-      this.toastr.error('Error al validar la localidad.', 'Error');
+
+        // Llama para guardar el nuevo centro en el backend
+        this.centrosService.crearCentro(this.nuevoCentro).subscribe({
+          next: (response) => {
+            if (response.success) {
+              this.toastr.success('Centro creado con éxito', 'Éxito');
+              this.centrosService.notificarCambio(); // Notificar cambio
+
+              setTimeout(() => {
+                this.formCentro.reset();
+                this.cerrarFormulario();
+              }, 1000);
+
+
+            } else {
+              this.toastr.error('Error al crear el centro: ' + response.message, 'Error');
+            }
+          },
+          error: (error) => {
+            this.toastr.error('Error al comunicarse con el servidor.', error);
+          }
+        });
+      }, error: (error) => {
+        this.toastr.error('Error al validar la localidad.', 'Error');
+      }
     });
   }
 

@@ -65,7 +65,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div *ngIf="userData?.nombre_rol != 'Educador'" class="row">
                     <div class="col-12 text-end">
                         <button class="btn btn-outline-primary me-2" (click)="openEditModal()">Editar</button>
                         <button class="btn btn-outline-danger" 
@@ -127,7 +127,7 @@
                                 <td class="text-center">{{ formation.modalidad }}</td>
                                 <td class="text-end">
                                     <button *ngIf="formation.estado != 'Finalizada'" class="btn btn-sm"
-                                            [ngClass]="formation.estado == 'Pendiente' ? 'btn-info' : 'btn-success'"
+                                            [ngClass]="formation.estado == 'Pendiente' ? 'btn-dark-info' : 'btn-success'"
                                             (click)="toggleEstado(formation)">
                                         {{ formation.estado == 'Pendiente' ? 'Marcar en curso' : 'Marcar finalizada' }}
                                     </button>

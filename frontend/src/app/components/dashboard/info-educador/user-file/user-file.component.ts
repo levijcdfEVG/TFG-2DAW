@@ -9,6 +9,8 @@ import {Subject, takeUntil, timeout} from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { FormacionService } from 'src/app/services/formacion.service';
 import { jwtDecode } from "jwt-decode";
+import Swal2 from "sweetalert2";
+import Swal from "sweetalert2";
 
 @Component({
   selector: 'app-user-file',
@@ -55,6 +57,7 @@ export class UserFileComponent implements OnInit {
     this.userService.getUserById(this.userId).pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: (response: any) => {
         if (response) {
+          console.log(response);
           this.userData = response;
         } else {
           console.error('No user data received');
@@ -88,23 +91,37 @@ export class UserFileComponent implements OnInit {
   }
 
   changeStatus() {
-    const newStatus = this.userData.estado_user === 1 ? 'deshabilitar' : 'habilitar';
-    if (confirm(`¿Estás seguro de que deseas ${newStatus} este usuario?`)) {
-      this.userService.changeStatus(this.userId).pipe(takeUntil(this.unsubscribe$)).subscribe({
-        next: (response: any) => {
-          if (response.success) {
-            this.toastr.success(`Usuario ${newStatus}do correctamente`);
-            this.loadUser(); // Recargar los datos del usuario
-          } else {
-            this.toastr.error(response.error || 'Error al cambiar el estado del usuario');
-          }
-        },
-        error: (error) => {
-          console.error('Error al cambiar el estado del usuario:', error);
-          this.toastr.error('Error al cambiar el estado del usuario');
-        }
-      });
-    }
+    const newStatus = this.userData.estado === 1 ? 'deshabilitar' : 'habilitar';
+    const newStatusPast = this.userData.estado === 1 ? 'deshabilitado' : 'habilitado';
+
+    Swal.fire({
+      title: `¿Estás seguro?`,
+      text: `El usuario será ${newStatusPast}.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: `Sí, ${newStatus}`,
+      cancelButtonText: 'Cancelar',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.userService.changeStatus(this.userId)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe({
+              next: (response: any) => {
+                if (response.success) {
+                  this.toastr.success(`Usuario ${newStatusPast} correctamente`);
+                  this.loadUser(); // Recargar los datos del usuario
+                } else {
+                  this.toastr.error(response.error || 'Error al cambiar el estado del usuario');
+                }
+              },
+              error: (error) => {
+                console.error('Error al cambiar el estado del usuario:', error);
+                this.toastr.error('Error al cambiar el estado del usuario');
+              }
+            });
+      }
+    });
   }
 
   openEditModal() {

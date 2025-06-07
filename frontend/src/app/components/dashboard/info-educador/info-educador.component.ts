@@ -261,11 +261,6 @@ export class InfoEducadorComponent implements OnInit  {
                           <i class="fas fa-eye text-theme"></i> Ver ficha
                         </button>
                       </li>
-                      <li>
-                        <button class="dropdown-item status-change-btn" data-id="${data}" data-status="${row.estado}">
-                          Cambiar estado
-                        </button>
-                      </li>
                     </ul>
                   </div>`;
           }
