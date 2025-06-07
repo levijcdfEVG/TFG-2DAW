@@ -80,13 +80,18 @@
     </div>
 
     <!-- Sección de Tabs -->
-    <div class="card mx-4 mt-5">
-        <div class="card-body">
+    <div class="card mx-4 mt-5 shadow-sm">
+        <div class="card-body p-4">
             <!-- Nav Tabs -->
-            <ul class="nav nav-tabs" id="formationTabs" role="tablist">
+            <ul class="nav nav-tabs mb-3" id="formationTabs" role="tablist">
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="generales-tab" data-bs-toggle="tab" data-bs-target="#generales" type="button" role="tab">
                         Formaciones Generales
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="enCurso-tab" data-bs-toggle="tab" data-bs-target="#enCurso" type="button" role="tab">
+                        Formaciones en curso
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
@@ -94,42 +99,68 @@
                         Formaciones Finalizadas
                     </button>
                 </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="pendientes-tab" data-bs-toggle="tab" data-bs-target="#pendientes" type="button" role="tab">
-                        Formaciones Pendientes
-                    </button>
-                </li>
             </ul>
 
             <!-- Tab Content -->
-            <div class="tab-content mt-3" id="formationTabsContent">
-
+            <div class="tab-content" id="formationTabsContent">
                 <!-- Tab 1: Formaciones Generales -->
                 <div class="tab-pane fade show active" id="generales" role="tabpanel">
                     <div class="table-responsive">
-                        <table class="table table-striped table-sm">
-                            <thead>
+                        <table class="table table-hover align-middle table-sm">
+                            <thead class="table-light">
                             <tr>
                                 <th>Justificación</th>
-                                <th>Lugar de impartición</th>
-                                <th>Duración estimada</th>
-                                <th>Modalidad</th>
-                                <th>Estado</th>
-                                <th>Acción</th>
+                                <th>Lugar</th>
+                                <th class="text-center">Duración</th>
+                                <th class="text-center">Metodología</th>
+                                <th class="text-center">Modalidad</th>
+                                <th class="text-end">Acción</th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr *ngFor="let formation of formationData">
                                 <td>{{ formation.justificacion }}</td>
                                 <td>{{ formation.lugar_imparticion }}</td>
-                                <td>{{ formation.duracion }}</td>
-                                <td>{{ formation.metodologia }}</td>
-                                <td>{{ formation.activo ? 'Finalizada' : 'Pendiente' }}</td>
-                                <td>
-                                    <button class="btn btn-sm"
-                                            [ngClass]="formation.activo ? 'btn-warning' : 'btn-success'"
+                                <td class="text-center">{{ formation.duracion }}</td>
+                                <td class="text-center">{{ formation.metodologia }}</td>
+                                <td class="text-center">{{ formation.modalidad }}</td>
+                                <td class="text-end">
+                                    <button *ngIf="formation.estado != 'Finalizada'" class="btn btn-sm"
+                                            [ngClass]="formation.estado == 'Pendiente' ? 'btn-info' : 'btn-success'"
                                             (click)="toggleEstado(formation)">
-                                        {{ formation.activo ? 'Marcar como Pendiente' : 'Marcar como Finalizada' }}
+                                        {{ formation.estado == 'Pendiente' ? 'Marcar en curso' : 'Marcar finalizada' }}
+                                    </button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Formaciones En Curso-->
+                <div class="tab-pane fade" id="enCurso" role="tabpanel">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle table-sm">
+                            <thead class="table-light">
+                            <tr>
+                                <th>Justificación</th>
+                                <th>Lugar</th>
+                                <th class="text-center">Duración</th>
+                                <th class="text-center">Metodología</th>
+                                <th class="text-center">Modalidad</th>
+                                <th class="text-end">Acción</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let formation of pendingFormations">
+                                <td>{{ formation.justificacion }}</td>
+                                <td>{{ formation.lugar_imparticion }}</td>
+                                <td class="text-center">{{ formation.duracion }}</td>
+                                <td class="text-center">{{ formation.metodologia }}</td>
+                                <td class="text-center">{{ formation.modalidad }}</td>
+                                <td class="text-end">
+                                    <button class="btn btn-sm btn-success" (click)="toggleEstado(formation)">
+                                        Marcar finalizada
                                     </button>
                                 </td>
                             </tr>
@@ -141,73 +172,35 @@
                 <!-- Tab 2: Formaciones Finalizadas -->
                 <div class="tab-pane fade" id="finalizadas" role="tabpanel">
                     <div class="table-responsive">
-                        <table class="table table-striped table-sm">
-                            <thead>
+                        <table class="table table-hover align-middle table-sm">
+                            <thead class="table-light">
                             <tr>
                                 <th>Justificación</th>
-                                <th>Lugar de impartición</th>
-                                <th>Duración estimada</th>
-                                <th>Modalidad</th>
-                                <th>Estado</th>
-                                <th>Acción</th>
+                                <th>Lugar</th>
+                                <th class="text-center">Duración</th>
+                                <th class="text-center">Metodología</th>
+                                <th class="text-center">Modalidad</th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr *ngFor="let formation of finalizedFormations">
                                 <td>{{ formation.justificacion }}</td>
                                 <td>{{ formation.lugar_imparticion }}</td>
-                                <td>{{ formation.duracion }}</td>
-                                <td>{{ formation.metodologia }}</td>
-                                <td>{{ formation.activo ? 'Finalizada' : 'Pendiente' }}</td>
-                                <td>
-                                    <button class="btn btn-sm btn-warning"
-                                            (click)="toggleEstado(formation)">
-                                        Marcar como Pendiente
-                                    </button>
-                                </td>
+                                <td class="text-center">{{ formation.duracion }}</td>
+                                <td class="text-center">{{ formation.metodologia }}</td>
+                                <td class="text-center">{{ formation.modalidad }}</td>
                             </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- Tab 3: Formaciones Pendientes -->
-                <div class="tab-pane fade" id="pendientes" role="tabpanel">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-sm">
-                            <thead>
-                            <tr>
-                                <th>Justificación</th>
-                                <th>Lugar de impartición</th>
-                                <th>Duración estimada</th>
-                                <th>Modalidad</th>
-                                <th>Estado</th>
-                                <th>Acción</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr *ngFor="let formation of pendingFormations">
-                                <td>{{ formation.justificacion }}</td>
-                                <td>{{ formation.lugar_imparticion }}</td>
-                                <td>{{ formation.duracion }}</td>
-                                <td>{{ formation.metodologia }}</td>
-                                <td>{{ formation.activo ? 'Finalizada' : 'Pendiente' }}</td>
-                                <td>
-                                    <button class="btn btn-sm btn-success"
-                                            (click)="toggleEstado(formation)">
-                                        Marcar como Finalizada
-                                    </button>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+
 
             </div>
-
         </div>
     </div>
+
 </div>
 
 <app-edit-user *ngIf="selectedUser" [userData]="selectedUser"></app-edit-user>

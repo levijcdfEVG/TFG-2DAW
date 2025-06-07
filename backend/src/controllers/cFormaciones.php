@@ -376,9 +376,29 @@ class cFormaciones {
         }
     }
 
-    public function cambiarEstado(){
+    public function cambiarEstado($params) {
+        try {
 
+            if(!is_array($params) || !isset($params['id_usu']) || !isset($params['id_formacion'])) {
+                return $this->sendResponse(false, "IDs no proporcionados o formato inválido");
+            }
 
+            $id_usu = filter_var($params['id_usu'], FILTER_VALIDATE_INT);
+            $id_formacion = filter_var($params['id_formacion'], FILTER_VALIDATE_INT);
+            if ($id_usu === false || $id_usu <= 0 && $id_formacion === false || $id_formacion <= 0) {
+                return $this->sendResponse(false, "IDs inválidos. Debe ser un número entero positivo");
+            }
+
+            $response = $this->mFormacion->cambiarEstado($id_usu, $id_formacion);
+
+            if ($response['success']) {
+                $this->sendResponse(true, $response['message']);
+            } else {
+                $this->sendResponse(false, $response['message'], null, 404);
+            }
+        } catch (Exception $e) {
+            $this->sendResponse(false, $e->getMessage(), null, 500);
+        }
     }
 
     /**

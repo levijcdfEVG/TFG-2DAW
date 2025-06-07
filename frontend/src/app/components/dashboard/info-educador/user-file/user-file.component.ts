@@ -64,13 +64,13 @@ export class UserFileComponent implements OnInit {
   }
 
   loadUserFormations() {
-    console.log('Entra en loadUserFormations', this.userId);
     this.formationService.getFormationByUserId(this.userId).pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: (response: any) => {
+        console.log(response);
         if(response && response.success) {
           this.formationData = response.data;
-          this.finalizedFormations = this.formationData.filter(f => f.activo == 0);
-          this.pendingFormations = this.formationData.filter(f => f.activo == 1);
+          this.finalizedFormations = this.formationData.filter(f => f.estado == 'Finalizada');
+          this.pendingFormations = this.formationData.filter(f => f.estado == 'En curso');
         } else {
           console.error('No formation data received or error in response');
           this.formationData = [];
@@ -113,10 +113,14 @@ export class UserFileComponent implements OnInit {
   }
 
   toggleEstado(formation: any) {
-    this.formationService.cambiarEstado(formation.id).subscribe({
+    const id_formacion = formation.id;
+    this.formationService.cambiarEstado(id_formacion, this.userId).subscribe({
       next: (response: any) => {
+        console.log(response);
         if (response.success) {
-          this.cdr.detectChanges();
+          console.log(response.message);
+
+          this.loadUserFormations();
         }
       },
       error: (error) => {

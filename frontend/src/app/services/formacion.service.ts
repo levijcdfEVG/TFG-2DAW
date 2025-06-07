@@ -111,7 +111,6 @@ export class FormacionService {
 
   public getFormationByUserId(userId: number): Observable<any> {
     const url = `${this.backendUrl}?controlador=cFormaciones&accion=getFormationByUserId&id=${userId}`;
-    console.log(url);
     return this.http.get<any>(url);
   }
 
@@ -169,9 +168,11 @@ export class FormacionService {
     this.idFormacion.next(idFormacion);
   }
 
-  public cambiarEstado(formacion: any): Observable<any>{
-    const idFormacion = formacion.id;
+  public cambiarEstado(id_formacion: number, id_usu: number): Observable<any>{
+    const params = new HttpParams().set ('id_formacion', id_formacion.toString())
+                                              .set ('id_usu', id_usu.toString() );
     const url = `${this.backendUrl}?controlador=cFormaciones&accion=cambiarEstado`;
-    return this.http.post<any>(url, { idFormacion });
+    console.log(url, params);
+    return this.http.put<any>(url, null, { params });
   }
 }

@@ -511,7 +511,7 @@ class MFormacion {
             $this->conectar();
 
             $stmt = $this->conexion->prepare("
-                SELECT f.* FROM formacion f
+                SELECT f.*, i.estado FROM formacion f
                 INNER JOIN inscripciones i ON f.id = i.id_formacion
                 WHERE i.id_usu = ?"
             );
@@ -556,26 +556,24 @@ class MFormacion {
         }
     }
 
+    public function cambiarEstado($id_usu, $id_formacion) {
+        $this->conectar();
+        $sql = "UPDATE inscripciones SET estado = CASE
+                WHEN estado = 'Pendiente' THEN 'En curso'
+                WHEN estado = 'En curso' THEN 'Finalizada'
+                ELSE estado
+                END
+                WHERE id_usu = :id_usu AND id_formacion = :id_formacion";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->execute([':id_usu' => $id_usu, 'id_formacion' => $id_formacion]);
 
-    public function getFormacionById(int $idFormacion) {
-        try {
-            $this->conectar();
+        $rows = $stmt->rowCount();
 
-            $stmt = $this->conexion->prepare("SELECT justificacion FROM formacion WHERE id = ?");
-            $stmt->execute([$idFormacion]);
-            $nombre = $stmt->fetchColumn();
-
-            if (!$nombre) {
-                return ['success' => false, 'message' => 'No se encontró la formación.'];
-            }
-
-            return [
-                'success' => true,
-                'nombre' => $nombre
-            ];
-        } catch (PDOException $e) {
-            return ['success' => false, 'message' => 'Error al obtener la formación: ' . $e->getMessage()];
-        }
-    }
-
+        return [
+            'success' => $rows > 0,
+            'message' => $rows > 0
+                ? 'Estado actualizado correctamente'
+                : 'No se modificó ningún registro. Verifica los IDs'
+        ];
+}
 }
