@@ -107,17 +107,17 @@
                     $values[':telefono_user'] = "%" . $params['telefono_user'] . "%";
                 }
 
-                if (isset($params['id_rol']) && $params['id_rol'] !== '0' && $params['id_rol'] !== 0) {
+                if (!empty($params['id_rol'])) {
                     $conditions[] = "u.id_rol = :id_rol";
                     $values[':id_rol'] = $params['id_rol'];
                 }
 
-                if (isset($params['nuevo_educador']) && $params['nuevo_educador'] !== '2' && $params['nuevo_educador'] !== 2) {
+                if ($params['nuevo_educador'] !== '' && $params['nuevo_educador'] !== null && $params['nuevo_educador'] !== false) {
                     $conditions[] = "u.nuevo_educador = :nuevo_educador";
                     $values[':nuevo_educador'] = $params['nuevo_educador'];
                 }
 
-                if (isset($params['estado']) && $params['estado'] !== '2' && $params['estado'] !== 2) {
+                if ($params['estado'] !== '' && $params['estado'] !== null && $params['estado'] !== false) {
                     $conditions[] = "u.estado = :estado";
                     $values[':estado'] = $params['estado'];
                 }
@@ -179,19 +179,24 @@
                     $values[':telefono_user'] = "%" . $params['telefono_user'] . "%";
                 }
 
-                if (isset($params['id_rol']) && $params['id_rol'] !== '0' && $params['id_rol'] !== 0) {
+                if (!empty($params['id_rol'])) {
                     $conditions[] = "u.id_rol = :id_rol";
                     $values[':id_rol'] = $params['id_rol'];
                 }
 
-                if (isset($params['nuevo_educador']) && $params['nuevo_educador'] !== '0' && $params['nuevo_educador'] !== 0) {
+                if ($params['nuevo_educador'] !== '' && $params['nuevo_educador'] !== null && $params['nuevo_educador'] !== false) {
                     $conditions[] = "u.nuevo_educador = :nuevo_educador";
                     $values[':nuevo_educador'] = $params['nuevo_educador'];
                 }
 
-                if (isset($params['estado']) && $params['estado'] !== '2' && $params['estado'] !== 2) {
+                if ($params['estado'] !== '' && $params['estado'] !== null && $params['estado'] !== false) {
                     $conditions[] = "u.estado = :estado";
                     $values[':estado'] = $params['estado'];
+                }
+
+                 if (!empty($params['id_centro'])) {
+                    $conditions[] = "u.id_centro = :id_centro";
+                    $values[':id_centro'] = $params['id_centro'];
                 }
 
                 if (!empty($conditions)) {
@@ -200,6 +205,7 @@
 
                 $sql .= " ORDER BY u.nombre_user ASC";
 
+           
                 $stmt = $this->conexion->prepare($sql);
                 $stmt->execute($values);
 

@@ -80,9 +80,9 @@ require_once 'helpers/GoogleJWTVerifier.php';
                     'apellido_user' => filter_var($_GET['surname'] ?? '', FILTER_SANITIZE_STRING),
                     'correo_user' => filter_var($_GET['email'] ?? '', FILTER_SANITIZE_EMAIL),
                     'telefono_user' => filter_var($_GET['phone'] ?? '', FILTER_SANITIZE_STRING),
-                    'id_rol' => filter_var($_GET['role'] ?? '', FILTER_SANITIZE_STRING),
-                    'nuevo_educador' => filter_var($_GET['new_educator'] ?? 0, FILTER_VALIDATE_INT),
-                    'estado' => filter_var($_GET['status'] ?? 2, FILTER_VALIDATE_INT),
+                    'id_rol' => $_GET['role'] ?? '',  
+                    'nuevo_educador' => $_GET['new_educator'] ?? '',
+                    'estado' => $_GET['status'] ?? '',    
                     'id_centro' => filter_var($_GET['idCentro'] ?? null, FILTER_VALIDATE_INT)
                 ];
 
@@ -114,14 +114,14 @@ require_once 'helpers/GoogleJWTVerifier.php';
 
                 // Recolectar los parámetros del filtro
                 $params = [
-                    'id_centro' => $idCentro,
                     'nombre_user' => filter_var($_GET['name'] ?? '', FILTER_SANITIZE_STRING),
                     'apellido_user' => filter_var($_GET['surname'] ?? '', FILTER_SANITIZE_STRING),
                     'correo_user' => filter_var($_GET['email'] ?? '', FILTER_SANITIZE_EMAIL),
                     'telefono_user' => filter_var($_GET['phone'] ?? '', FILTER_SANITIZE_STRING),
-                    'id_rol' => filter_var($_GET['role'] ?? '', FILTER_SANITIZE_STRING),
-                    'nuevo_educador' => filter_var($_GET['new_educator'] ?? 0, FILTER_VALIDATE_INT),
-                    'estado' => filter_var($_GET['status'] ?? 2, FILTER_VALIDATE_INT)
+                    'id_rol' => $_GET['role'] ?? '',  
+                    'nuevo_educador' => $_GET['new_educator'] ?? '',
+                    'estado' => $_GET['status'] ?? '',    
+                    'id_centro' => filter_var($_GET['idCentro'] ?? null, FILTER_VALIDATE_INT)
                 ];
 
                 $response = $modelo->getUsersByCentro($params);
