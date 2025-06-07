@@ -88,5 +88,34 @@ class cMenu
         echo json_encode($resultado);
         exit;
     }
+
+    //Parte responsable
+        public function getUserByDayCentro(){
+        $id_centro = isset($_GET['id_centro']) ? intval($_GET['id_centro']) : null;
+        $resultado = $this->objMenu->getUserByDayCentro($id_centro);
+
+        header('Content-Type: application/json');
+        echo json_encode($resultado);
+        exit;
+    }
+
+    public function getFormationActiveByMonthCentro() {
+        $id_centro = isset($_GET['id_centro']) ? intval($_GET['id_centro']) : null;
+        $resultado = $this->objMenu->getFormationActiveByMonthCentro($id_centro);
+
+        header('Content-Type: application/json');
+        echo json_encode($resultado);
+        exit;
+    }
+
+    public function getUserByCenterCentro() {
+        $id_centro = isset($_GET['id_centro']) ? intval($_GET['id_centro']) : null;
+        $resultado = $this->objMenu->getUserByCenterCentro($id_centro);
+
+        header('Content-Type: application/json');
+        echo json_encode($resultado);
+        exit;
+    }
+
 }
 ?>
