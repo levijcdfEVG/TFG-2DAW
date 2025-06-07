@@ -1,11 +1,14 @@
+import {CookieService} from "ngx-cookie-service";
+
 declare const bootstrap: any;
 
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import { UsuarioService } from '../../../../services/usuario.service';
 import { ActivatedRoute } from "@angular/router";
-import { Subject, takeUntil } from 'rxjs';
+import {Subject, takeUntil, timeout} from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { FormacionService } from 'src/app/services/formacion.service';
+import { jwtDecode } from "jwt-decode";
 
 @Component({
   selector: 'app-user-file',
@@ -32,17 +35,18 @@ export class UserFileComponent implements OnInit {
     private formationService: FormacionService,
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private cookieService: CookieService
   ) {}
 
   ngOnInit() {
+    this.loadUserImage();
     this.route.params.subscribe(params => {
       this.userId = params['id'];
       if (this.userId) {
         this.loadUser();
       }
     });
-
     this.loadUserFormations();
   }
 
@@ -128,4 +132,13 @@ export class UserFileComponent implements OnInit {
       }
     });
   }
+
+  private loadUserImage() {
+    const token = this.cookieService.get('token');
+    const decodedInfo: any = jwtDecode(token);
+    const rawUrl = decodedInfo.picture;
+    this.imgPath = `http://15.proyectos.esvirgua.com/backend/src/helpers/proxy_image.php?url=${encodeURIComponent(rawUrl)}`;
+  }
+
+
 }
