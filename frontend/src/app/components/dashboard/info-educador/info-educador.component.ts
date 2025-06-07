@@ -73,7 +73,20 @@ export class InfoEducadorComponent implements OnInit  {
    * Destruye la tabla existente si existe y crea una nueva con los datos filtrados
    */
   searchByFilter() {
-    const params = this.filterForm.value;
+    const rawParams = this.filterForm.value;
+    const params = {...rawParams};
+
+    if (rawParams.role === 0) {
+      params.role = "";
+    }
+
+    if (rawParams.new_educator === 2) {
+      params.new_educator = "";
+    }
+
+    if (rawParams.status === 2) {
+      params.status = "";
+    }
 
     const table: any = $('#usersTable');
 
@@ -84,8 +97,10 @@ export class InfoEducadorComponent implements OnInit  {
     if (this.idRol === 3) {
       // Añadimos idCentro a params para la búsqueda por centro
       params.idCentro = this.idCentro;
+       console.log('Buscando por centro con rol 3:', params);
       this.loadUsersByCentro(params);
     } else {
+      console.log('Buscando sin centro:', params);
       this.loadUsers(params);
     }
   }

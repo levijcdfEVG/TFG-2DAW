@@ -19,7 +19,8 @@ export class FormacionesGuard implements CanActivate {
 
     if (rol === 1) {
       // Si el rol es 1 (educador), se deniega el acceso
-      return this.router.parseUrl('/no-autorizado');
+     this.router.navigate(['/no-autorizado']);
+      return false;
     }
 
     // Se permite el acceso para otros roles
