@@ -441,7 +441,7 @@ class cFormaciones {
 
         $requiredFields = [
             'lugar_imparticion' => 60,
-            'modalidad' => 20,
+            'modalidad' => 100,
             'duracion' => 255,
             'justificacion' => 255,
             'metodologia' => 255,
