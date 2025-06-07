@@ -167,12 +167,14 @@ export class AsignarUsuariosFormacionModalComponent implements OnInit {
       new_educator: '',
       status: 1
     };
-
+    console.log('ID Rol:', idRol);
+    console.log('ID Centro:', idCentro);
     // Si el usuario es responsable (rol 3), añadimos idCentro al filtro
     if (idRol === 3 && idCentro !== null) {
       filtros.idCentro = idCentro;
     }
 
+    console.log('Cargando usuarios con filtros:', filtros);
     this.usuariosService.getUsersByParams(filtros).subscribe(response => {
       if (response.length > 0) {
         this.usuarios = response;
