@@ -163,7 +163,7 @@ export class AsignarUsuariosFormacionModalComponent implements OnInit {
       surname: '',
       email: '',
       phone: '',
-      role: '1', // educadores
+      role: '',
       new_educator: '',
       status: 1
     };
