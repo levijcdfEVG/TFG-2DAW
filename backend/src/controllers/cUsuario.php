@@ -20,6 +20,19 @@ require_once 'helpers/auth_helper.php';
     class cUsuario {
 
     /**
+     * Instancia del modelo MFormacion.
+     *
+     * @var mUsuario
+     * @author Levi Josué Candeias de Figueiredo <levijosuecandeiasdefigueiredo.guadalupe@alumnado.fundacionloyola.net>
+     */
+    private $mUsuarios;
+
+    public function __construct() {
+        // Aquí instancia tu modelo de usuarios
+        $this->mUsuarios = new mUsuario();
+    }
+
+    /**
      * Método de login con Google
      *
      * Este método verifica un token de Google y si es válido, intenta loguear al usuario asociado.
@@ -53,6 +66,10 @@ require_once 'helpers/auth_helper.php';
                 $usuario = $modelo->getUsuarioPorCorreo($correo);
                 if (!$usuario) {
                     return $this->sendResponse(["success" => false, "error" => "Correo no autorizado"]);
+                }
+
+                if(!$usuario['estado']){
+                    return $this->sendResponse(["success" => false, "error" => "El usuario está dado de baja"]);
                 }
 
                 return $this->sendResponse(["success" => true, "token" => $token]);
@@ -159,6 +176,9 @@ require_once 'helpers/auth_helper.php';
                 }
 
                 $response = $modelo->createUser($data);
+                if($response['success']){
+                    $this->sendMails('nuevo',$response['id']);
+                }
                 echo json_encode($response);
             } catch (Exception $e) {
                 return ['success' => false, 'message' => $e->getMessage()];
@@ -204,7 +224,7 @@ require_once 'helpers/auth_helper.php';
          * @return array Información del usuario o mensaje de error si no existe.
          */
         public function getUserById($params) {
-            verificarTokenYCorreo();
+            verificarTokenYCorreoUserNormal();
             $modelo = new mUsuario();
 
             try {
@@ -264,7 +284,13 @@ require_once 'helpers/auth_helper.php';
                     return $this->sendResponse(["success" => false, "error" => $response['message']]);
                 }
 
-                return $this->sendResponse(["success" => true, "message" => "Estado del usuario actualizado correctamente"]);
+                if($response['data'] == 1){
+                    $this->sendMails('nuevo', $id);
+                }else{
+                    $this->sendMails('bajaUser', $id);
+                }
+
+                return $this->sendResponse(["success" => true, "message" => "Estado del usuario actualizado correctamente", 'data' => $response]);
 
             } catch (Exception $e) {
                 return $this->sendResponse(["success" => false, "error" => "Error en el servidor: " . $e->getMessage()]);
@@ -287,6 +313,10 @@ require_once 'helpers/auth_helper.php';
                     throw new Exception("ID inválido");
                 }
                 $response = $this->mUsuario->deleteUser($id);
+
+                if($response['success']){
+                    $this->sendMails('bajaUser',$response['id']);
+                }
                 echo json_encode($response);
             } catch (Exception $e) {
                 return ['success' => false, 'message' => $e->getMessage()];
@@ -307,5 +337,47 @@ require_once 'helpers/auth_helper.php';
             echo json_encode($data);
             exit;
         }
+
+    /**
+     * Envía un correo electrónico a un usuario.
+     *
+     * @param string $tipoCorreo   Tipo de correo a enviar (por ejemplo, alta o baja).
+     * @param int    $idUsuario    ID del usuario al que se enviará el correo.
+     *
+     * @return void
+     */
+    private function sendMails($tipoCorreo, $idUsuario) {
+        $usuario = $this->mUsuarios->obtenerUsuarioPorId($idUsuario);
+        if ($usuario && isset($usuario['correo_user'])) {
+            $email = $usuario['correo_user'];
+            $nombre = $usuario['nombre_user'] ?? 'Usuario';
+
+            $asunto = "Usuario Formaciones";
+            $data = [
+                'to'        => $email,
+                'subject'   => $asunto,
+                'nombre'    => $nombre,
+                'tipo'      => $tipoCorreo
+            ];
+
+            $content = json_encode($data, JSON_UNESCAPED_UNICODE);
+            $options = [
+                'http' => [
+                    'method'  => 'POST',
+                    'header'  => "Content-type: application/json\r\n" .
+                                "Content-Length: " . strlen($content) . "\r\n",
+                    'content' => $content
+                ]
+            ];
+
+            $context = stream_context_create($options);
+            $result = file_get_contents(GOOGLEMAILER, false, $context);
+
+            if ($result === FALSE) {
+                error_log("No se pudo enviar email al usuario ID {$idUsuario} ({$email})");
+            }
+        }
+    }
+
 }
 ?>

@@ -284,8 +284,10 @@
                 ':estado' => $data['estado']
             ]);
 
+            $idNuevoUsuario = $this->conexion->lastInsertId();
 
-            return ['success' => true, 'message' => 'Usuario creado exitosamente'];
+
+            return ['success' => true, 'message' => 'Usuario creado exitosamente', 'id' => $idNuevoUsuario];
         }
 
         /**
@@ -360,9 +362,26 @@
                     END
                     WHERE id = :id";
             $stmt = $this->conexion->prepare($sql);
-            $stmt->execute([':id' => $id]);
+            $resultado = $stmt->execute([':id' => $id]);
 
-            return ['success' => true, 'message' => 'Usuario actualizado exitosamente'];
+            // 2. Obtener el usuario actualizado
+            $sqlSelect = "SELECT * FROM usuario WHERE id = :id";
+            $stmt2 = $this->conexion->prepare($sqlSelect);
+            $stmt2->execute([':id' => $id]);
+            $usuario = $stmt2->fetch(PDO::FETCH_ASSOC);
+
+           if ($usuario) {
+                return [
+                    'success' => true,
+                    'message' => 'Usuario actualizado exitosamente',
+                    'data' => $usuario['estado']
+                ];
+            } else {
+                return [
+                    'success' => false,
+                    'message' => 'No se encontró el usuario',
+                ];
+            }
         }
 
         /**
