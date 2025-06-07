@@ -50,32 +50,37 @@ export class MenuService {
   //Responsable
   getUserByDayResponsable(): Observable<any> {
     const centro = this.shared.getIdCentro();
+    console.log("Datos de responsable del centro:", centro);
 
     if (centro == null) {
       throw new Error("No hay centro válido para sacar datos");
     }
 
-    return this.http.get<any>(`${this.urlBase}getUserByDayResponsable?id_centro=${centro}`);
+    return this.http.get<any>(`${this.urlBase}getUserByDayResponsable&id_centro=${centro}`);
   }
 
   getFormationActiveByMonthResponsable(): Observable<any> {
     const centro = this.shared.getIdCentro();
+    console.log("Datos de responsable del centro:", centro);
+
 
     if (centro == null) {
       throw new Error("No hay centro válido para sacar datos");
     }
 
-    return this.http.get<any>(`${this.urlBase}getFormationActiveByMonthResponsable?id_centro=${centro}`);
+    return this.http.get<any>(`${this.urlBase}getFormationActiveByMonthResponsable&id_centro=${centro}`);
   }
 
   getUserByCenterResponsable(): Observable<any> {
     const centro = this.shared.getIdCentro();
+    console.log("Datos de responsable del centro:", centro);
+
 
     if (centro == null) {
       throw new Error("No hay centro válido para sacar datos");
     }
 
-    return this.http.get<any>(`${this.urlBase}getUserByCenterResponsable?id_centro=${centro}`);
+    return this.http.get<any>(`${this.urlBase}getUserByCenterResponsable&id_centro=${centro}`);
   }
 
 }

@@ -135,6 +135,7 @@ export class MenuComponent implements OnInit {
               this.router.navigate(['info-educadores/', this.datosUsuario.id]);
               break;
             case 2:
+
               this.rol = 'admin';
               break;
             case 3:
@@ -142,6 +143,9 @@ export class MenuComponent implements OnInit {
               break;
           }
           this.roleService.setRol(this.rol);
+          this.loadUserGraph();
+          this.loadFormGraph();
+          this.loadCenterGraph();
         },
         error: (error) => {
           console.error('Error al obtener datos del usuario:', error);
@@ -150,14 +154,17 @@ export class MenuComponent implements OnInit {
     } else {
       console.warn('No se pudo obtener información del token.');
     }
-    this.loadUserGraph();
-    this.loadFormGraph();
-    this.loadCenterGraph();
+
   }
 
   loadUserGraph() {
-    this.menuService.getUserByDay().subscribe({
+    const obs = this.rol === 'responsable'
+        ? this.menuService.getUserByDayResponsable()
+        : this.menuService.getUserByDay();
+
+    obs.subscribe({
       next: (response) => {
+        console.log(response)
         if (response.success && response.data) {
           const totalSesiones = response.data.totalSesiones;    // Sesiones totales por día
           const sesionesPorRol = response.data.sesionesPorRol;  // Sesiones por rol y día
@@ -170,7 +177,7 @@ export class MenuComponent implements OnInit {
           const roles = Array.from(new Set(sesionesPorRol.map((item: { nombre_rol: string }) => item.nombre_rol))) as string[]; // Obtiene una lista unica de roles
           const datasets = roles.map((rol: string) => {
             const datos = fechas.map((fecha: string) => {
-              const registro = sesionesPorRol.find((item: { fecha: string; nombre_rol: string }) => 
+              const registro = sesionesPorRol.find((item: { fecha: string; nombre_rol: string }) =>
                 item.fecha === fecha && item.nombre_rol === rol
               );
               return registro ? registro.cantidad : 0;
@@ -206,8 +213,15 @@ export class MenuComponent implements OnInit {
   }
 
   loadFormGraph() {
-    this.menuService.getFormationActiveByMonth().subscribe({
+    const obs = this.rol === 'responsable'
+        ? this.menuService.getFormationActiveByMonthResponsable()
+        : this.menuService.getFormationActiveByMonth();
+
+
+    obs.subscribe({
       next: (response) => {
+        console.log(response)
+
         if (response) {
           const meses = response.data.map((item: any) => {
             const [year, month] = item.mes.split('-');

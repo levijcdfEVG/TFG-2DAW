@@ -36,8 +36,9 @@
             </div>
 
             <!-- Gráficos (solo para admin) -->
-            <div class="row mt-4" *ngIf="rol === 'admin'">
-                <div class="col-5 pt-2 mx-auto">
+            <div class="row mt-4">
+                <!-- Primer y segundo gráfico para admin y responsable -->
+                <div class="col-5 pt-2 mx-auto" *ngIf="rol === 'admin' || rol === 'responsable'">
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <h5 class="card-title">Sesiones iniciadas hoy</h5>
@@ -51,7 +52,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-5 pt-2 mx-auto">
+
+                <div class="col-5 pt-2 mx-auto" *ngIf="rol === 'admin' || rol === 'responsable'">
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <h5 class="card-title">Formaciones activas cada mes</h5>
@@ -65,7 +67,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-5 pt-2 pb-5 mt-4 mx-auto">
+
+                <!-- Tercer gráfico solo para admin -->
+                <div class="col-5 pt-2 pb-5 mt-4 mx-auto" *ngIf="rol === 'admin'">
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <h5 class="card-title">Nuevos educadores por centro</h5>
@@ -79,9 +83,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row mt-4" *ngIf="rol === 'responsable'">
-
             </div>
         </main>
     </div>

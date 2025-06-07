@@ -136,7 +136,7 @@ class mMenu {
     }
 
     //Parte para responsable
-        public function getUserByDayCentro($id_centro) {
+    public function getUserByDayCentro($id_centro) {
         $this->conectar();
 
         try {
@@ -179,10 +179,11 @@ class mMenu {
         $this->conectar();
         
         try {
-            $sql = 'SELECT DATE_FORMAT(CURRENT_DATE, "%Y-%m") AS mes, COUNT(*) AS cantidad 
-                    FROM formacion 
-                    WHERE activo = 1 AND id_centro = :id_centro 
-                    GROUP BY DATE_FORMAT(CURRENT_DATE, "%Y-%m") 
+            $sql = 'SELECT DATE_FORMAT(CURRENT_DATE, "%Y-%m") AS mes, COUNT(*) AS cantidad
+                    FROM formacion f
+                    JOIN centro_formacion cf ON f.id = cf.id_formacion
+                    WHERE f.activo = 1 AND cf.id_centro = :id_centro
+                    GROUP BY mes
                     ORDER BY mes DESC';
             $stmt = $this->conexion->prepare($sql);
             $stmt->bindParam(':id_centro', $id_centro, PDO::PARAM_INT);
@@ -194,6 +195,7 @@ class mMenu {
             return ['success' => false, 'message' => 'Error al obtener los datos: ' . $e->getMessage()];
         }
     }
+
 
     public function getUserByCenterCentro($id_centro) {
         $this->conectar();
