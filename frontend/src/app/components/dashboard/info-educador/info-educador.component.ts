@@ -243,10 +243,15 @@ export class InfoEducadorComponent implements OnInit  {
           data: 'apellido_user',
         }, {
           data: 'correo_user',
+          render: (data: any, type: any, row: any) => {
+            return `<i class="fas fa-envelope text-theme me-2"></i>${row.correo_user}`
+          }
         }, {
-          data: 'nombre_rol',
-        },{
           data: 'telefono_user',
+          render: (data: any, type: any, row: any) => {
+            return `<i class="fas fa-phone text-theme me-2"></i>${row.telefono_user}`
+          }        },{
+          data: 'nombre_rol',
           className: 'text-end',
         }, {
           data: 'id',

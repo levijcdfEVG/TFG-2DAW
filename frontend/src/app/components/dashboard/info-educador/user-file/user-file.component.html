@@ -65,13 +65,15 @@
                         </div>
                     </div>
                 </div>
-                <div *ngIf="userData?.nombre_rol != 'Educador'" class="row">
+                <div *ngIf="idRol !== 1" class="row">
                     <div class="col-12 text-end">
-                        <button class="btn btn-outline-primary me-2" (click)="openEditModal()">Editar</button>
-                        <button class="btn btn-outline-danger" 
+                        <button class="btn btn-outline-primary me-2" (click)="openEditModal()"><i class="fas fa-edit me-1"></i>Editar</button>
+                        <button class="btn btn-outline-danger "
                                 [class.btn-outline-danger]="userData?.estado === 1"
                                 [class.btn-outline-success]="userData?.estado === 0"
                                 (click)="changeStatus()">
+                            <i class="fas me-1" [class.fa-user-slash]="userData?.estado === 1"
+                               [class.fa-user]="userData?.estado === 0"></i>
                             {{ userData?.estado === 1 ? 'Deshabilitar' : 'Habilitar' }}
                         </button>
                     </div>
@@ -115,6 +117,7 @@
                                 <th class="text-center">Duración</th>
                                 <th class="text-center">Metodología</th>
                                 <th class="text-center">Modalidad</th>
+                                <th class="text-center">Estado</th>
                                 <th class="text-end">Acción</th>
                             </tr>
                             </thead>
@@ -125,6 +128,13 @@
                                 <td class="text-center">{{ formation.duracion }}</td>
                                 <td class="text-center">{{ formation.metodologia }}</td>
                                 <td class="text-center">{{ formation.modalidad }}</td>
+                                <td class="text-center">
+                                    <span class="badge" [ngClass]="{
+                                        'bg-warning': formation.estado === 'Pendiente',
+                                        'bg-primary': formation.estado === 'En curso',
+                                        'bg-success': formation.estado === 'Finalizada'
+                                    }">{{ formation.estado }}</span>
+                                </td>
                                 <td class="text-end">
                                     <button *ngIf="formation.estado != 'Finalizada'" class="btn btn-sm"
                                             [ngClass]="formation.estado == 'Pendiente' ? 'btn-dark-info' : 'btn-success'"
@@ -149,6 +159,7 @@
                                 <th class="text-center">Duración</th>
                                 <th class="text-center">Metodología</th>
                                 <th class="text-center">Modalidad</th>
+                                <th class="text-center">Estado</th>
                                 <th class="text-end">Acción</th>
                             </tr>
                             </thead>
@@ -159,6 +170,13 @@
                                 <td class="text-center">{{ formation.duracion }}</td>
                                 <td class="text-center">{{ formation.metodologia }}</td>
                                 <td class="text-center">{{ formation.modalidad }}</td>
+                                <td class="text-center">
+                                    <span class="badge" [ngClass]="{
+                                        'bg-warning': formation.estado === 'Pendiente',
+                                        'bg-primary': formation.estado === 'En curso',
+                                        'bg-success': formation.estado === 'Finalizada'
+                                    }">{{ formation.estado }}</span>
+                                </td>
                                 <td class="text-end">
                                     <button class="btn btn-sm btn-success" (click)="toggleEstado(formation)">
                                         Marcar finalizada
@@ -181,6 +199,7 @@
                                 <th class="text-center">Duración</th>
                                 <th class="text-center">Metodología</th>
                                 <th class="text-center">Modalidad</th>
+                                <th class="text-center">Estado</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -190,6 +209,13 @@
                                 <td class="text-center">{{ formation.duracion }}</td>
                                 <td class="text-center">{{ formation.metodologia }}</td>
                                 <td class="text-center">{{ formation.modalidad }}</td>
+                                <td class="text-center">
+                                    <span class="badge" [ngClass]="{
+                                        'bg-warning': formation.estado === 'Pendiente',
+                                        'bg-primary': formation.estado === 'En curso',
+                                        'bg-success': formation.estado === 'Finalizada'
+                                    }">{{ formation.estado }}</span>
+                                </td>
                             </tr>
                             </tbody>
                         </table>

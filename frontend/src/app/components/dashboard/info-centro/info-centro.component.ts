@@ -162,6 +162,7 @@ export class InfoCentroComponent implements OnInit {
     setTimeout(() => {
       const table = $('#centerTable');
 
+      // @ts-ignore
       if ($.fn.DataTable.isDataTable(table)) {
         this.dataTableInstance.destroy();  // destruye la instancia
         table.empty();              // limpia el contenido
@@ -227,8 +228,8 @@ export class InfoCentroComponent implements OnInit {
           className: 'text-center',
           render: (data: any, type: any, row: any) => `
             <div class="d-flex justify-content-center gap-2">
-              <button class="btn btn-warning btn-sm btn-modificar">Modificar</button>
-              <button class="btn btn-danger btn-sm btn-borrar">Borrar</button>
+              <button class="btn btn-sm btn-outline-primary btn-sm btn-modificar"><i class="fa-solid fa-pencil"></i></button>
+              <button class="btn btn-sm btn-outline-danger btn-sm btn-borrar"><i class="fa-solid fa-trash-can"></i></button>
             </div>
           `
         }]

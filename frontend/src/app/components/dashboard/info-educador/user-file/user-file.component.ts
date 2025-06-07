@@ -5,12 +5,12 @@ declare const bootstrap: any;
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import { UsuarioService } from '../../../../services/usuario.service';
 import { ActivatedRoute } from "@angular/router";
-import {Subject, takeUntil, timeout} from 'rxjs';
+import {Subject, takeUntil} from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { FormacionService } from 'src/app/services/formacion.service';
 import { jwtDecode } from "jwt-decode";
-import Swal2 from "sweetalert2";
 import Swal from "sweetalert2";
+import {SharedService} from "../../../../services/shared.service";
 
 @Component({
   selector: 'app-user-file',
@@ -24,6 +24,7 @@ export class UserFileComponent implements OnInit {
   selectedUser: any;
   userId!: number;
   userData: any | null = null;
+  idRol: any;
   
 // VARIABLES FORMACIONES ------------------------------------------
   formationData: any[] = [];
@@ -35,13 +36,16 @@ export class UserFileComponent implements OnInit {
   constructor(
     private userService: UsuarioService,
     private formationService: FormacionService,
+    private sharedService: SharedService,
     private route: ActivatedRoute,
-    private cdr: ChangeDetectorRef,
     private toastr: ToastrService,
     private cookieService: CookieService
   ) {}
 
   ngOnInit() {
+
+    this.idRol = this.sharedService.getIdRol();
+
     this.loadUserImage();
     this.route.params.subscribe(params => {
       this.userId = params['id'];
