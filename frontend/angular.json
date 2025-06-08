@@ -17,7 +17,7 @@
               "sweetalert2",
               "jquery"
             ],    
-            "outputPath": "dist/mockups_tfg",
+            "outputPath": "dist/GestionFormacionesTFG",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": [
