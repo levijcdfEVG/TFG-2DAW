@@ -211,7 +211,7 @@ export class InscripcionFormacionComponent implements OnInit {
      * Llama al método `ngOnInit` del componente modal para cargar los datos al abrirlo.
      */
     protected loadModalUsers(): void {
-        console.log(this.modalAsignar);
+        // console.log(this.modalAsignar);
         this.modalAsignar.ngOnInit();
     }
 }

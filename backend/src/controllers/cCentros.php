@@ -1,5 +1,6 @@
 <?php
 require_once MODELS . 'mCentros.php';
+require_once 'helpers/auth_helper.php';
 
 /**
  * Controlador de centros educativos.
@@ -11,7 +12,7 @@ require_once MODELS . 'mCentros.php';
  * @package  TFG-2DAW
  * @author   David Silva Vega <dsilvavega.guadalupe@alumnado.fundacionloyola.net>
  * @license  https://opensource.org/licenses/MIT MIT License
- * @link     http://example.com
+ *     
  */
 class cCentros
 {
@@ -45,6 +46,7 @@ class cCentros
 
     public function listaCentros()
     {
+        verificarTokenYCorreo();
         $resultado = $this->objCentro->listaCentros();
 
         header('Content-Type: application/json');
@@ -100,12 +102,13 @@ class cCentros
 
     public function insertIntoCentros()
     {
+        verificarTokenYCorreo();
         // Log para depurar los datos recibidos
         error_log('Contenido de $_POST: ' . print_r($_POST, true));
         error_log('Contenido de php://input: ' . file_get_contents('php://input'));
 
         // --------------------------- VALIDACIONES ---------------------------
-
+        
         // Verificar que todos los campos requeridos están presentes
         if (
             isset($_POST['nombre_centro'], $_POST['direccion_centro'], $_POST['cp'], 
@@ -482,6 +485,7 @@ class cCentros
          */
         public function eliminarCentro()
         {
+            verificarTokenYCorreo();
             // Leer los datos enviados desde el frontend en formato JSON
             $inputData = json_decode(file_get_contents('php://input'), true);
 

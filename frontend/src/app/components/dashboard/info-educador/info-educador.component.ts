@@ -34,7 +34,7 @@ export class InfoEducadorComponent implements OnInit  {
     email: '',
     phone: '',
     role: 0,
-    new_educator: 0,
+    new_educator: 2,
     status: 1
   } as const;
 
@@ -73,7 +73,20 @@ export class InfoEducadorComponent implements OnInit  {
    * Destruye la tabla existente si existe y crea una nueva con los datos filtrados
    */
   searchByFilter() {
-    const params = this.filterForm.value;
+    const rawParams = this.filterForm.value;
+    const params = {...rawParams};
+
+    if (rawParams.role === 0) {
+      params.role = "";
+    }
+
+    if (rawParams.new_educator === 2) {
+      params.new_educator = "";
+    }
+
+    if (rawParams.status === 2) {
+      params.status = "";
+    }
 
     const table: any = $('#usersTable');
 
@@ -84,8 +97,10 @@ export class InfoEducadorComponent implements OnInit  {
     if (this.idRol === 3) {
       // Añadimos idCentro a params para la búsqueda por centro
       params.idCentro = this.idCentro;
+       console.log('Buscando por centro con rol 3:', params);
       this.loadUsersByCentro(params);
     } else {
+      console.log('Buscando sin centro:', params);
       this.loadUsers(params);
     }
   }
@@ -153,7 +168,6 @@ export class InfoEducadorComponent implements OnInit  {
         .pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: (response: any) => {
         this.dataUsers = response;
-        console.log(this.dataUsers);
         this.hasSearched = true;
         this.cdr.detectChanges();
         this.loadDataTable();
@@ -229,10 +243,15 @@ export class InfoEducadorComponent implements OnInit  {
           data: 'apellido_user',
         }, {
           data: 'correo_user',
+          render: (data: any, type: any, row: any) => {
+            return `<i class="fas fa-envelope text-theme me-2"></i>${row.correo_user}`
+          }
         }, {
-          data: 'nombre_rol',
-        },{
           data: 'telefono_user',
+          render: (data: any, type: any, row: any) => {
+            return `<i class="fas fa-phone text-theme me-2"></i>${row.telefono_user}`
+          }        },{
+          data: 'nombre_rol',
           className: 'text-end',
         }, {
           data: 'id',
@@ -245,11 +264,6 @@ export class InfoEducadorComponent implements OnInit  {
                       <li>
                         <button class="dropdown-item view-user-btn" data-id="${data}">
                           <i class="fas fa-eye text-theme"></i> Ver ficha
-                        </button>
-                      </li>
-                      <li>
-                        <button class="dropdown-item status-change-btn" data-id="${data}" data-status="${row.estado}">
-                          Cambiar estado
                         </button>
                       </li>
                     </ul>

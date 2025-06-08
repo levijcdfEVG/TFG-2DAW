@@ -11,6 +11,7 @@ import { FormacionService } from '../../../../../services/formacion.service';
 import { UsuarioService } from '../../../../../services/usuario.service';
 import Swal2 from 'sweetalert2';
 import { ToastrService } from 'ngx-toastr';
+import {SharedService} from "../../../../../services/shared.service";
 
 @Component({
   selector: 'app-asignar-usuarios',
@@ -58,7 +59,8 @@ export class AsignarUsuariosFormacionModalComponent implements OnInit {
       private formacionService: FormacionService,
       private usuariosService: UsuarioService,
       private toastr: ToastrService,
-      private cdr: ChangeDetectorRef
+      private cdr: ChangeDetectorRef,
+      private sharedService: SharedService
   ) {}
 
   /**
@@ -153,15 +155,27 @@ export class AsignarUsuariosFormacionModalComponent implements OnInit {
    * También filtra los que ya están asignados para que no aparezcan como disponibles.
    */
   private loadUsers(): void {
-    this.usuariosService.getUsersByParams({
+    const idRol = this.sharedService.getIdRol();
+    const idCentro = this.sharedService.getIdCentro();
+
+    const filtros: any = {
       name: '',
       surname: '',
       email: '',
       phone: '',
-      role: '1',
+      role: '',
       new_educator: '',
       status: 1
-    }).subscribe(response => {
+    };
+    console.log('ID Rol:', idRol);
+    console.log('ID Centro:', idCentro);
+    // Si el usuario es responsable (rol 3), añadimos idCentro al filtro
+    if (idRol === 3 && idCentro !== null) {
+      filtros.idCentro = idCentro;
+    }
+
+    console.log('Cargando usuarios con filtros:', filtros);
+    this.usuariosService.getUsersByParams(filtros).subscribe(response => {
       if (response.length > 0) {
         this.usuarios = response;
 

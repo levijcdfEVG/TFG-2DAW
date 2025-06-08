@@ -3,6 +3,7 @@ require_once MODELS . 'mUsuario.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once 'config/config.php';
 require_once 'helpers/GoogleJWTVerifier.php';
+require_once 'helpers/auth_helper.php';
 
     /**
      * Controlador de usuarios.
@@ -17,6 +18,19 @@ require_once 'helpers/GoogleJWTVerifier.php';
      * @link     http://example.com
      */
     class cUsuario {
+
+    /**
+     * Instancia del modelo MFormacion.
+     *
+     * @var mUsuario
+     * @author Levi Josué Candeias de Figueiredo <levijosuecandeiasdefigueiredo.guadalupe@alumnado.fundacionloyola.net>
+     */
+    private $mUsuarios;
+
+    public function __construct() {
+        // Aquí instancia tu modelo de usuarios
+        $this->mUsuarios = new mUsuario();
+    }
 
     /**
      * Método de login con Google
@@ -54,6 +68,10 @@ require_once 'helpers/GoogleJWTVerifier.php';
                     return $this->sendResponse(["success" => false, "error" => "Correo no autorizado"]);
                 }
 
+                if(!$usuario['estado']){
+                    return $this->sendResponse(["success" => false, "error" => "El usuario está dado de baja"]);
+                }
+
                 return $this->sendResponse(["success" => true, "token" => $token]);
 
             } catch (Exception $e) {
@@ -71,6 +89,7 @@ require_once 'helpers/GoogleJWTVerifier.php';
          * @return array Lista de usuarios que coinciden con los criterios de búsqueda.
          */
         public function getUsersByParams() {
+            verificarTokenYCorreo();
             $modelo = new mUsuario();
 
             try {
@@ -80,9 +99,10 @@ require_once 'helpers/GoogleJWTVerifier.php';
                     'apellido_user' => filter_var($_GET['surname'] ?? '', FILTER_SANITIZE_STRING),
                     'correo_user' => filter_var($_GET['email'] ?? '', FILTER_SANITIZE_EMAIL),
                     'telefono_user' => filter_var($_GET['phone'] ?? '', FILTER_SANITIZE_STRING),
-                    'id_rol' => filter_var($_GET['role'] ?? '', FILTER_SANITIZE_STRING),
-                    'nuevo_educador' => filter_var($_GET['new_educator'] ?? 0, FILTER_VALIDATE_INT),
-                    'estado' => filter_var($_GET['status'] ?? 2, FILTER_VALIDATE_INT)
+                    'id_rol' => $_GET['role'] ?? '',  
+                    'nuevo_educador' => $_GET['new_educator'] ?? '',
+                    'estado' => $_GET['status'] ?? '',    
+                    'id_centro' => filter_var($_GET['idCentro'] ?? null, FILTER_VALIDATE_INT)
                 ];
 
                 $response = $modelo->getUsersByParams($params);
@@ -94,7 +114,8 @@ require_once 'helpers/GoogleJWTVerifier.php';
         }
 
        public function getUsersByCentro() {
-            $modelo = new mUsuario();
+        verificarTokenYCorreo();    
+        $modelo = new mUsuario();
 
             try {
                 // Validar y sanitizar idCentro (es lo único que realmente necesitamos desde el frontend)
@@ -113,14 +134,14 @@ require_once 'helpers/GoogleJWTVerifier.php';
 
                 // Recolectar los parámetros del filtro
                 $params = [
-                    'id_centro' => $idCentro,
                     'nombre_user' => filter_var($_GET['name'] ?? '', FILTER_SANITIZE_STRING),
                     'apellido_user' => filter_var($_GET['surname'] ?? '', FILTER_SANITIZE_STRING),
                     'correo_user' => filter_var($_GET['email'] ?? '', FILTER_SANITIZE_EMAIL),
                     'telefono_user' => filter_var($_GET['phone'] ?? '', FILTER_SANITIZE_STRING),
-                    'id_rol' => filter_var($_GET['role'] ?? '', FILTER_SANITIZE_STRING),
-                    'nuevo_educador' => filter_var($_GET['new_educator'] ?? 0, FILTER_VALIDATE_INT),
-                    'estado' => filter_var($_GET['status'] ?? 2, FILTER_VALIDATE_INT)
+                    'id_rol' => $_GET['role'] ?? '',  
+                    'nuevo_educador' => $_GET['new_educator'] ?? '',
+                    'estado' => $_GET['status'] ?? '',    
+                    'id_centro' => filter_var($_GET['idCentro'] ?? null, FILTER_VALIDATE_INT)
                 ];
 
                 $response = $modelo->getUsersByCentro($params);
@@ -145,6 +166,7 @@ require_once 'helpers/GoogleJWTVerifier.php';
          * @return array Resultado de la operación de creación.
          */
         public function createUser() {
+            verificarTokenYCorreo();
             try {
                 $data = json_decode(file_get_contents("php://input"), true);
                 $modelo = new mUsuario();
@@ -154,6 +176,9 @@ require_once 'helpers/GoogleJWTVerifier.php';
                 }
 
                 $response = $modelo->createUser($data);
+                if($response['success']){
+                    $this->sendMails('nuevo',$response['id']);
+                }
                 echo json_encode($response);
             } catch (Exception $e) {
                 return ['success' => false, 'message' => $e->getMessage()];
@@ -169,6 +194,7 @@ require_once 'helpers/GoogleJWTVerifier.php';
          * @return array Resultado de la operación de actualización.
          */
         public function updateUser() {
+            verificarTokenYCorreo();
             try {
                 $data = json_decode(file_get_contents("php://input"), true);
                 $modelo = new mUsuario();
@@ -198,6 +224,7 @@ require_once 'helpers/GoogleJWTVerifier.php';
          * @return array Información del usuario o mensaje de error si no existe.
          */
         public function getUserById($params) {
+            verificarTokenYCorreoUserNormal();
             $modelo = new mUsuario();
 
             try {
@@ -232,6 +259,7 @@ require_once 'helpers/GoogleJWTVerifier.php';
          * @return array Resultado de la operación de cambio de estado.
          */
         public function changeStatus($params) {
+            verificarTokenYCorreo();
             $modelo = new mUsuario();
 
             try {
@@ -256,7 +284,13 @@ require_once 'helpers/GoogleJWTVerifier.php';
                     return $this->sendResponse(["success" => false, "error" => $response['message']]);
                 }
 
-                return $this->sendResponse(["success" => true, "message" => "Estado del usuario actualizado correctamente"]);
+                if($response['data'] == 1){
+                    $this->sendMails('nuevo', $id);
+                }else{
+                    $this->sendMails('bajaUser', $id);
+                }
+
+                return $this->sendResponse(["success" => true, "message" => "Estado del usuario actualizado correctamente", 'data' => $response]);
 
             } catch (Exception $e) {
                 return $this->sendResponse(["success" => false, "error" => "Error en el servidor: " . $e->getMessage()]);
@@ -272,12 +306,17 @@ require_once 'helpers/GoogleJWTVerifier.php';
          * @return array Resultado de la operación de eliminación.
          */
         public function deleteUser() {
+            verificarTokenYCorreo();
             try {
                 $id = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT);
                 if (!$id) {
                     throw new Exception("ID inválido");
                 }
                 $response = $this->mUsuario->deleteUser($id);
+
+                if($response['success']){
+                    $this->sendMails('bajaUser',$response['id']);
+                }
                 echo json_encode($response);
             } catch (Exception $e) {
                 return ['success' => false, 'message' => $e->getMessage()];
@@ -298,5 +337,47 @@ require_once 'helpers/GoogleJWTVerifier.php';
             echo json_encode($data);
             exit;
         }
+
+    /**
+     * Envía un correo electrónico a un usuario.
+     *
+     * @param string $tipoCorreo   Tipo de correo a enviar (por ejemplo, alta o baja).
+     * @param int    $idUsuario    ID del usuario al que se enviará el correo.
+     *
+     * @return void
+     */
+    private function sendMails($tipoCorreo, $idUsuario) {
+        $usuario = $this->mUsuarios->obtenerUsuarioPorId($idUsuario);
+        if ($usuario && isset($usuario['correo_user'])) {
+            $email = $usuario['correo_user'];
+            $nombre = $usuario['nombre_user'] ?? 'Usuario';
+
+            $asunto = "Usuario Formaciones";
+            $data = [
+                'to'        => $email,
+                'subject'   => $asunto,
+                'nombre'    => $nombre,
+                'tipo'      => $tipoCorreo
+            ];
+
+            $content = json_encode($data, JSON_UNESCAPED_UNICODE);
+            $options = [
+                'http' => [
+                    'method'  => 'POST',
+                    'header'  => "Content-type: application/json\r\n" .
+                                "Content-Length: " . strlen($content) . "\r\n",
+                    'content' => $content
+                ]
+            ];
+
+            $context = stream_context_create($options);
+            $result = file_get_contents(GOOGLEMAILER, false, $context);
+
+            if ($result === FALSE) {
+                error_log("No se pudo enviar email al usuario ID {$idUsuario} ({$email})");
+            }
+        }
+    }
+
 }
 ?>

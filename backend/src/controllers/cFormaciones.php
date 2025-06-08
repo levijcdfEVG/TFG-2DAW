@@ -4,6 +4,7 @@ require_once MODELS . 'mUsuario.php';
 require_once MODELS.'mFormacion.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once 'config/config.php';
+require_once 'helpers/auth_helper.php';
 
 /**
  * Controlador para gestionar las operaciones CRUD de formaciones.
@@ -50,6 +51,8 @@ class cFormaciones {
             return;
         }
 
+        verificarTokenYCorreo();
+
         try {
             $response = $this->mFormacion->listarAllFormaciones();
             echo json_encode($response);
@@ -70,6 +73,8 @@ class cFormaciones {
         //     $this->methodNotAllowed(['POST']);
         //     return;
         // }
+
+        verificarTokenYCorreo();
 
         try {
             $json = file_get_contents("php://input");
@@ -105,6 +110,8 @@ class cFormaciones {
         //     $this->methodNotAllowed(['PUT']);
         //     return;
         // }
+
+        verificarTokenYCorreo();
 
         try {
             $input = json_decode(file_get_contents('php://input'), true);
@@ -142,6 +149,8 @@ class cFormaciones {
         //     return;
         // }
 
+        verificarTokenYCorreo();
+
         try {
             $input = json_decode(file_get_contents('php://input'), true);
 
@@ -175,6 +184,8 @@ class cFormaciones {
             $this->methodNotAllowed(['DELETE']);
             return;
         }
+
+        verificarTokenYCorreo();
 
         try {
             $input = json_decode(file_get_contents('php://input'), true);
@@ -217,6 +228,7 @@ class cFormaciones {
      * }
      */
    public function asignUserFormacion() {
+        verificarTokenYCorreo();
         try {
             $input = json_decode(file_get_contents('php://input'), true);
 
@@ -261,7 +273,7 @@ class cFormaciones {
         //     $this->methodNotAllowed(['GET']);
         //     return;
         // }
-
+        verificarTokenYCorreo();
         try {
             if (!isset($_GET['idFormacion']) || empty($_GET['idFormacion'])) {
                 $this->sendResponse(false, 'Falta el parámetro idFormacion', null, 400);
@@ -282,6 +294,39 @@ class cFormaciones {
         }
     }
 
+    /**
+     * Obtiene las formaciones de un usuario específico.
+     *
+     * Este método espera una petición GET con el parámetro `id` en la URL.
+     * Llama al modelo para recuperar las formaciones asociadas al usuario y devuelve
+     * una respuesta JSON con los resultados.
+     *
+     * @return void
+     *
+     * @throws Exception Si ocurre un error inesperado durante el proceso.
+     *
+     */
+    public function getFormationByUserId($params) {
+        try {
+            if (!isset($_GET['id']) || empty($_GET['id'])) {
+                $this->sendResponse(false, 'Falta el parámetro id', null, 400);
+                return;
+            }
+
+            $idUsuario = (int)$_GET['id'];
+            $resultado = $this->mFormacion->getFormationByUserId($idUsuario);
+
+            if (!$resultado['success']) {
+                $this->sendResponse(false, $resultado['message'] ?? 'Error desconocido', null, 500);
+                return;
+            }
+
+            $this->sendResponse(true, 'Formaciones obtenidas correctamente', $resultado['formaciones']);
+        } catch (Exception $e) {
+            $this->sendResponse(false, $e->getMessage(), null, 500);
+        }
+    }
+    
     /**
      * Desasigna uno o varios usuarios de una formación específica.
      *
@@ -304,6 +349,8 @@ class cFormaciones {
             $this->methodNotAllowed(['POST']);
             return;
         }
+
+        verificarTokenYCorreo();
 
         try {
             $input = json_decode(file_get_contents('php://input'), true);
@@ -329,6 +376,31 @@ class cFormaciones {
         }
     }
 
+    public function cambiarEstado($params) {
+        verificarTokenYCorreoUserNormal();
+        try {
+
+            if(!is_array($params) || !isset($params['id_usu']) || !isset($params['id_formacion'])) {
+                return $this->sendResponse(false, "IDs no proporcionados o formato inválido");
+            }
+
+            $id_usu = filter_var($params['id_usu'], FILTER_VALIDATE_INT);
+            $id_formacion = filter_var($params['id_formacion'], FILTER_VALIDATE_INT);
+            if ($id_usu === false || $id_usu <= 0 && $id_formacion === false || $id_formacion <= 0) {
+                return $this->sendResponse(false, "IDs inválidos. Debe ser un número entero positivo");
+            }
+
+            $response = $this->mFormacion->cambiarEstado($id_usu, $id_formacion);
+
+            if ($response['success']) {
+                $this->sendResponse(true, $response['message']);
+            } else {
+                $this->sendResponse(false, $response['message'], null, 404);
+            }
+        } catch (Exception $e) {
+            $this->sendResponse(false, $e->getMessage(), null, 500);
+        }
+    }
 
     /**
      * Envía la respuesta JSON al cliente con cabeceras HTTP y código de estado.
@@ -390,7 +462,7 @@ class cFormaciones {
 
         $requiredFields = [
             'lugar_imparticion' => 60,
-            'modalidad' => 20,
+            'modalidad' => 100,
             'duracion' => 255,
             'justificacion' => 255,
             'metodologia' => 255,

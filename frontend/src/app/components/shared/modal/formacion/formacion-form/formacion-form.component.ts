@@ -69,7 +69,7 @@ export class FormacionFormComponent implements OnInit {
   private initForm(): void {
     const baseControls = {
       lugar_imparticion: ['', [Validators.required, Validators.maxLength(60)]],
-      modalidad: ['', [Validators.required, Validators.maxLength(20)]],
+      modalidad: ['', [Validators.required, Validators.maxLength(100)]],
       duracion: ['', [Validators.required, Validators.min(1), Validators.maxLength(255)]],
       justificacion: ['', [Validators.required, Validators.maxLength(255)]],
       metodologia: ['', [Validators.required, Validators.maxLength(255)]],

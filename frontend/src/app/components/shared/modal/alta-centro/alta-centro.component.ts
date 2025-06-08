@@ -2,7 +2,13 @@ import {ChangeDetectorRef, Component, EventEmitter, Output} from '@angular/core'
 import { CentrosService } from 'src/app/services/centros.service';
 import { ToastrService } from 'ngx-toastr';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import {Subject, takeUntil} from "rxjs";
 
+
+/**
+ * Componente para el alta de centros.
+ * Permite crear un nuevo centro validando su información antes de enviarla al backend.
+ */
 @Component({
   selector: 'app-alta-centro',
   templateUrl: './alta-centro.component.html',
@@ -10,15 +16,28 @@ import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors }
 })
 export class AltaCentroComponent {
 
+  /** Formulario reactivo del centro */
   formCentro!: FormGroup;
-  @Output() refreshLista = new EventEmitter<any>();
 
+  /** Evento que se emite para refrescar la lista de centros */
+  @Output() refreshLista = new EventEmitter<any>();
+  private unsubscribe$ = new Subject<void>();
+
+
+    /**
+   * Constructor del componente
+   * @param fb FormBuilder para construir el formulario reactivo
+   * @param centrosService Servicio para operaciones relacionadas con centros
+   * @param toastr Servicio de notificaciones
+   * @param cdr Referencia para detección de cambios
+   */
   constructor(private fb: FormBuilder,
               private centrosService: CentrosService,
               private toastr: ToastrService,
               private cdr: ChangeDetectorRef
   ) {}
 
+/** Modelo que representa un nuevo centro */
   nuevoCentro: {
     nombre_centro: string;
     direccion_centro: string;
@@ -35,8 +54,14 @@ export class AltaCentroComponent {
     correo_centro: ''
   };
 
+  /** Fuente de datos (a futuro se puede usar para mostrar datos en una tabla u otro componente) */
   dataSource: any[] = [];
 
+   /**
+   * Devuelve el mensaje de error correspondiente a un control del formulario.
+   * @param controlName Nombre del control
+   * @returns Mensaje de error en texto plano
+   */
   getErrorMessage(controlName: string): string {
     const control = this.formCentro.get(controlName);
   
@@ -86,24 +111,39 @@ export class AltaCentroComponent {
     return '';
   }
 
-  // Validador de campos sin números
+    /**
+   * Validador personalizado: valida que el campo no contenga números.
+   * @param control Control del formulario
+   * @returns Objeto de error si contiene números, o null si es válido
+   */
   static sinNumerosValidator(control: AbstractControl): ValidationErrors | null {
     const regex = /^[a-zA-Z\sáéíóúÁÉÍÓÚüÜñÑ.,-]+$/;
     return control.value && !regex.test(control.value) ? { contieneNumeros: true } : null;
   }
 
-  // Validador de campos con solo números
+  /**
+   * Validador personalizado: valida que el campo solo contenga números.
+   * @param control Control del formulario
+   * @returns Objeto de error si contiene letras, o null si es válido
+   */
   static soloNumerosValidator(control: AbstractControl): ValidationErrors | null {
     const regex = /^[0-9]+$/;
     return control.value && !regex.test(control.value) ? { contieneLetras: true } : null;
   }
 
-  // Validador de correo electronico
+  /**
+   * Validador personalizado: verifica si el correo pertenece al dominio fundacionloyola.es.
+   * @param control Control del formulario
+   * @returns Objeto de error si el dominio no es válido, o null si es válido
+   */
   static emailFundacionLoyolaValidator(control: AbstractControl): ValidationErrors | null {
     const regex = /^[a-zA-Z0-9._%+-]+@fundacionloyola\.es$/;
     return control.value && !regex.test(control.value) ? { dominioInvalido: true } : null;
   }
 
+    /**
+   * Inicializa el formulario reactivo y escucha cambios para actualizar el modelo `nuevoCentro`.
+   */
   ngOnInit() {
     this.formCentro = this.fb.group({
       nombre_centro: ['', [
@@ -134,14 +174,17 @@ export class AltaCentroComponent {
         Validators.maxLength(255),
         AltaCentroComponent.emailFundacionLoyolaValidator
       ]]
-  });
+    });
 
-  this.formCentro.valueChanges.subscribe(values => {
-    this.nuevoCentro = values;
-  });
-}
+    this.formCentro.valueChanges.subscribe(values => {
+      this.nuevoCentro = values;
+    });
+  }
 
-
+  /**
+   * Crea un nuevo centro si el formulario es válido y la localidad coincide con el CP.
+   * Muestra mensajes de éxito o error según el resultado de la operación.
+   */
   crearCentro(): void {
 
     this.formCentro.patchValue(this.nuevoCentro);
@@ -156,44 +199,49 @@ export class AltaCentroComponent {
     }
 
     // Validar que nombre_localidad coincida con el CP
-    this.centrosService.validarLocalidad(this.nuevoCentro.nombre_localidad, this.nuevoCentro.cp).subscribe(response => {
-      if (!response.success) {
-        this.toastr.warning('El código postal no coincide con la localidad.', 'Advertencia');
-        return;
-      }
-
-    
-  
-      // Aquí puedes llamar al servicio para guardar el nuevo centro en el backend
-      this.centrosService.crearCentro(this.nuevoCentro).subscribe(response => {
-        if (response.success) {
-          this.toastr.success('Centro creado con éxito', 'Éxito');
-          this.centrosService.notificarCambio(); // Notificar cambio
-          this.formCentro.reset();
-          setTimeout(() => {
-            this.cerrarFormulario();
-          }, 1000);
-          setTimeout(() => {
-            this.refreshLista.emit(true);
-          }, 1000);
-    
-        } else {
-          this.toastr.error('Error al crear el centro: ' + response.message, 'Error');
+    this.centrosService.validarLocalidad(this.nuevoCentro.nombre_localidad, this.nuevoCentro.cp).subscribe({
+      next: (response) => {
+        if (!response.success) {
+          this.toastr.warning('El código postal no coincide con la localidad.', 'Advertencia');
+          return;
         }
-      }, error => {
-        this.toastr.error('Error al comunicarse con el servidor.', error);
-      });
-    }, error => {
-      this.toastr.error('Error al validar la localidad.', 'Error');
+
+        // Llama para guardar el nuevo centro en el backend
+        this.centrosService.crearCentro(this.nuevoCentro).subscribe({
+          next: (response) => {
+            if (response.success) {
+              this.toastr.success('Centro creado con éxito', 'Éxito');
+              this.centrosService.notificarCambio(); // Notificar cambio
+
+              setTimeout(() => {
+                this.formCentro.reset();
+                this.cerrarFormulario();
+              }, 1000);
+
+
+            } else {
+              this.toastr.error('Error al crear el centro: ' + response.message, 'Error');
+            }
+          },
+          error: (error) => {
+            this.toastr.error('Error al comunicarse con el servidor.', error);
+          }
+        });
+      }, error: (error) => {
+        this.toastr.error('Error al validar la localidad.', 'Error');
+      }
     });
   }
 
+    /**
+   * Cierra el formulario modal si está presente en el DOM.
+   */
   cerrarFormulario(): void {
     const modalElement = document.getElementById('altaCentroModal');
   if (modalElement) {
     // Ensure bootstrap is globally available or import it
     const modalInstance = (window as any).bootstrap.Modal.getInstance(modalElement) || new (window as any).bootstrap.Modal(modalElement);
-    modalInstance.hide(); // Cierra el modal
+    modalInstance.hide();
   }
 
 

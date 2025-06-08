@@ -5,11 +5,12 @@
  */
 
 import { Injectable } from '@angular/core';
-import { HttpClient } from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { AddCentroPayload, FormacionResponse } from '../services/interfaces/formacionesResponse';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from "../../environments/environment.prod";
+import {catchError, map} from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -108,6 +109,11 @@ export class FormacionService {
     return this.http.get<any>(url);
   }
 
+  public getFormationByUserId(userId: number): Observable<any> {
+    const url = `${this.backendUrl}?controlador=cFormaciones&accion=getFormationByUserId&id=${userId}`;
+    return this.http.get<any>(url);
+  }
+
   /**
    * Desasigna usuarios de una formación.
    * @param idFormacion ID de la formación.
@@ -160,5 +166,13 @@ export class FormacionService {
    */
   public setIdFormacion(idFormacion: number): void {
     this.idFormacion.next(idFormacion);
+  }
+
+  public cambiarEstado(id_formacion: number, id_usu: number): Observable<any>{
+    const params = new HttpParams().set ('id_formacion', id_formacion.toString())
+                                              .set ('id_usu', id_usu.toString() );
+    const url = `${this.backendUrl}?controlador=cFormaciones&accion=cambiarEstado`;
+    console.log(url, params);
+    return this.http.put<any>(url, null, { params });
   }
 }

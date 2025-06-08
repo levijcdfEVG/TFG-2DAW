@@ -1,11 +1,7 @@
 <app-header *ngIf="isAuthenticated"></app-header>
 
-<div class="container my-3 d-flex justify-content-end">
-  <button
-    *ngIf="isAuthenticated && mostrarBotonVolver"
-    class="btn btn-outline-secondary"
-    (click)="volverAlMenu()"
-  >
+<div class="d-flex justify-content-end mx-3 px-4">
+  <button *ngIf="isAuthenticated && mostrarBotonVolver" class="btn btn-outline-primary mt-3" (click)="volverAlMenu()">
     ← Menú
   </button>
 </div>

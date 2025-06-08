@@ -1,4 +1,4 @@
-<div class="modal fade" id="editUserModal" data-backdrop="static" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+<div class="modal fade" id="editUserModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header p-2 px-3">
@@ -8,7 +8,7 @@
           </div>
             <button #closeModalBtn type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body ">
           <form [formGroup]="userModalForm" (ngSubmit)="saveForm()">
               <div class="row mb-3">
                   <div class="col-md-6">

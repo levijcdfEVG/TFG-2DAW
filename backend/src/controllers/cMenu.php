@@ -1,5 +1,6 @@
 <?php
 require_once MODELS . 'mMenu.php';
+require_once 'helpers/auth_helper.php';
 
 /**
  * Controlador del menú principal.
@@ -45,13 +46,14 @@ class cMenu
      */
 
     public function userInfo(){
+        verificarTokenYCorreoUserNormal();
         $inputJSON = file_get_contents('php://input');
         $input = json_decode($inputJSON, true);
 
         $email = $input['email'] ?? null;
 
         if (!$email) {
-            http_response_code(400); 
+            http_response_code(400);
             echo json_encode(['error' => 'Falta el parámetro email.']);
             exit;
         }
@@ -65,11 +67,63 @@ class cMenu
 
 
     public function getUserByDay(){
+        verificarTokenYCorreo();
         $resultado = $this->objMenu->getUserByDay();
 
         header('Content-Type: application/json');
         echo json_encode($resultado);
         exit;
     }
+
+    public function getFormationActiveByMonth() {
+        verificarTokenYCorreo();
+        $resultado = $this->objMenu->getFormationActiveByMonth();
+
+        header('Content-Type: application/json');
+        echo json_encode($resultado);
+        exit;
+    }
+
+
+    public function getUserByCenter() {
+        verificarTokenYCorreo();
+        $resultado = $this->objMenu->getUserByCenter();
+
+        header('Content-Type: application/json');
+        echo json_encode($resultado);
+        exit;
+    }
+
+    //Parte responsable
+        public function getUserByDayResponsable(){
+            verificarTokenYCorreo();
+            $id_centro = isset($_GET['id_centro']) ? intval($_GET['id_centro']) : null;
+            $resultado = $this->objMenu->getUserByDayCentro($id_centro);
+
+            header('Content-Type: application/json');
+            echo json_encode($resultado);
+            exit;
+        }
+
+    public function getFormationActiveByMonthResponsable() {
+        verificarTokenYCorreo();
+        $id_centro = isset($_GET['id_centro']) ? intval($_GET['id_centro']) : null;
+        $resultado = $this->objMenu->getFormationActiveByMonthCentro($id_centro);
+
+        header('Content-Type: application/json');
+        echo json_encode($resultado);
+        exit;
+    }
+
+    public function getUserByCenterResponsable() {
+        verificarTokenYCorreo();
+        $id_centro = isset($_GET['id_centro']) ? intval($_GET['id_centro']) : null;
+        $resultado = $this->objMenu->getUserByCenterCentro($id_centro);
+
+        header('Content-Type: application/json');
+        echo json_encode($resultado);
+        exit;
+    }
+
 }
 ?>

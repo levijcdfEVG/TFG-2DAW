@@ -1,5 +1,5 @@
 {
-  "name": "mockups-tfg",
+  "name": "Gestión de Formaciones de la Fundación Loyola",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -42,9 +42,11 @@
     "@angular-devkit/build-angular": "^15.2.11",
     "@angular/cli": "~15.2.11",
     "@angular/compiler-cli": "^15.2.0",
+    "@compodoc/compodoc": "^1.1.26",
     "@types/datatables.net": "^1.10.21",
     "@types/jasmine": "~4.3.0",
     "@types/jquery": "^3.5.32",
+    "angular-jsdoc": "^1.5.1",
     "jasmine-core": "~4.5.0",
     "jsdoc": "^4.0.4",
     "karma": "~6.4.0",

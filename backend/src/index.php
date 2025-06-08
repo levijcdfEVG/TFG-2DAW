@@ -11,7 +11,7 @@
  * @package  TFG-2DAW
  * @author   David Silva Vega <dsilvavega.guadalupe@alumnado.fundacionloyola.net>
  * @license  https://opensource.org/licenses/MIT MIT License
- * @link     http://example.com
+ * 
  */
 
 // Configuración de los encabezados HTTP para permitir CORS.

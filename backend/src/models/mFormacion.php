@@ -500,6 +500,30 @@ class MFormacion {
     }
 
     /**
+     * Obtiene las formaciones asociadas a un usuario específico.
+     *
+     * @param int $idUsuario El ID del usuario para el que se desean obtener las formaciones.
+     * @return array Un array asociativo con la clave 'success' (bool) y, si es exitoso, la clave 'formaciones' (array de formaciones).
+     *               En caso de error, incluye la clave 'message' con la descripción del error.
+     */
+    public function getFormationByUserId(int $idUsuario): array {
+        try {
+            $this->conectar();
+
+            $stmt = $this->conexion->prepare("
+                SELECT f.*, i.estado FROM formacion f
+                INNER JOIN inscripciones i ON f.id = i.id_formacion
+                WHERE i.id_usu = ?"
+            );
+            $stmt->execute([$idUsuario]);
+            $formaciones = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return ['success' => true, 'formaciones' => $formaciones];
+        } catch (PDOException $e) {
+            return ['success' => false, 'message' => 'Error al obtener formaciones: ' . $e->getMessage()];
+        }
+    }
+
+    /**
      * Desasigna una lista de usuarios de una formación específica.
      *
      * Elimina los registros de la tabla 'inscripciones' que correspondan a la formación y a los usuarios indicados.
@@ -532,6 +556,26 @@ class MFormacion {
         }
     }
 
+    public function cambiarEstado($id_usu, $id_formacion) {
+        $this->conectar();
+        $sql = "UPDATE inscripciones SET estado = CASE
+                WHEN estado = 'Pendiente' THEN 'En curso'
+                WHEN estado = 'En curso' THEN 'Finalizada'
+                ELSE estado
+                END
+                WHERE id_usu = :id_usu AND id_formacion = :id_formacion";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->execute([':id_usu' => $id_usu, 'id_formacion' => $id_formacion]);
+
+        $rows = $stmt->rowCount();
+
+        return [
+            'success' => $rows > 0,
+            'message' => $rows > 0
+                ? 'Estado actualizado correctamente'
+                : 'No se modificó ningún registro. Verifica los IDs'
+        ];
+    }
 
     public function getFormacionById(int $idFormacion) {
         try {
@@ -553,5 +597,4 @@ class MFormacion {
             return ['success' => false, 'message' => 'Error al obtener la formación: ' . $e->getMessage()];
         }
     }
-
 }

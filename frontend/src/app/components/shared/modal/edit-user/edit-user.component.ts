@@ -124,13 +124,13 @@ export class EditUserComponent implements OnInit {
    */
   resetForm() {
     this.userModalForm.reset({
-      name: '',
-      surname: '',
-      email: '',
-      phone: '',
-      role: null,
-      center: null,
-      new_educator: false
+      name: this.userData.nombre_user,
+      surname: this.userData.apellido_user,
+      email: this.userData.correo_user,
+      phone: this.userData.telefono_user,
+      role: this.userData.id_rol,
+      center: this.userData.id_centro,
+      new_educator: this.userData.nuevo_educador
     });
 
     this.userModalForm.get('new_educator')?.disable();
@@ -218,6 +218,7 @@ export class EditUserComponent implements OnInit {
    * Muestra mensajes de éxito o error según corresponda
    */
   updateUser() {
+
     const userData = {
       id: this.userData.id,
       nombre_user: this.userModalForm.value.name,
@@ -229,7 +230,7 @@ export class EditUserComponent implements OnInit {
       nuevo_educador: this.userModalForm.value.new_educator,
       estado: this.userData.estado
     };
-
+    console.log(userData);
 
     this.userService.updateUser(userData).pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: (response: any) => {

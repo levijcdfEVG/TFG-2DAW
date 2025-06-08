@@ -29,7 +29,7 @@ export class AppComponent implements OnInit {
     this.router.events
       .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
       .subscribe((event) => {
-const url = event.url;
+        const url = event.url;
         const idRol = this.sharedService.getIdRol();
 
         // Ocultar en rutas específicas

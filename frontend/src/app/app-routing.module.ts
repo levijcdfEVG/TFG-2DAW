@@ -14,14 +14,16 @@ import {
 import { NoAutorizadoComponent } from './pages/no-autorizado/no-autorizado.component';
 import { ResponsableCentroGuard } from './guards/responsable-centro.guard';
 import { RoleGuard } from './guards/role.guard';
+import { FormacionesGuard } from './guards/formaciones.guard';
+import { EducadoresGuard } from './guards/educadores.guard';
 
 
 const routes: Routes = [
   { path: "info-centros", component: InfoCentroComponent, canActivate: [RoleGuard] },
-  { path: "info-formaciones", component: InfoFormacionComponent, canActivate: [AuthGuard] },
+  { path: "info-formaciones", component: InfoFormacionComponent, canActivate: [AuthGuard, FormacionesGuard] },
   { path: "info-cursos", component: InfoFormacionComponent, canActivate: [AuthGuard] },
-  { path: "info-educadores", component: InfoEducadorComponent, canActivate: [AuthGuard] },
-  { path: "usuarios/:id", component: UserFileComponent, canActivate: [AuthGuard, ResponsableCentroGuard]},
+  { path: "info-educadores", component: InfoEducadorComponent, canActivate: [AuthGuard, EducadoresGuard] },
+  { path: "info-educadores/:id", component: UserFileComponent, canActivate: [AuthGuard, ResponsableCentroGuard]},
   { path: "login", component: GoogleSignInComponent },
   { path: "menu", component: MenuComponent, canActivate: [AuthGuard] },
   { path: 'inscribir-usuarios/formacion/:id', component: InscripcionFormacionComponent,  canActivate: [AuthGuard] },

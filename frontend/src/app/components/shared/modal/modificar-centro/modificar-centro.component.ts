@@ -5,6 +5,9 @@ import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { SharedService } from 'src/app/services/shared.service';
 
+/**
+ * Componente que permite modificar los datos de un centro existente.
+ */
 @Component({
   selector: 'app-modificar-centro',
   templateUrl: './modificar-centro.component.html',
@@ -12,17 +15,29 @@ import { SharedService } from 'src/app/services/shared.service';
 })
 export class ModificarCentroComponent implements OnInit, OnChanges {
 
+    /** Objeto con los datos del centro que ha sido seleccionado para modificar */
   @Input() centroSeleccionado: any = {};
+
+  /** Formulario reactivo con los campos del centro */
   formCentro!: FormGroup;
 
+    /**
+   * Constructor del componente.
+   * @param fb FormBuilder para crear el formulario
+   * @param centrosService Servicio para gestión de centros
+   * @param toastr Servicio de notificaciones
+   * @param sharedService Servicio compartido para obtener datos globales
+   */
   constructor(
     private fb: FormBuilder,
     private centrosService: CentrosService,
     private toastr: ToastrService,
-    private router: Router,
     private sharedService: SharedService
   ) {}
 
+    /**
+   * Inicializa el formulario con los datos del centro seleccionado y configura validadores.
+   */
   ngOnInit(): void {
     const rol = this.sharedService.getIdRol();
     console.log('Rol del usuario:', rol);
@@ -58,10 +73,13 @@ export class ModificarCentroComponent implements OnInit, OnChanges {
       ]]
     });
 
-    // Inicializar el formulario con los datos del centro seleccionado
     this.formCentro.patchValue(this.centroSeleccionado);
   }
 
+    /**
+   * Se ejecuta cuando cambian las propiedades de entrada del componente.
+   * @param changes Cambios detectados en las propiedades @Input
+   */
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['centroSeleccionado'] && this.centroSeleccionado) {
       this.formCentro.patchValue(this.centroSeleccionado);
@@ -69,22 +87,41 @@ export class ModificarCentroComponent implements OnInit, OnChanges {
     }
   }
 
-  // Validadores personalizados
+  /**
+   * Validador personalizado para evitar números en el texto.
+   * @param control Control del formulario
+   * @returns Error si contiene números, o null si es válido
+   */
   static sinNumerosValidator(control: AbstractControl): ValidationErrors | null {
     const regex = /^[a-zA-Z\sáéíóúÁÉÍÓÚüÜñÑ.,-]+$/;
     return control.value && !regex.test(control.value) ? { contieneNumeros: true } : null;
   }
 
+    /**
+   * Validador personalizado para permitir solo números.
+   * @param control Control del formulario
+   * @returns Error si contiene letras, o null si es válido
+   */
   static soloNumerosValidator(control: AbstractControl): ValidationErrors | null {
     const regex = /^[0-9]+$/;
     return control.value && !regex.test(control.value) ? { contieneLetras: true } : null;
   }
 
+    /**
+   * Valida que el correo pertenezca al dominio fundacionloyola.es.
+   * @param control Control del formulario
+   * @returns Error si el dominio es inválido, o null si es válido
+   */
   static emailFundacionLoyolaValidator(control: AbstractControl): ValidationErrors | null {
     const regex = /^[a-zA-Z0-9._%+-]+@fundacionloyola\.es$/;
     return control.value && !regex.test(control.value) ? { dominioInvalido: true } : null;
   }
 
+    /**
+   * Devuelve el mensaje de error personalizado para un control del formulario.
+   * @param controlName Nombre del control del formulario
+   * @returns Mensaje de error
+   */
   getErrorMessage(controlName: string): string {
     const control = this.formCentro.get(controlName);
 
@@ -133,6 +170,9 @@ export class ModificarCentroComponent implements OnInit, OnChanges {
     return '';
   }
 
+    /**
+   * Guarda los cambios realizados al centro, validando primero el formulario y luego el código postal con la localidad.
+   */
   guardarCambiosCentro(): void {
     if (this.formCentro.invalid) {
       this.toastr.warning('Por favor, completa todos los campos correctamente.', 'Advertencia');
@@ -141,14 +181,14 @@ export class ModificarCentroComponent implements OnInit, OnChanges {
 
     const datosModificados = this.formCentro.value;
 
-    // Validar que nombre_localidad coincida con el CP
+
     this.centrosService.validarLocalidad(datosModificados.nombre_localidad, datosModificados.cp).subscribe(response => {
       if (!response.success) {
         this.toastr.warning('El código postal no coincide con la localidad.', 'Advertencia');
         return;
       }
 
-      // Llamar al servicio para guardar los cambios
+
       this.centrosService.modificarCentro(this.centroSeleccionado.correo_centro, datosModificados).subscribe(response => {
         if (response.success) {
           this.toastr.success('Centro modificado con éxito', 'Éxito');
@@ -170,6 +210,9 @@ export class ModificarCentroComponent implements OnInit, OnChanges {
     });
   }
 
+    /**
+   * Cierra el modal de edición del centro si está abierto.
+   */
   cerrarFormulario(): void {
     const modalElement = document.getElementById('modificarCentroModal');
     if (modalElement) {

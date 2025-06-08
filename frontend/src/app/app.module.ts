@@ -30,7 +30,7 @@ import { EditUserComponent } from './components/shared/modal/edit-user/edit-user
 
 
 /* Componentes */
-import { HttpClientModule } from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import { MatTableModule } from '@angular/material/table';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -55,6 +55,7 @@ import {MatOptionModule} from "@angular/material/core";
 
 import { NgSelectModule } from "@ng-select/ng-select";
 import { NgChartsModule } from 'ng2-charts';
+import {AuthInterceptor} from "./interceptors/auth.interceptor";
 
 @NgModule({
   declarations: [
@@ -100,7 +101,12 @@ import { NgChartsModule } from 'ng2-charts';
     NgChartsModule,
   ],
   providers: [
-    CookieService
+    CookieService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })

@@ -6,7 +6,8 @@
     <!-- Card con la imagen -->
         <div class="card mx-4">
             <div class="card-body d-flex flex-column align-items-center justify-content-center">
-                <img [src]="imgPath" class="img-fluid rounded-circle mb-3" style="max-width: 185px; height: auto;" alt="Foto de usuario" />
+                <img *ngIf="imgPath" [src]="imgPath" class="img-fluid rounded-circle mb-3"
+                     style="max-width: 185px; height: auto;" alt="Foto de usuario" />
             </div>
         </div>
 
@@ -64,13 +65,15 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div *ngIf="idRol !== 1" class="row">
                     <div class="col-12 text-end">
-                        <button class="btn btn-outline-primary me-2" (click)="openEditModal()">Editar</button>
-                        <button class="btn btn-outline-danger" 
+                        <button class="btn btn-outline-primary me-2" (click)="openEditModal()"><i class="fas fa-edit me-1"></i>Editar</button>
+                        <button class="btn btn-outline-danger "
                                 [class.btn-outline-danger]="userData?.estado === 1"
                                 [class.btn-outline-success]="userData?.estado === 0"
                                 (click)="changeStatus()">
+                            <i class="fas me-1" [class.fa-user-slash]="userData?.estado === 1"
+                               [class.fa-user]="userData?.estado === 0"></i>
                             {{ userData?.estado === 1 ? 'Deshabilitar' : 'Habilitar' }}
                         </button>
                     </div>
@@ -79,45 +82,152 @@
         </div>
     </div>
 
-<!-- Sección de Tabs -->
-    <div class="card mx-4 mt-5">
-        <div class="card-header">
-            <ul class="nav nav-tabs card-header-tabs">
-                <li class="nav-item" (click)="activeTab = 'general'">
-                    <a class="nav-link" [class.active]="activeTab === 'general'" href="#">Formaciones generales</a>
+    <!-- Sección de Tabs -->
+    <div class="card mx-4 mt-5 shadow-sm">
+        <div class="card-body p-4">
+            <!-- Nav Tabs -->
+            <ul class="nav nav-tabs mb-3" id="formationTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="generales-tab" data-bs-toggle="tab" data-bs-target="#generales" type="button" role="tab">
+                        Formaciones Generales
+                    </button>
                 </li>
-                <li class="nav-item" (click)="activeTab = 'pendientes'">
-                    <a class="nav-link" [class.active]="activeTab === 'pendientes'" href="#">Formaciones pendientes</a>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="enCurso-tab" data-bs-toggle="tab" data-bs-target="#enCurso" type="button" role="tab">
+                        Formaciones en curso
+                    </button>
                 </li>
-                <li class="nav-item" (click)="activeTab = 'finalizadas'">
-                    <a class="nav-link" [class.active]="activeTab === 'finalizadas'" href="#">Formaciones finalizadas</a>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="finalizadas-tab" data-bs-toggle="tab" data-bs-target="#finalizadas" type="button" role="tab">
+                        Formaciones Finalizadas
+                    </button>
                 </li>
             </ul>
-        </div>
-        <div class="card-body">
-        <!-- Tab content -->
-            <div *ngIf="activeTab === 'general'">
-                <h5>Formaciones Generales</h5>
-                <ul>
-                    <li *ngFor="let form of formaciones">{{ form.nombre }}</li>
-                </ul>
-            </div>
-            <div *ngIf="activeTab === 'pendientes'">
-                <h5>Formaciones Pendientes</h5>
-                <ul>
-                    <li *ngFor="let form of formacionesPendientes">{{ form.nombre }}</li>
-                </ul>
-            </div>
-            <div *ngIf="activeTab === 'finalizadas'">
-                <h5>Formaciones Finalizadas</h5>
-                <ul>
-                    <li *ngFor="let form of formacionesFinalizadas">
-                        {{ form.nombre }} - Finalizado el: {{ form.fechaFinalizacion | date:'longDate' }}
-                    </li>
-                </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content" id="formationTabsContent">
+                <!-- Tab 1: Formaciones Generales -->
+                <div class="tab-pane fade show active" id="generales" role="tabpanel">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle table-sm">
+                            <thead class="table-light">
+                            <tr>
+                                <th>Justificación</th>
+                                <th>Lugar</th>
+                                <th class="text-center">Duración</th>
+                                <th class="text-center">Metodología</th>
+                                <th class="text-center">Modalidad</th>
+                                <th class="text-center">Estado</th>
+                                <th class="text-end">Acción</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let formation of formationData">
+                                <td>{{ formation.justificacion }}</td>
+                                <td>{{ formation.lugar_imparticion }}</td>
+                                <td class="text-center">{{ formation.duracion }}</td>
+                                <td class="text-center">{{ formation.metodologia }}</td>
+                                <td class="text-center">{{ formation.modalidad }}</td>
+                                <td class="text-center">
+                                    <span class="badge" [ngClass]="{
+                                        'bg-warning': formation.estado === 'Pendiente',
+                                        'bg-primary': formation.estado === 'En curso',
+                                        'bg-success': formation.estado === 'Finalizada'
+                                    }">{{ formation.estado }}</span>
+                                </td>
+                                <td class="text-end">
+                                    <button *ngIf="formation.estado != 'Finalizada'" class="btn btn-sm"
+                                            [ngClass]="formation.estado == 'Pendiente' ? 'btn-dark-info' : 'btn-success'"
+                                            (click)="toggleEstado(formation)">
+                                        {{ formation.estado == 'Pendiente' ? 'Marcar en curso' : 'Marcar finalizada' }}
+                                    </button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Formaciones En Curso-->
+                <div class="tab-pane fade" id="enCurso" role="tabpanel">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle table-sm">
+                            <thead class="table-light">
+                            <tr>
+                                <th>Justificación</th>
+                                <th>Lugar</th>
+                                <th class="text-center">Duración</th>
+                                <th class="text-center">Metodología</th>
+                                <th class="text-center">Modalidad</th>
+                                <th class="text-center">Estado</th>
+                                <th class="text-end">Acción</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let formation of pendingFormations">
+                                <td>{{ formation.justificacion }}</td>
+                                <td>{{ formation.lugar_imparticion }}</td>
+                                <td class="text-center">{{ formation.duracion }}</td>
+                                <td class="text-center">{{ formation.metodologia }}</td>
+                                <td class="text-center">{{ formation.modalidad }}</td>
+                                <td class="text-center">
+                                    <span class="badge" [ngClass]="{
+                                        'bg-warning': formation.estado === 'Pendiente',
+                                        'bg-primary': formation.estado === 'En curso',
+                                        'bg-success': formation.estado === 'Finalizada'
+                                    }">{{ formation.estado }}</span>
+                                </td>
+                                <td class="text-end">
+                                    <button class="btn btn-sm btn-success" (click)="toggleEstado(formation)">
+                                        Marcar finalizada
+                                    </button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Formaciones Finalizadas -->
+                <div class="tab-pane fade" id="finalizadas" role="tabpanel">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle table-sm">
+                            <thead class="table-light">
+                            <tr>
+                                <th>Justificación</th>
+                                <th>Lugar</th>
+                                <th class="text-center">Duración</th>
+                                <th class="text-center">Metodología</th>
+                                <th class="text-center">Modalidad</th>
+                                <th class="text-center">Estado</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let formation of finalizedFormations">
+                                <td>{{ formation.justificacion }}</td>
+                                <td>{{ formation.lugar_imparticion }}</td>
+                                <td class="text-center">{{ formation.duracion }}</td>
+                                <td class="text-center">{{ formation.metodologia }}</td>
+                                <td class="text-center">{{ formation.modalidad }}</td>
+                                <td class="text-center">
+                                    <span class="badge" [ngClass]="{
+                                        'bg-warning': formation.estado === 'Pendiente',
+                                        'bg-primary': formation.estado === 'En curso',
+                                        'bg-success': formation.estado === 'Finalizada'
+                                    }">{{ formation.estado }}</span>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+
             </div>
         </div>
     </div>
+
 </div>
 
 <app-edit-user *ngIf="selectedUser" [userData]="selectedUser"></app-edit-user>
